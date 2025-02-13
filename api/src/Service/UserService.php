@@ -4,13 +4,14 @@ namespace App\Service;
 
 use App\DTO\UserDTO;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserService
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly ValidatorInterface $validator, private readonly UserPasswordHasherInterface $passwordHasher) {}
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly ValidatorInterface $validator, private readonly UserPasswordHasherInterface $passwordHasher, private readonly UserRepository $userRepository) {}
 
     private function DTOToUser(UserDTO $userDTO): User
     {
