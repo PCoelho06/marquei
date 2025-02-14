@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import { useUserStore } from '@/stores/user'
 
@@ -48,6 +49,8 @@ import type { UserAuthPayload } from '@/types/user'
 
 import { validateUserLoginData } from '@/utils/validators.ts'
 import AlertToast from '@/components/Alerts/AlertToast.vue';
+
+const router = useRouter()
 
 const userStore = useUserStore();
 
@@ -89,8 +92,7 @@ const submitForm = () => {
 
     userStore.actionLogin({ username: user.value.email, password: user.value.password }).then(() => {
         console.log('User loged successfully');
-        localStorage.setItem('token', JSON.stringify(userStore.getterToken));
-        // redirect to dashboard
+        router.push('/dashboard')
     }).catch((error) => {
         alert.value.show = true;
         alert.value.title = error.data.title;
