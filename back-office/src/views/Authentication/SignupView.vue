@@ -84,7 +84,7 @@ const submitForm = () => {
         return;
     }
 
-    userStore.actionRegister({ email: user.value.email, password: user.value.password }).then(() => {
+    userStore.actionRegister({ email: user.value.email, password: user.value.password, role: 'ROLE_OWNER' }).then(() => {
         console.log('User registered successfully');
         // redirect to create salon page
     }).catch((error) => {

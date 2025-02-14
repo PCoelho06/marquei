@@ -19,7 +19,7 @@ class UserService
 
         $user->setEmail($userDTO->email)
             ->setPassword($this->passwordHasher->hashPassword($user, $userDTO->password))
-            ->setRoles(['ROLE_USER'])
+            ->setRoles([$userDTO->role])
             ->setCreatedAt(new \DateTimeImmutable())
             ->setUpdatedAt(new \DateTimeImmutable());
 

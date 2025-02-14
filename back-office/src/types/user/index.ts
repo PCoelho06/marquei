@@ -24,3 +24,5 @@ export interface UserLoginPayload {
 export type UserRegisterPayload = UserAuthPayload & {
   confirmPassword: string
 }
+
+export type UserRoles = 'ROLE_SUPER_ADMIN' | 'ROLE_ADMIN' | 'ROLE_OWNER' | 'ROLE_USER'

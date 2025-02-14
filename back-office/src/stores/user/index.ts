@@ -1,4 +1,4 @@
-import type { User } from '@/types/user'
+import type { User, UserRoles } from '@/types/user'
 
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
@@ -25,7 +25,7 @@ export const useUserStore = defineStore('user', () => {
     mutationToken(response.token)
   }
 
-  const actionRegister = async (payload: { email: string; password: string }) => {
+  const actionRegister = async (payload: { email: string; password: string; role: UserRoles }) => {
     const response = await api().user.register(payload)
     mutationUser(response.data.user)
     mutationToken(response.data.token)
