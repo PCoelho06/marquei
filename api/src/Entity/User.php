@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -38,6 +40,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, Salon>
+     */
+    #[ORM\OneToMany(targetEntity: Salon::class, mappedBy: 'owner')]
+    private Collection $salons;
+
+    public function __construct()
+    {
+        $this->salons = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -147,5 +160,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
         ];
+    }
+
+    /**
+     * @return Collection<int, Salon>
+     */
+    public function getSalons(): Collection
+    {
+        return $this->salons;
+    }
+
+    public function addSalon(Salon $salon): static
+    {
+        if (!$this->salons->contains($salon)) {
+            $this->salons->add($salon);
+            $salon->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSalon(Salon $salon): static
+    {
+        if ($this->salons->removeElement($salon)) {
+            // set the owning side to null (unless already changed)
+            if ($salon->getOwner() === $this) {
+                $salon->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }
