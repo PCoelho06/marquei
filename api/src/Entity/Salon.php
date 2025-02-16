@@ -6,6 +6,7 @@ use App\Repository\SalonRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SalonRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Salon
 {
     #[ORM\Id]
@@ -17,13 +18,16 @@ class Salon
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $street = null;
+    private ?string $address = null;
 
     #[ORM\Column(length: 255)]
     private ?string $postalCode = null;
 
     #[ORM\Column(length: 255)]
     private ?string $city = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $country = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $phone = null;
@@ -55,14 +59,14 @@ class Salon
         return $this;
     }
 
-    public function getStreet(): ?string
+    public function getAddress(): ?string
     {
-        return $this->street;
+        return $this->address;
     }
 
-    public function setStreet(string $street): static
+    public function setAddress(string $address): static
     {
-        $this->street = $street;
+        $this->address = $address;
 
         return $this;
     }
@@ -87,6 +91,18 @@ class Salon
     public function setCity(string $city): static
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): static
+    {
+        $this->country = $country;
 
         return $this;
     }
@@ -117,15 +133,15 @@ class Salon
         return $this;
     }
 
-    #[ORM\PreUpdate]
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): static
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
     }
@@ -147,7 +163,7 @@ class Salon
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'street' => $this->street,
+            'address' => $this->address,
             'postalCode' => $this->postalCode,
             'city' => $this->city,
             'phone' => $this->phone,

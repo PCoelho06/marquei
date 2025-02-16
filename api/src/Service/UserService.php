@@ -11,25 +11,19 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserService
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly ValidatorInterface $validator, private readonly UserPasswordHasherInterface $passwordHasher, private readonly UserRepository $userRepository) {}
-
-    private function DTOToUser(UserDTO $userDTO): User
-    {
-        $user = new User();
-
-        $user->setEmail($userDTO->email)
-            ->setPassword($this->passwordHasher->hashPassword($user, $userDTO->password))
-            ->setRoles([$userDTO->role])
-            ->setCreatedAt(new \DateTimeImmutable())
-            ->setUpdatedAt(new \DateTimeImmutable());
-
-
-        return $user;
-    }
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ValidatorInterface $validator,
+        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly UserRepository $userRepository,
+        private EntityHydratorService $hydrator
+    ) {}
 
     public function registerUser(UserDTO $userDTO): User
     {
-        $user = $this->DTOToUser($userDTO);
+        $userDTO->password = $this->passwordHasher->hashPassword(new User(), $userDTO->password);
+
+        $user = $this->hydrator->hydrate(new User(), $userDTO);
 
         $errors = $this->validator->validate($user, null, ['registration']);
 
@@ -44,6 +38,28 @@ class UserService
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        return $user;
+    }
+
+    public function getUser(int $id): User
+    {
+        $user = $this->userRepository->find($id);
+
+        if ($user === null) {
+            throw new \InvalidArgumentException('Usuário não encontrado');
+        }
+
+        return $user;
+    }
+
+    public function getUserByUsername(string $username): User
+    {
+        $user = $this->userRepository->findOneByEmail($username);
+
+        if ($user === null) {
+            throw new \InvalidArgumentException('Usuário não encontrado');
+        }
 
         return $user;
     }

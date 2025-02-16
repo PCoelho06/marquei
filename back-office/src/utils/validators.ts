@@ -1,3 +1,5 @@
+import type { SalonCreatePayload } from '@/types/salons'
+
 const isEmail = (email: string) => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return re.test(email)
@@ -55,6 +57,61 @@ export const validateUserRegistrationData = (data: {
 
   if (data.password !== data.confirmPassword) {
     errors.confirmPassword = 'As senhas não coincidem'
+  }
+
+  return errors
+}
+
+const validatePostalCode = (postalCode: string) => {
+  if (!postalCode) {
+    return 'O código postal é obrigatório'
+  } else if (!/^\d{4}-\d{3}$/.test(postalCode)) {
+    return 'O código postal deve estar no formato XXXX-XXX'
+  }
+
+  return undefined
+}
+
+const validatePhone = (phone: string) => {
+  if (!phone) {
+    return 'O telefone é obrigatório'
+  } else if (!/^\+351 [0-9]{3} [0-9]{3} [0-9]{3}$/.test(phone)) {
+    return 'O telefone não está no formato correto'
+  }
+
+  return undefined
+}
+
+export const validateSalonData = (data: SalonCreatePayload) => {
+  const errors: {
+    name?: string
+    phone?: string
+    address?: string
+    postalCode?: string
+    city?: string
+    country?: string
+  } = {}
+
+  if (!data.name) {
+    errors.name = 'O nome é obrigatório'
+  }
+
+  const phoneError = validatePhone(data.phone)
+  if (phoneError) errors.phone = phoneError
+
+  if (!data.address) {
+    errors.address = 'O endereço é obrigatório'
+  }
+
+  const postalCodeError = validatePostalCode(data.postalCode)
+  if (postalCodeError) errors.postalCode = postalCodeError
+
+  if (!data.city) {
+    errors.city = 'A cidade é obrigatória'
+  }
+
+  if (!data.country) {
+    errors.country = 'O país é obrigatório'
   }
 
   return errors

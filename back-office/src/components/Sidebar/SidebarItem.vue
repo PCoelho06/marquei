@@ -22,6 +22,7 @@ import { useSidebarStore } from '@/stores/sidebar'
 import { useRoute } from 'vue-router'
 import SidebarDropdown from './SidebarDropdown.vue'
 import SidebarIcons from '../Icons/SidebarIcons/SidebarIcons.vue'
+import DropdownArrowIcon from '../Icons/DropdownArrowIcon.vue'
 
 import type { SidebarItems } from '@/types'
 

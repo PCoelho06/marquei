@@ -1,25 +1,68 @@
 import type { BuilderContext, Internals } from '@/types/builder'
-import { AxiosError, type AxiosInstance, type AxiosResponse } from 'axios'
+import {
+  AxiosError,
+  type AxiosInstance,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from 'axios'
 
 import axios from 'axios'
 
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
 
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean
+}
+
 const instance: AxiosInstance = axios.create({
   baseURL: 'http://localhost:8000',
   headers: { 'Content-Type': 'application/json' },
 })
 
+const getRefreshToken = () => localStorage.getItem('refresh_token')
+const setTokens = (accessToken: string, refreshToken: string) => {
+  localStorage.setItem('refresh_token', refreshToken)
+  useUserStore().mutationToken(accessToken)
+}
+
+const refreshToken = async (): Promise<string | null> => {
+  const userStore = useUserStore()
+
+  try {
+    const response = await axios.post(`${instance.defaults.baseURL}/api/user/refresh-token`, {
+      refresh_token: getRefreshToken(),
+    })
+
+    setTokens(response.data.access_token, response.data.refresh_token)
+
+    return response.data.access_token
+  } catch (error) {
+    console.error('Error refreshing token:', error)
+    userStore.actionLogout()
+    return null
+  }
+}
+
 instance.interceptors.response.use(
-  (response: AxiosResponse) => Promise.resolve(response),
-  (error: AxiosError) => {
+  (response: AxiosResponse) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as CustomAxiosRequestConfig
+
+    if (error.response?.status === 401 && !originalRequest?._retry) {
+      originalRequest._retry = true
+      const newToken = await refreshToken()
+
+      if (newToken) {
+        originalRequest.headers.Authorization = `Bearer ${newToken}`
+        return instance(originalRequest)
+      }
+    }
     return Promise.reject(error)
   },
 )
 
 const requestInterceptor = (token: string | undefined) => {
-  instance.interceptors.request.clear()
   instance.interceptors.request.use((config) => {
     if (token) {
       config.headers.Authorization = `Bearer ${token}`

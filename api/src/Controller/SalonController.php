@@ -17,7 +17,7 @@ final class SalonController extends AbstractController
 {
     public function __construct(private SalonService $salonService) {}
 
-    #[Route('/create', name: 'create', methods: ['POST'])]
+    #[Route('/', name: 'create', methods: ['POST'])]
     public function createSalon(#[MapRequestPayload(validationGroups: ['create'])] SalonDTO $salonDTO): JsonResponse
     {
         $salon = $this->salonService->createSalon($salonDTO);

@@ -7,23 +7,30 @@ import { api } from '@/api'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<User | undefined>()
-  const token = ref<string | null>(localStorage.getItem('token'))
+  const token = ref<string | undefined>(localStorage.getItem('access_token') || undefined)
 
   const getterUser = computed<User | undefined>(() => user.value)
-  const getterToken = computed<string | null>(() => token.value)
+  const getterToken = computed<string | undefined>(() => token.value)
 
   const mutationUser = (newValue: User | undefined) => {
     user.value = newValue
+    localStorage.setItem('userID', JSON.stringify(newValue?.id))
   }
-  const mutationToken = (newValue: string | null) => {
+  const mutationToken = (newValue: string | undefined) => {
     token.value = newValue
-    localStorage.setItem('token', JSON.stringify(newValue))
+    if (newValue) localStorage.setItem('access_token', newValue)
+  }
+
+  const getUser = async (payload: { id: number }) => {
+    const response = await api().user.get(payload)
+    mutationUser(response.data)
   }
 
   const actionLogin = async (payload: { username: string; password: string }) => {
     const response = await api().user.login(payload)
     mutationUser(response.data.user)
-    mutationToken(response.data.token)
+    mutationToken(response.data.access_token)
+    localStorage.setItem('refresh_token', response.data.refresh_token)
   }
 
   const actionLogout = () => {
@@ -39,10 +46,11 @@ export const useUserStore = defineStore('user', () => {
 
   const resetUser = () => {
     mutationUser(undefined)
+    localStorage.removeItem('userID')
   }
 
   const resetToken = () => {
-    mutationToken(null)
+    mutationToken(undefined)
     localStorage.removeItem('token')
   }
 
@@ -51,6 +59,7 @@ export const useUserStore = defineStore('user', () => {
     getterToken,
     mutationUser,
     mutationToken,
+    getUser,
     actionLogin,
     actionLogout,
     actionRegister,

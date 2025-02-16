@@ -8,8 +8,9 @@ export interface UserAuthPayload {
 export interface User {
   id: number | null
   email: string | null
-  firstname: string | null
-  lastname: string | null
+  roles: string[] | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface UserGetPayload extends Payload {
