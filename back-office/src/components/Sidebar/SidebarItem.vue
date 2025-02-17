@@ -7,10 +7,10 @@
 
             {{ item.label }}
 
-            <DropdownArrowIcon v-if="item.children" :dropdownOpen="getterSelectedCategory === item.label" />
+            <DropdownArrowIcon v-if="item.children" :dropdownOpen="getterSelectedCategory() === item.label" />
         </router-link>
 
-        <div class="translate transform overflow-hidden" v-show="getterSelectedCategory === item.label">
+        <div class="translate transform overflow-hidden" v-show="getterSelectedCategory() === item.label">
             <SidebarDropdown v-if="item.children" :items="item.children" :currentPage="currentPage"
                 :page="item.label" />
         </div>
@@ -26,9 +26,8 @@ import DropdownArrowIcon from '../Icons/DropdownArrowIcon.vue'
 
 import type { SidebarItems } from '@/types'
 
-interface SidebarCategoryChildren {
+interface SidebarCategoryChild {
     label: SidebarItems
-    route: string
 }
 
 const { getterSelectedCategory, getterSelectedItem, mutationSelectedCategory } = useSidebarStore()
@@ -41,7 +40,7 @@ const handleItemClick = () => {
     mutationSelectedCategory(pageName)
 
     if (props.item.children) {
-        return props.item.children.some((child: SidebarCategoryChildren) => getterSelectedItem() === child.label)
+        return props.item.children.some((child: SidebarCategoryChild) => getterSelectedItem() === child.label)
     }
 }
 </script>

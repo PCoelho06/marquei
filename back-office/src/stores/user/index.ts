@@ -41,7 +41,8 @@ export const useUserStore = defineStore('user', () => {
   const actionRegister = async (payload: { email: string; password: string; role: UserRoles }) => {
     const response = await api().user.register(payload)
     mutationUser(response.data.user)
-    mutationToken(response.data.token)
+    mutationToken(response.data.access_token)
+    localStorage.setItem('refresh_token', response.data.refresh_token)
   }
 
   const resetUser = () => {
@@ -51,7 +52,8 @@ export const useUserStore = defineStore('user', () => {
 
   const resetToken = () => {
     mutationToken(undefined)
-    localStorage.removeItem('token')
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
   }
 
   return {

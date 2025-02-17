@@ -75,7 +75,7 @@ const menuGroups = ref([
       {
         icon: 'shop',
         label: 'Saloes',
-        route: '/salons/create',
+        route: '#',
         children: [{ label: 'Registar', route: '/salons/create' }]
       },
       // {

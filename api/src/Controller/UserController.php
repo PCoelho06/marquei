@@ -26,7 +26,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/register', name: 'register', methods: ['POST'])]
-    public function registerUser(#[MapRequestPayload(validationGroups: ['registration'])] UserDTO $userDTO): JsonResponse
+    public function registerUser(#[MapRequestPayload(validationGroups: ['registration'])] UserDTO $userDTO, JWTTokenManagerInterface $JWTManager, RefreshTokenGeneratorInterface $refreshTokenGenerator): JsonResponse
     {
         try {
             $user = $this->userService->registerUser($userDTO);
@@ -37,34 +37,22 @@ final class UserController extends AbstractController
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        return $this->json([
+        $refreshToken = $refreshTokenGenerator->createForUserWithTtl($user, $this->getParameter('gesdinet_jwt_refresh_token.ttl'));
+
+        return new JsonResponse([
             'status' => 'success',
-            'data' => $user->toArray(),
+            'data' => [
+                'access_token' => $JWTManager->create($user),
+                'refresh_token' => $refreshToken->getRefreshToken(),
+                'user' => $user->toArray(),
+            ],
         ]);
+
+        // return $this->json([
+        //     'status' => 'success',
+        //     'data' => $user->toArray(),
+        // ]);
     }
-
-    // #[Route('/login', name: 'login', methods: ['POST'])]
-    // public function loginUser(#[CurrentUser] ?User $user, JWTTokenManagerInterface $JWTManager, RefreshTokenGeneratorInterface $refreshTokenGenerator): JsonResponse
-    // {
-    //     if (null === $user) {
-    //         return $this->json([
-    //             'status' => 'error',
-    //             'message' => 'missing credentials',
-    //         ], JsonResponse::HTTP_UNAUTHORIZED);
-    //     }
-
-    //     $accessToken = $JWTManager->create($user);
-    //     $refreshToken = $refreshTokenGenerator->createForUserWithTtl($user, $this->getParameter('gesdinet_jwt_refresh_token.ttl'));
-
-    //     return $this->json([
-    //         'status' => 'success',
-    //         'data' => [
-    //             'access_token' => $accessToken,
-    //             'refresh_token' => $refreshToken->getRefreshToken(),
-    //             'user' => $user->toArray(),
-    //         ],
-    //     ]);
-    // }
 
     #[Route('/refresh-token', methods: ['POST'])]
     public function refreshToken(Request $request, RefreshTokenManagerInterface $refreshTokenManager, RefreshTokenGeneratorInterface $refreshTokenGenerator, JWTTokenManagerInterface $JWTManager): JsonResponse

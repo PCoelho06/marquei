@@ -13,7 +13,7 @@
                     <LockIcon class="fill-current" />
                 </InputGroup>
 
-                <PrimaryButton value="Entrar" />
+                <DefaultButton value="Entrar" class="my-6" />
 
                 <button
                     class="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-whitten p-4 font-medium hover:bg-opacity-80">
@@ -42,7 +42,7 @@ import AuthCard from '@/components/Cards/AuthCard.vue'
 import InputGroup from '@/components/Forms/InputGroup.vue'
 import MailIcon from '@/components/Icons/MailIcon.vue';
 import LockIcon from '@/components/Icons/LockIcon.vue';
-import PrimaryButton from '@/components/Buttons/PrimaryButton.vue';
+import DefaultButton from '@/components/Buttons/DefaultButton.vue';
 import GoogleIcon from '@/components/Icons/GoogleIcon.vue';
 
 import type { UserAuthPayload } from '@/types/user'

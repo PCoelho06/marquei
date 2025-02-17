@@ -12,7 +12,8 @@
             <span class="absolute left-4 top-4" :class="{ 'text-red-500': hasError }">
                 <LockIcon />
             </span>
-            <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2" @click="togglePassword">
+            <button type="button" tabindex="-1" class="absolute right-3 top-1/2 transform -translate-y-1/2"
+                @click="togglePassword">
                 <EyeSlashIcon v-if="passwordVisible" class="fill-current" />
                 <EyeIcon v-else />
             </button>

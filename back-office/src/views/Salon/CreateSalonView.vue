@@ -44,7 +44,7 @@
                             </InputGroup>
                         </div>
                         <div class="mt-6">
-                            <PrimaryButton value="Registar o salão" />
+                            <DefaultButton value="Registar o salão" />
                         </div>
                     </form>
                 </div>
@@ -61,7 +61,7 @@ import { useUserStore } from '@/stores/user';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import DefaultCard from '@/components/Cards/DefaultCard.vue';
 import InputGroup from '@/components/Forms/InputGroup.vue';
-import PrimaryButton from '@/components/Buttons/PrimaryButton.vue';
+import DefaultButton from '@/components/Buttons/DefaultButton.vue';
 import IDCardIcon from '@/components/Icons/IDCardIcon.vue';
 import PhoneIcon from '@/components/Icons/PhoneIcon.vue';
 import PostalAddressIcon from '@/components/Icons/PostalAddressIcon.vue';
@@ -116,8 +116,7 @@ const createSalon = async () => {
         await api().salons.create(salon.value);
         console.log('Salon created successfully');
     } catch (error) {
-        const typedKey = error.field as keyof typeof validationErrors.value;
-        validationErrors.value[typedKey] = error.message;
+        console.log(error);
     }
 };
 
