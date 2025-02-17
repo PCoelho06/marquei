@@ -6,7 +6,9 @@ import HomeView from '../views/HomeView.vue'
 import SignupView from '../views/Authentication/SignupView.vue'
 import SigninView from '@/views/Authentication/SigninView.vue'
 import DashboardView from '@/views/DashboardView.vue'
-import CreateSalonView from '@/views/Salon/CreateSalonView.vue'
+import SalonsView from '@/views/Salons/SalonsView.vue'
+import CreateSalonView from '@/views/Salons/CreateSalonView.vue'
+import HandleBusinessHoursView from '@/views/Salons/HandleBusinessHoursView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,9 +34,21 @@ const router = createRouter({
       component: DashboardView,
     },
     {
-      path: '/salons/create',
-      name: 'createSalon',
-      component: CreateSalonView,
+      path: '/salons',
+      name: 'salons',
+      component: SalonsView,
+      children: [
+        {
+          path: 'handleSalon',
+          name: 'handleSalon',
+          component: CreateSalonView,
+        },
+        {
+          path: ':id/handleBusinessHours',
+          name: 'handleBusinessHours',
+          component: HandleBusinessHoursView,
+        },
+      ],
     },
   ],
 })

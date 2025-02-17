@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SalonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SalonRepository::class)]
@@ -41,6 +43,17 @@ class Salon
     #[ORM\ManyToOne(inversedBy: 'salons')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
+
+    /**
+     * @var Collection<int, BusinessHoursRanges>
+     */
+    #[ORM\OneToMany(targetEntity: BusinessHoursRanges::class, mappedBy: 'salon', orphanRemoval: true)]
+    private Collection $businessHoursRanges;
+
+    public function __construct()
+    {
+        $this->businessHoursRanges = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -171,5 +184,35 @@ class Salon
             'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
             'owner' => $this->owner->toArray(),
         ];
+    }
+
+    /**
+     * @return Collection<int, BusinessHoursRanges>
+     */
+    public function getBusinessHoursRanges(): Collection
+    {
+        return $this->businessHoursRanges;
+    }
+
+    public function addBusinessHoursRange(BusinessHoursRanges $businessHoursRange): static
+    {
+        if (!$this->businessHoursRanges->contains($businessHoursRange)) {
+            $this->businessHoursRanges->add($businessHoursRange);
+            $businessHoursRange->setSalon($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBusinessHoursRange(BusinessHoursRanges $businessHoursRange): static
+    {
+        if ($this->businessHoursRanges->removeElement($businessHoursRange)) {
+            // set the owning side to null (unless already changed)
+            if ($businessHoursRange->getSalon() === $this) {
+                $businessHoursRange->setSalon(null);
+            }
+        }
+
+        return $this;
     }
 }

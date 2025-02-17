@@ -76,7 +76,7 @@ const menuGroups = ref([
         icon: 'shop',
         label: 'Saloes',
         route: '#',
-        children: [{ label: 'Registar', route: '/salons/create' }]
+        children: [{ label: 'Registar', route: '/salons/handleSalon' }]
       },
       // {
       //     icon: 'CalendarIcon.vue',

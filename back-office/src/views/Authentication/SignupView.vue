@@ -89,7 +89,7 @@ const submitForm = () => {
 
     userStore.actionRegister({ email: user.value.email, password: user.value.password, role: 'ROLE_OWNER' }).then(() => {
         console.log('User registered successfully');
-        router.push({ name: 'createSalon' });
+        router.push({ name: 'handleSalon' });
     }).catch((error) => {
         const typedKey = error.field as keyof typeof validationErrors.value;
         validationErrors.value[typedKey] = error.message;
