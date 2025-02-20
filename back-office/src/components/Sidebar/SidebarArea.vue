@@ -39,10 +39,7 @@
         class="mx-auto mb-10 w-full max-w-60 rounded-sm border border-strokedark bg-boxdark py-6 px-4 text-center shadow-xl">
         <h3 class="mb-1 font-semibold text-white">Marquei Pro</h3>
         <p class="mb-4 text-xs">Aproveite todos os benefícios premium com a Marquei Pro !</p>
-        <a href="https://tailadmin.com/pricing" target="_blank" rel="nofollow"
-          class="flex items-center justify-center rounded-md bg-primary p-2 font-medium text-white hover:bg-opacity-90">
-          Compre agora
-        </a>
+        <LinkButton to="/adherir" :newTab="false" value="Compre agora" />
       </div>
     </div>
   </aside>
@@ -53,6 +50,7 @@ import { useSidebarStore } from '@/stores/sidebar'
 import { onClickOutside } from '@vueuse/core'
 import { ref } from 'vue'
 import SidebarItem from './SidebarItem.vue'
+import LinkButton from '../Buttons/LinkButton.vue'
 
 const target = ref(null)
 
@@ -74,9 +72,12 @@ const menuGroups = ref([
       },
       {
         icon: 'shop',
-        label: 'Saloes',
-        route: '#',
-        children: [{ label: 'Registar', route: '/salons/handleSalon' }]
+        label: 'Salões',
+        route: '/salons',
+        children: [
+          { label: 'Listar', route: '/salons' },
+          { label: 'Registar', route: '/salons/handleSalon' },
+        ]
       },
       // {
       //     icon: 'CalendarIcon.vue',

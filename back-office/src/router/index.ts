@@ -6,9 +6,12 @@ import HomeView from '../views/HomeView.vue'
 import SignupView from '../views/Authentication/SignupView.vue'
 import SigninView from '@/views/Authentication/SigninView.vue'
 import DashboardView from '@/views/DashboardView.vue'
+import RouterSalons from '@/views/Salons/RouterSalons.vue'
 import SalonsView from '@/views/Salons/SalonsView.vue'
+import SalonView from '@/views/Salons/SalonView.vue'
 import CreateSalonView from '@/views/Salons/CreateSalonView.vue'
 import HandleBusinessHoursView from '@/views/Salons/HandleBusinessHoursView.vue'
+import ForfaitsView from '@/views/Subscription/ForfaitsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,8 +39,18 @@ const router = createRouter({
     {
       path: '/salons',
       name: 'salons',
-      component: SalonsView,
+      component: RouterSalons,
       children: [
+        {
+          path: '',
+          name: 'listSalons',
+          component: SalonsView,
+        },
+        {
+          path: ':id',
+          name: 'getSalon',
+          component: SalonView,
+        },
         {
           path: 'handleSalon',
           name: 'handleSalon',
@@ -50,16 +63,17 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: '/adherir',
+      name: 'subscribe',
+      component: ForfaitsView,
+    },
   ],
 })
 
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
   const isAuthenticated = !!userStore.getterToken
-
-  // if (isAuthenticated && !userStore.getterUser) {
-  //   await userStore.getUser({ id: Number(localStorage.getItem('userID')) })
-  // }
 
   if (to.name !== 'home' && to.name !== 'signin' && to.name !== 'signup' && !isAuthenticated) {
     next({ name: 'signin' })

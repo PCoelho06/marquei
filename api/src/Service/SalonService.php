@@ -43,7 +43,9 @@ class SalonService
 
     public function listSalons(int $page = 1, int $limit = 10): array
     {
-        return $this->salonRepository->findAllPaginated($page, $limit);
+        $salons = $this->salonRepository->findAllPaginated($page, $limit);
+
+        return array_map(fn(Salon $salon) => $salon->toArray(), $salons);
     }
 
     public function getSalon(int $id): Salon

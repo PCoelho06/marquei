@@ -62,7 +62,7 @@ final class SalonController extends AbstractController
 
         return $this->json([
             'status' => 'success',
-            'data' => $salon,
+            'data' => $salon->toArray(),
         ]);
     }
 

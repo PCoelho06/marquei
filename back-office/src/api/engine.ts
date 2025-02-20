@@ -10,6 +10,7 @@ import axios from 'axios'
 
 import { useUserStore } from '@/stores/user'
 import { storeToRefs } from 'pinia'
+import router from '@/router'
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean
@@ -34,12 +35,13 @@ const refreshToken = async (): Promise<string | null> => {
       refresh_token: getRefreshToken(),
     })
 
-    setTokens(response.data.access_token, response.data.refresh_token)
+    setTokens(response.data.token, response.data.refresh_token)
 
-    return response.data.access_token
+    return response.data.token
   } catch (error) {
     console.error('Error refreshing token:', error)
     userStore.actionLogout()
+    router.push({ name: 'signin' })
     return null
   }
 }

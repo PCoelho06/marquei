@@ -148,13 +148,13 @@ const testimonials: Testimonial[] = [
     name: "Sofia Santos",
     role: "Proprietária - Salão Elegância",
     content: "Esta aplicação revolucionou a gestão do meu salão. Poupo um tempo precioso todos os dias!",
-    avatar: "/api/placeholder/100/100"
+    avatar: '/images/testimonials/user1.png'
   },
   {
     name: "Marco Silva",
     role: "Gerente - Beauty Style Lisboa",
     content: "Uma ferramenta indispensável para qualquer salão moderno. O apoio ao cliente é excepcional.",
-    avatar: "/api/placeholder/100/100"
+    avatar: "/images/testimonials/user2.png"
   }
 ]
 
