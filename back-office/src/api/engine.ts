@@ -35,9 +35,9 @@ const refreshToken = async (): Promise<string | null> => {
       refresh_token: getRefreshToken(),
     })
 
-    setTokens(response.data.token, response.data.refresh_token)
+    setTokens(response.data.access_token, response.data.refresh_token)
 
-    return response.data.token
+    return response.data.access_token
   } catch (error) {
     console.error('Error refreshing token:', error)
     userStore.actionLogout()

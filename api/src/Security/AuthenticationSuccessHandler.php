@@ -2,38 +2,40 @@
 
 namespace App\Security;
 
+use App\Repository\RefreshTokenRepository;
+use App\Service\RefreshTokenService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
-use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 
 class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
-    public function __construct(private JWTTokenManagerInterface $JWTManager, private RefreshTokenGeneratorInterface $refreshTokenGenerator, private RefreshTokenManagerInterface $refreshTokenManager, private ParameterBagInterface $params, private EntityManagerInterface $entityManager) {}
+    public function __construct(
+        private JWTTokenManagerInterface $JWTManager,
+        private EntityManagerInterface $entityManager,
+        private RefreshTokenRepository $refreshTokenRepository,
+        private RefreshTokenService $refreshTokenService,
+    ) {}
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): JsonResponse
     {
         $user = $token->getUser();
 
-        $actualRefreshToken = $this->entityManager->getRepository('Gesdinet\JWTRefreshTokenBundle\Entity\RefreshToken')->findOneBy(['username' => $user->getUserIdentifier()]);
+        $actualRefreshToken = $this->refreshTokenRepository->findOneBy(['user' => $user]);
         if ($actualRefreshToken) {
-            $this->refreshTokenManager->delete($actualRefreshToken);
+            $this->refreshTokenService->revokeRefreshToken($actualRefreshToken->getToken());
         }
 
-        $refreshToken = $this->refreshTokenGenerator->createForUserWithTtl($user, $this->params->get('gesdinet_jwt_refresh_token.ttl'));
-        $this->entityManager->persist($refreshToken);
-        $this->entityManager->flush();
+        $refreshToken = $this->refreshTokenService->createRefreshToken($user);
 
         return new JsonResponse([
             'status' => 'success',
             'data' => [
                 'access_token' => $this->JWTManager->create($user),
-                'refresh_token' => $refreshToken->getRefreshToken(),
+                'refresh_token' => $refreshToken->getToken(),
                 'user' => $user->toArray(),
             ],
         ]);

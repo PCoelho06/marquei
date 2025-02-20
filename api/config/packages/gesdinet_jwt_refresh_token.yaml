@@ -1,5 +1,0 @@
-gesdinet_jwt_refresh_token:
-    ttl: 604800
-    refresh_token_class: App\Entity\RefreshToken
-    return_expiration: true
-    firewall: api

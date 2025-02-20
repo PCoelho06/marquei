@@ -54,15 +54,4 @@ class UserService
 
         return $user;
     }
-
-    public function getUserByUsername(string $username): User
-    {
-        $user = $this->userRepository->findOneByEmail($username);
-
-        if ($user === null) {
-            throw new \InvalidArgumentException('Usuário não encontrado');
-        }
-
-        return $user;
-    }
 }

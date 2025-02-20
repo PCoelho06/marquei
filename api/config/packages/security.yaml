@@ -33,8 +33,6 @@ security:
         success_handler: App\Security\AuthenticationSuccessHandler
         failure_handler: App\Security\AuthenticationFailureHandler
       jwt: ~
-      refresh_jwt:
-        check_path: /api/user/refresh-token
 
       # activate different ways to authenticate
       # https://symfony.com/doc/current/security.html#the-firewall

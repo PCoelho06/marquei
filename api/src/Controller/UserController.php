@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DTO\UserDTO;
 use App\Entity\User;
+use App\Service\RefreshTokenService;
 use App\Service\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,22 +13,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use Gesdinet\JWTRefreshTokenBundle\Generator\RefreshTokenGeneratorInterface;
 
 #[Route('/api/user', name: 'user_')]
 final class UserController extends AbstractController
 {
-    private $userService;
-
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
-    }
+    public function __construct(private UserService $userService, private RefreshTokenService $refreshTokenService) {}
 
     #[Route('/register', name: 'register', methods: ['POST'])]
-    public function registerUser(#[MapRequestPayload(validationGroups: ['registration'])] UserDTO $userDTO, JWTTokenManagerInterface $JWTManager, RefreshTokenGeneratorInterface $refreshTokenGenerator, EntityManagerInterface $entityManager): JsonResponse
+    public function registerUser(#[MapRequestPayload(validationGroups: ['registration'])] UserDTO $userDTO, JWTTokenManagerInterface $JWTManager, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
             $user = $this->userService->registerUser($userDTO);
@@ -38,56 +32,50 @@ final class UserController extends AbstractController
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        $refreshToken = $refreshTokenGenerator->createForUserWithTtl($user, $this->getParameter('gesdinet_jwt_refresh_token.ttl'));
-        $entityManager->persist($refreshToken);
-        $entityManager->flush();
+        $refreshToken = $this->refreshTokenService->createRefreshToken($user);
 
         return new JsonResponse([
             'status' => 'success',
             'data' => [
                 'access_token' => $JWTManager->create($user),
-                'refresh_token' => $refreshToken->getRefreshToken(),
+                'refresh_token' => $refreshToken->getToken(),
                 'user' => $user->toArray(),
             ],
         ]);
     }
 
-    // #[Route('/refresh-token', name: 'refresh_token', methods: ['POST'])]
-    // public function refreshToken(Request $request, RefreshTokenManagerInterface $refreshTokenManager, RefreshTokenGeneratorInterface $refreshTokenGenerator, JWTTokenManagerInterface $JWTManager): JsonResponse
-    // {
-    //     dd('Refresh Token Route Hit');
+    #[Route('/refresh-token', name: 'refresh_token', methods: ['POST'])]
+    public function refreshToken(Request $request, JWTTokenManagerInterface $JWTManager, RefreshTokenService $refreshTokenService): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $token = $data['refresh_token'] ?? null;
 
-    //     $data = json_decode($request->getContent(), true);
-    //     $refreshTokenString = $data['refresh_token'] ?? '';
+        if (!$token) {
+            return $this->json([
+                'status' => 'error',
+                'message' => 'Refresh token missing',
+            ], JsonResponse::HTTP_BAD_REQUEST);
+        }
 
-    //     $refreshToken = $refreshTokenManager->get($refreshTokenString);
+        $user = $refreshTokenService->verifyRefreshToken($token);
 
-    //     if (!$refreshToken || !$refreshToken->isValid()) {
-    //         return $this->json([
-    //             'status' => 'error',
-    //             'message' => 'Invalid refresh token',
-    //         ], JsonResponse::HTTP_UNAUTHORIZED);
-    //     }
+        if (!$user) {
+            return $this->json([
+                'status' => 'error',
+                'message' => 'Invalid or expired refresh token',
+            ], JsonResponse::HTTP_UNAUTHORIZED);
+        }
 
-    //     $username = $refreshToken->getUsername();
-    //     try {
-    //         $user = $this->userService->getUserByUsername($username);
-    //     } catch (\InvalidArgumentException $e) {
-    //         return $this->json([
-    //             'status' => 'error',
-    //             'message' => $e->getMessage(),
-    //         ], JsonResponse::HTTP_NOT_FOUND);
-    //     }
+        $refreshTokenService->revokeRefreshToken($token);
 
-    //     $newAccessToken = $JWTManager->create($user);
-    //     $refreshTokenManager->delete($refreshToken);
+        $newAccessToken = $JWTManager->create($user);
+        $refreshToken = $refreshTokenService->createRefreshToken($user);
 
-    //     return new JsonResponse([
-    //         'access_token' => $newAccessToken,
-    //         'refresh_token' => $refreshTokenGenerator->createForUserWithTtl($user, $this->getParameter('gesdinet_jwt_refresh_token.ttl'))->getRefreshToken(),
-    //     ]);
-    // }
-
+        return new JsonResponse([
+            'access_token' => $newAccessToken,
+            'refresh_token' => $refreshToken->getToken(),
+        ]);
+    }
 
     #[Route('/{id}', name: 'get', methods: ['GET'])]
     public function getUserById(#[CurrentUser] ?User $user, int $id): JsonResponse
