@@ -20,11 +20,9 @@ class SalonService
         private Security $security,
     ) {}
 
-    public function checkUserIsSalonOwner(int $salonId): void
+    public function checkUserIsSalonOwner(Salon $salon): void
     {
-        $salon = $this->getSalon($salonId);
-
-        if ($salon->getOwner()->getId() !== $this->security->getUser()->getId()) {
+        if ($salon->getOwner()->getEmail() !== $this->security->getUser()->getUserIdentifier()) {
             throw new AccessDeniedException('Usuário não é o proprietário do salão');
         }
     }
@@ -63,6 +61,8 @@ class SalonService
     {
         $salon = $this->getSalon($id);
 
+        $this->checkUserIsSalonOwner($salon);
+
         $salon = $this->hydrator->hydrate($salon, $salonDTO);
 
         $this->entityManager->flush();
@@ -73,6 +73,8 @@ class SalonService
     public function deleteSalon(int $id): void
     {
         $salon = $this->getSalon($id);
+
+        $this->checkUserIsSalonOwner($salon);
 
         $this->entityManager->remove($salon);
         $this->entityManager->flush();

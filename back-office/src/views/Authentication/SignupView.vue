@@ -43,7 +43,7 @@ import { useRouter } from 'vue-router'
 
 import { useUserStore } from '@/stores/user'
 
-import { validateUserRegistrationData } from '@/utils/validators.ts'
+import { validateUserRegistrationData } from '@/utils/validators/user'
 
 import AuthCard from '@/components/Cards/AuthCard.vue'
 import InputGroup from '@/components/Forms/InputGroup.vue'
@@ -89,7 +89,7 @@ const submitForm = () => {
 
     userStore.actionRegister({ email: user.value.email, password: user.value.password, role: 'ROLE_OWNER' }).then(() => {
         console.log('User registered successfully');
-        router.push({ name: 'handleSalon' });
+        router.push({ name: 'createSalon' });
     }).catch((error) => {
         const typedKey = error.field as keyof typeof validationErrors.value;
         validationErrors.value[typedKey] = error.message;

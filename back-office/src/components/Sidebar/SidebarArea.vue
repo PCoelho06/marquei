@@ -76,7 +76,7 @@ const menuGroups = ref([
         route: '/salons',
         children: [
           { label: 'Listar', route: '/salons' },
-          { label: 'Registar', route: '/salons/handleSalon' },
+          { label: 'Registar', route: '/salons/registar' },
         ]
       },
       // {

@@ -21,7 +21,7 @@
         <div class="relative" v-else>
             <input :type :placeholder :value="modelValue" :name="id" :id :autocomplete :disabled
                 @input="$emit('update:modelValue', (<HTMLTextAreaElement>$event.target).value)"
-                class="w-full rounded border-[1.5px] py-3 px-12 font-normal outline-none transition focus:border-primary active:border-primary"
+                class="w-full rounded border-[1.5px] py-3 ps-12 pe-3 font-normal outline-none transition focus:border-primary active:border-primary"
                 :class="{ 'border-red-500 text-red-500 bg-red-50': hasError, 'bg-gray-100 border-stroke text-gray-700': isDisabled, 'border-stroke text-black bg-transparent': !hasError && !isDisabled }" />
             <span class="absolute left-4 top-4" :class="{ 'text-red-500': hasError }">
                 <slot></slot>

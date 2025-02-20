@@ -8,7 +8,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps<{ to: string, newTab: boolean, value: string, type?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning', size?: 'sm' | 'md' | 'xl' }>()
+const props = defineProps<{
+    to: string,
+    newTab?: boolean,
+    value: string,
+    type?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning',
+    size?: 'sm' | 'md' | 'xl'
+}>()
 
 const buttonType = props.type || 'primary'
 const buttonSize = props.size || 'md'

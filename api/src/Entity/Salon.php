@@ -179,6 +179,7 @@ class Salon
             'address' => $this->address,
             'postalCode' => $this->postalCode,
             'city' => $this->city,
+            'country' => $this->country,
             'phone' => $this->phone,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),

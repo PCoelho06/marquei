@@ -1,6 +1,6 @@
 <template>
     <DefaultLayout>
-        <RouterView />
+        <RouterView :key="$route.fullPath" />
     </DefaultLayout>
 </template>
 

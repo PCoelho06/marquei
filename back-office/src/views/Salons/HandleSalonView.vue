@@ -1,12 +1,15 @@
 <template>
     <div class="container mx-auto">
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-2xl font-semibold">Registar o salão : Informaçoões gerais</h1>
+        <div class="flex justify-between items-center mb-4" v-if="isEdit">
+            <h1 class="text-2xl font-semibold">Editar o salão : Informações gerais</h1>
+        </div>
+        <div class="flex justify-between items-center mb-4" v-else>
+            <h1 class="text-2xl font-semibold">Registar o salão : Informações gerais</h1>
             <p class="font-bold">1 / 2</p>
         </div>
         <DefaultCard cardTitle="Informações do salão">
             <div class="p-8">
-                <form @submit.prevent="createSalon">
+                <form @submit.prevent="handleSalon">
                     <div class="grid grid-cols-1 gap-6 mt-6 sm:grid-cols-2">
                         <InputGroup id="name" autocomplete="organization" label="Nome do salão" type="text"
                             placeholder="Entre o nome do salão" v-model="salon.name" :required=true
@@ -52,7 +55,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
+
+import { api } from '@/api';
+import { validateSalonData } from '@/utils/validators/salons';
+import { useSalonsStore } from '@/stores/salons';
+
+import type { SalonCreatePayload, SalonUpdatePayload } from '@/types/salons';
+import type { SalonGeneralInformationValidation } from '@/types/validators';
 
 import DefaultCard from '@/components/Cards/DefaultCard.vue';
 import InputGroup from '@/components/Forms/InputGroup.vue';
@@ -63,65 +75,80 @@ import PostalAddressIcon from '@/components/Icons/PostalAddressIcon.vue';
 import CityIcon from '@/components/Icons/CityIcon.vue';
 import FlagIcon from '@/components/Icons/FlagIcon.vue';
 import MailboxIcon from '@/components/Icons/MailboxIcon.vue';
-import { validateSalonData } from '@/utils/validators';
-import { api } from '@/api';
-import type { SalonCreatePayload } from '@/types/salons';
 
-const salon = ref<SalonCreatePayload>(
-    {
-        name: '',
-        phone: '',
-        address: '',
-        postalCode: '',
-        city: '',
-        country: 'Portugal'
-    }
-);
+const route = useRoute();
+const router = useRouter();
 
-const validationErrors = ref({
+const salonsStore = useSalonsStore();
+const { getterSalon } = storeToRefs(salonsStore);
+
+const isEdit = route.params.id ? true : false;
+
+const salon = ref<SalonCreatePayload>({
     name: '',
     phone: '',
     address: '',
     postalCode: '',
     city: '',
-    country: ''
+    country: 'Portugal',
 });
 
-const createSalon = async () => {
-    let errors = validateSalonData(salon.value);
+const validationErrors = ref<SalonGeneralInformationValidation>({
+    name: '',
+    phone: '',
+    address: '',
+    postalCode: '',
+    city: '',
+    country: '',
+});
 
-    validationErrors.value = {
-        name: '',
-        phone: '',
-        address: '',
-        postalCode: '',
-        city: '',
-        country: ''
-    };
+const handleSalon = async () => {
+    validationErrors.value = validateSalonData(salon.value);
 
-    if (Object.keys(errors).length > 0) {
-        for (let key in errors) {
-            const typedKey = key as keyof typeof validationErrors.value;
-            validationErrors.value[typedKey] = errors[typedKey] ?? '';
-        }
+    if (Object.values(validationErrors.value).some((error) => error !== '')) {
         return;
     }
 
     try {
-        await api().salons.create(salon.value);
-        console.log('Salon created successfully');
+        if (isEdit) {
+            await api().salons.update({ id: Number(route.params.id), ...salon.value });
+            router.push({ name: 'getSalon', params: { id: route.params.id } });
+        } else {
+            const response = await api().salons.create(salon.value);
+            router.push({ name: 'handleBusinessHours', params: { id: response.data.id.toString() } });
+        }
     } catch (error) {
         console.log(error);
     }
 };
 
+const formatPhone = (phone: string) => {
+    const cleanedPhone = phone.replace('+351', '').trim();
+    const formattedPhone = cleanedPhone.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
+    return ((formattedPhone.length > 0 ? '+351 ' : '') + formattedPhone).trim();
+};
+
 const handlePhoneChange = (newValue: string) => {
     validationErrors.value.phone = '';
 
-    const phone = salon.value.phone.replace('+351 ', '');
-
-    const formattedPhone = phone.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
-
-    salon.value.phone = (formattedPhone.length > 0 ? '+351 ' : '') + formattedPhone;
+    salon.value.phone = formatPhone(salon.value.phone);
 };
+
+onMounted(() => {
+    if (isEdit) {
+        salonsStore.getSalon({ id: Number(route.params.id) });
+    }
+
+});
+
+watchEffect(() => {
+    if (isEdit && getterSalon.value) {
+        salon.value.name = getterSalon.value.name ?? '';
+        salon.value.phone = formatPhone(getterSalon.value.phone ?? '');
+        salon.value.address = getterSalon.value.address ?? '';
+        salon.value.postalCode = getterSalon.value.postalCode ?? '';
+        salon.value.city = getterSalon.value.city ?? '';
+        salon.value.country = getterSalon.value.country ?? '';
+    }
+});
 </script>

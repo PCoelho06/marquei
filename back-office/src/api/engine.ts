@@ -24,6 +24,7 @@ const instance: AxiosInstance = axios.create({
 const getRefreshToken = () => localStorage.getItem('refresh_token')
 const setTokens = (accessToken: string, refreshToken: string) => {
   localStorage.setItem('refresh_token', refreshToken)
+  localStorage.setItem('access_token', accessToken)
   useUserStore().mutationToken(accessToken)
 }
 
@@ -49,6 +50,8 @@ const refreshToken = async (): Promise<string | null> => {
 instance.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
+    const userStore = useUserStore()
+
     const originalRequest = error.config as CustomAxiosRequestConfig
 
     if (error.response?.status === 401 && !originalRequest?._retry) {
@@ -60,6 +63,12 @@ instance.interceptors.response.use(
         return instance(originalRequest)
       }
     }
+
+    if (originalRequest?._retry) {
+      userStore.actionLogout()
+      router.push({ name: 'signin' })
+    }
+
     return Promise.reject(error)
   },
 )

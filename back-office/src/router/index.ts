@@ -9,7 +9,7 @@ import DashboardView from '@/views/DashboardView.vue'
 import RouterSalons from '@/views/Salons/RouterSalons.vue'
 import SalonsView from '@/views/Salons/SalonsView.vue'
 import SalonView from '@/views/Salons/SalonView.vue'
-import CreateSalonView from '@/views/Salons/CreateSalonView.vue'
+import HandleSalonView from '@/views/Salons/HandleSalonView.vue'
 import HandleBusinessHoursView from '@/views/Salons/HandleBusinessHoursView.vue'
 import ForfaitsView from '@/views/Subscription/ForfaitsView.vue'
 
@@ -52,9 +52,14 @@ const router = createRouter({
           component: SalonView,
         },
         {
-          path: 'handleSalon',
-          name: 'handleSalon',
-          component: CreateSalonView,
+          path: 'registar',
+          name: 'createSalon',
+          component: HandleSalonView,
+        },
+        {
+          path: ':id/editar',
+          name: 'editSalon',
+          component: HandleSalonView,
         },
         {
           path: ':id/handleBusinessHours',

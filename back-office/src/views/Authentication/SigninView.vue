@@ -47,7 +47,7 @@ import GoogleIcon from '@/components/Icons/GoogleIcon.vue';
 
 import type { UserAuthPayload } from '@/types/user'
 
-import { validateUserLoginData } from '@/utils/validators.ts'
+import { validateUserLoginData } from '@/utils/validators/user'
 import AlertToast from '@/components/Alerts/AlertToast.vue';
 
 const router = useRouter()

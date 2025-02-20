@@ -9,8 +9,7 @@
                     <p class="text-sm text-gray-500">Telefone: <a :href="'tel:' + salon.phone">{{ salon.phone }}</a></p>
                     <div class="flex space-x-4 my-2">
                         <!-- <DefaultButton value="Gerir" size="sm" @click="() => console.log(salon.id)" /> -->
-                        <LinkButton :to="'/salons/' + salon.id" :newTab="true" value="Gerir" size="sm"
-                            @click="() => router.push({ name: 'getSalon', params: { id: salon.id } })" />
+                        <LinkButton :to="'/salons/' + salon.id" value="Gerir" size="sm" />
                         <DefaultButton value="Remover" type="danger" size="sm" />
                     </div>
                 </div>

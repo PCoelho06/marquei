@@ -12,3 +12,7 @@ export interface Salon extends SalonCreatePayload {
   createdAt: string
   updatedAt: string
 }
+
+export interface SalonUpdatePayload extends SalonCreatePayload {
+  id: number
+}

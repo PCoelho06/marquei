@@ -70,7 +70,6 @@ final class SalonController extends AbstractController
     public function updateSalon(int $id, #[MapRequestPayload(validationGroups: ['update'])] SalonDTO $salonDTO): JsonResponse
     {
         try {
-            $this->salonService->checkUserIsSalonOwner($id);
             $salon = $this->salonService->updateSalon($id, $salonDTO);
         } catch (\Exception $e) {
             $statusCode = $e instanceof \InvalidArgumentException ? JsonResponse::HTTP_NOT_FOUND : JsonResponse::HTTP_FORBIDDEN;
@@ -84,7 +83,7 @@ final class SalonController extends AbstractController
 
         return $this->json([
             'status' => 'success',
-            'data' => $salon,
+            'data' => $salon->toArray(),
         ]);
     }
 
@@ -92,7 +91,6 @@ final class SalonController extends AbstractController
     public function deleteSalon(int $id): JsonResponse
     {
         try {
-            $this->salonService->checkUserIsSalonOwner($id);
             $this->salonService->deleteSalon($id);
         } catch (\Exception $e) {
             $statusCode = $e instanceof \InvalidArgumentException ? JsonResponse::HTTP_NOT_FOUND : JsonResponse::HTTP_FORBIDDEN;
