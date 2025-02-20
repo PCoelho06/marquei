@@ -111,7 +111,7 @@ const handleSalon = async () => {
 
     try {
         if (isEdit) {
-            await api().salons.update({ id: Number(route.params.id), ...salon.value });
+            await salonsStore.updateSalon({ id: Number(route.params.id), ...salon.value });
             router.push({ name: 'getSalon', params: { id: route.params.id } });
         } else {
             const response = await api().salons.create(salon.value);

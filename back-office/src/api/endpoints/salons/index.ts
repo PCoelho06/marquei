@@ -9,6 +9,8 @@ const salons = {
     await builder({ url: '/api/salons/', method: 'POST', payload }),
   update: async (payload: SalonUpdatePayload) =>
     await builder({ url: `/api/salons/${payload.id}`, method: 'PUT', payload }),
+  delete: async (payload: { id: number }) =>
+    await builder({ url: `/api/salons/${payload.id}`, method: 'DELETE', payload }),
 }
 
 export default { ...salons }

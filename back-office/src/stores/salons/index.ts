@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 import { api } from '@/api'
 
-import type { Salon } from '@/types/salons'
+import type { Salon, SalonCreatePayload, SalonUpdatePayload } from '@/types/salons'
 
 export const useSalonsStore = defineStore('salons', () => {
   const salon = ref<Salon | undefined>()
@@ -27,9 +27,25 @@ export const useSalonsStore = defineStore('salons', () => {
     const response = await api().salons.list()
     mutationSalons(response.data)
   }
-  const createSalon = async (payload: Salon) => {
+  const createSalon = async (payload: SalonCreatePayload) => {
     // const response = await api().salons.create(payload)
     // mutationSalon(response.data)
+  }
+  const updateSalon = async (payload: SalonUpdatePayload) => {
+    const response = await api().salons.update(payload)
+    mutationSalon(response.data)
+  }
+  const deleteSalon = async (payload: { id: number }) => {
+    await api().salons.delete(payload)
+    resetSalon()
+    listSalons()
+  }
+
+  const resetSalon = () => {
+    mutationSalon(undefined)
+  }
+  const resetSalons = () => {
+    mutationSalons(undefined)
   }
 
   return {
@@ -38,5 +54,9 @@ export const useSalonsStore = defineStore('salons', () => {
     getSalon,
     listSalons,
     createSalon,
+    updateSalon,
+    deleteSalon,
+    resetSalon,
+    resetSalons,
   }
 })
