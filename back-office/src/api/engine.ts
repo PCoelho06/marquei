@@ -7,9 +7,7 @@ import {
 } from 'axios'
 
 import axios from 'axios'
-
 import { useUserStore } from '@/stores/user'
-import { storeToRefs } from 'pinia'
 import router from '@/router'
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -21,11 +19,16 @@ const instance: AxiosInstance = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
+// Récupère le token depuis localStorage
+const getAccessToken = () => localStorage.getItem('access_token')
 const getRefreshToken = () => localStorage.getItem('refresh_token')
+
 const setTokens = (accessToken: string, refreshToken: string) => {
   localStorage.setItem('refresh_token', refreshToken)
   localStorage.setItem('access_token', accessToken)
-  useUserStore().mutationToken(accessToken)
+
+  // Assigne immédiatement le nouveau token à Axios pour éviter une requête échouée
+  instance.defaults.headers.Authorization = `Bearer ${accessToken}`
 }
 
 const refreshToken = async (): Promise<string | null> => {
@@ -36,9 +39,10 @@ const refreshToken = async (): Promise<string | null> => {
       refresh_token: getRefreshToken(),
     })
 
-    setTokens(response.data.access_token, response.data.refresh_token)
+    const newAccessToken = response.data.access_token
+    setTokens(newAccessToken, response.data.refresh_token)
 
-    return response.data.access_token
+    return newAccessToken
   } catch (error) {
     console.error('Error refreshing token:', error)
     userStore.actionLogout()
@@ -47,20 +51,35 @@ const refreshToken = async (): Promise<string | null> => {
   }
 }
 
+// ✅ INTERCEPTEUR DE REQUÊTE : Vérifie que le token est toujours à jour AVANT d'envoyer la requête
+instance.interceptors.request.use(
+  async (config) => {
+    const token = getAccessToken()
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => Promise.reject(error),
+)
+
+// ✅ INTERCEPTEUR DE RÉPONSE : Gère l'expiration du token et relance la requête avec le bon token
 instance.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
     const userStore = useUserStore()
-
     const originalRequest = error.config as CustomAxiosRequestConfig
 
-    if (error.response?.status === 401 && !originalRequest?._retry) {
+    // Si 401 et qu'on n'a pas encore tenté de refresh
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
+
       const newToken = await refreshToken()
 
       if (newToken) {
+        // Assigner le nouveau token immédiatement
         originalRequest.headers.Authorization = `Bearer ${newToken}`
-        return instance(originalRequest)
+        return instance(originalRequest) // Relance la requête avec le bon token
       }
     }
 
@@ -72,17 +91,6 @@ instance.interceptors.response.use(
     return Promise.reject(error)
   },
 )
-
-const requestInterceptor = (token: string | undefined) => {
-  instance.interceptors.request.use((config) => {
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    } else {
-      return Promise.reject(new Error('Token is required'))
-    }
-    return config
-  })
-}
 
 const internals: Internals = {
   parseResponse: (response: AxiosResponse) => response.data,
@@ -100,11 +108,6 @@ const internals: Internals = {
 }
 
 const builder = (context: BuilderContext, isAuthenticationRequest: boolean = false) => {
-  const userStore = useUserStore()
-  const { getterToken } = storeToRefs(userStore)
-
-  if (!isAuthenticationRequest) requestInterceptor(getterToken.value)
-
   return instance
     .request({ ...context, data: context.payload ? JSON.stringify(context.payload) : undefined })
     .then(internals.parseResponse)

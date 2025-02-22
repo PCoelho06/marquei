@@ -16,3 +16,10 @@ export interface Salon extends SalonCreatePayload {
 export interface SalonUpdatePayload extends SalonCreatePayload {
   id: number
 }
+
+export interface BusinessHours {
+  id: number
+  dayOfWeek: string
+  startTime: string
+  endTime: string
+}

@@ -8,7 +8,7 @@
             <p class="font-bold">1 / 2</p>
         </div>
         <DefaultCard cardTitle="Informações do salão">
-            <div class="p-8">
+            <template #default>
                 <form @submit.prevent="handleSalon">
                     <div class="grid grid-cols-1 gap-6 mt-6 sm:grid-cols-2">
                         <InputGroup id="name" autocomplete="organization" label="Nome do salão" type="text"
@@ -45,11 +45,11 @@
                             <FlagIcon class="fill-current" />
                         </InputGroup>
                     </div>
-                    <div class="mt-6">
-                        <DefaultButton value="Registar o salão" />
-                    </div>
                 </form>
-            </div>
+            </template>
+            <template #action>
+                <DefaultButton value="Registar o salão" />
+            </template>
         </DefaultCard>
     </div>
 </template>
@@ -114,8 +114,8 @@ const handleSalon = async () => {
             await salonsStore.updateSalon({ id: Number(route.params.id), ...salon.value });
             router.push({ name: 'getSalon', params: { id: route.params.id } });
         } else {
-            const response = await api().salons.create(salon.value);
-            router.push({ name: 'handleBusinessHours', params: { id: response.data.id.toString() } });
+            await salonsStore.createSalon(salon.value);
+            router.push({ name: 'handleBusinessHours', params: { id: getterSalon.value?.id.toString() } });
         }
     } catch (error) {
         console.log(error);

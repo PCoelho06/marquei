@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-7xl mx-auto p-4">
+    <div class="max-w-7xl mx-auto p-4" v-if="isReady">
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-2xl font-semibold">Registar o salão : Horários de Funcionamento</h1>
             <p class="font-bold">2 / 2</p>
@@ -46,7 +46,8 @@
                                   focus:outline-none">
                                     </div>
                                 </div>
-                                <DefaultButton value="Remover" type="danger" size="sm" />
+                                <DefaultButton value="Remover" type="danger" size="sm"
+                                    @click="removeTimeRange(dayIndex, rangeIndex)" />
                             </div>
                         </div>
                     </div>
@@ -61,13 +62,19 @@
             </div>
         </div>
     </div>
+    <div v-else>
+        <div class="flex justify-center items-center h-screen">
+            <SpinLoader />
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import { api } from '@/api';
+import { useSalonsStore } from '@/stores/salons';
 
 import FullCalendar from '@fullcalendar/vue3'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -75,6 +82,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import ptLocale from '@fullcalendar/core/locales/pt'
 import type { CalendarOptions } from '@fullcalendar/core/index.js'
 import DefaultButton from '@/components/Buttons/DefaultButton.vue'
+import SpinLoader from '@/components/Loaders/SpinLoader.vue';
 
 interface TimeRange {
     start: string
@@ -100,6 +108,9 @@ interface Event {
 }
 
 const route = useRoute()
+const router = useRouter()
+
+const salonsStore = useSalonsStore()
 
 const days = [
     'Segunda-feira',
@@ -110,6 +121,8 @@ const days = [
     'Sábado',
     'Domingo'
 ]
+
+const isReady = ref(false)
 
 const schedules = ref<DaySchedule[]>(days.map((_, index) => ({
     day: (index + 1) % 7,
@@ -200,9 +213,17 @@ const saveSchedules = async () => {
     try {
         console.log('Horaires à sauvegarder:', schedules.value)
         await api().businessHours.create({ id: Array.isArray(route.params.id) ? route.params.id[0] : route.params.id, businessHoursRanges: schedules.value });
-        // await api.post('/business-hours', schedules.value)
+        router.push({ name: 'getSalon', params: { id: route.params.id } })
     } catch (error) {
         console.error('Erreur lors de la sauvegarde:', error)
     }
 }
+
+onMounted(async () => {
+    await salonsStore.getBusinessHours({ id: Array.isArray(route.params.id) ? Number(route.params.id[0]) : Number(route.params.id) });
+    salonsStore.getterBusinessHours?.forEach((businessHour) => {
+        addTimeRange(Number(businessHour.dayOfWeek), businessHour.startTime, businessHour.endTime)
+    })
+    isReady.value = true
+})
 </script>

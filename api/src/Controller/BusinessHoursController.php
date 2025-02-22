@@ -19,8 +19,8 @@ final class BusinessHoursController extends AbstractController
     public function handleBusinessHours(int $id, Request $request): JsonResponse
     {
         try {
-            $this->salonService->checkUserIsSalonOwner($id);
             $salon = $this->salonService->getSalon($id);
+            $this->salonService->checkUserIsSalonOwner($salon);
             $data = json_decode($request->getContent(), true);
             $businessHoursRanges = $this->businessHoursService->saveBusinessHours($salon, $data);
         } catch (\Exception $e) {

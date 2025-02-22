@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import { useUserStore } from '@/stores/user'
-
 import HomeView from '../views/HomeView.vue'
 import SignupView from '../views/Authentication/SignupView.vue'
 import SigninView from '@/views/Authentication/SigninView.vue'
@@ -77,8 +75,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const userStore = useUserStore()
-  const isAuthenticated = !!userStore.getterToken
+  const isAuthenticated = !!localStorage.getItem('access_token')
 
   if (to.name !== 'home' && to.name !== 'signin' && to.name !== 'signup' && !isAuthenticated) {
     next({ name: 'signin' })

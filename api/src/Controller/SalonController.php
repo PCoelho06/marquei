@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\DTO\SalonDTO;
 use App\Service\SalonService;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,6 +61,26 @@ final class SalonController extends AbstractController
         return $this->json([
             'status' => 'success',
             'data' => $salon->toArray(),
+        ]);
+    }
+
+    #[Route('/{id}/business-hours', name: 'get_business_hours', methods: ['GET'])]
+    public function getSalonBusinessHours(int $id): JsonResponse
+    {
+        try {
+            $businessHours = $this->salonService->getSalonBusinessHours($id);
+        } catch (\InvalidArgumentException $e) {
+            return $this->json([
+                'status' => 'error',
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return $this->json([
+            'status' => 'success',
+            'data' => $businessHours,
         ]);
     }
 

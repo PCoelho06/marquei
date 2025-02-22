@@ -5,8 +5,10 @@ namespace App\Service;
 use App\DTO\SalonDTO;
 use App\Entity\Salon;
 use App\Repository\UserRepository;
+use App\Entity\BusinessHoursRanges;
 use App\Repository\SalonRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -55,6 +57,15 @@ class SalonService
         }
 
         return $salon;
+    }
+
+    public function getSalonBusinessHours(int $id): array
+    {
+        $salon = $this->getSalon($id);
+
+        $businessHours = $salon->getBusinessHoursRanges()->toArray();
+
+        return array_map(fn(BusinessHoursRanges $businessHoursRanges) => $businessHoursRanges->toArray(), $businessHours);
     }
 
     public function updateSalon(int $id, SalonDTO $salonDTO): Salon
