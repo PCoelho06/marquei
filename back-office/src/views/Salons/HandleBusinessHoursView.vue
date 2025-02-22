@@ -1,6 +1,9 @@
 <template>
     <div class="max-w-7xl mx-auto p-4" v-if="isReady">
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex justify-between items-center mb-4" v-if="isEdit">
+            <h1 class="text-2xl font-semibold">Editar o salão : Horários de Funcionamento</h1>
+        </div>
+        <div class="flex justify-between items-center mb-4" v-else>
             <h1 class="text-2xl font-semibold">Registar o salão : Horários de Funcionamento</h1>
             <p class="font-bold">2 / 2</p>
         </div>
@@ -123,6 +126,7 @@ const days = [
 ]
 
 const isReady = ref(false)
+const isEdit = ref(false)
 
 const schedules = ref<DaySchedule[]>(days.map((_, index) => ({
     day: (index + 1) % 7,
@@ -224,6 +228,7 @@ onMounted(async () => {
     salonsStore.getterBusinessHours?.forEach((businessHour) => {
         addTimeRange(Number(businessHour.dayOfWeek), businessHour.startTime, businessHour.endTime)
     })
+    isEdit.value = salonsStore.getterBusinessHours?.length ? true : false
     isReady.value = true
 })
 </script>
