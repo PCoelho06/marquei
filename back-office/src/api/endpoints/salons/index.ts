@@ -6,6 +6,8 @@ const salons = {
     await builder({ url: `/api/salons/${payload.id}`, method: 'GET', payload }),
   getBusinessHours: async (payload: { id: number }) =>
     await builder({ url: `/api/salons/${payload.id}/business-hours`, method: 'GET', payload }),
+  getServices: async (payload: { id: number }) =>
+    await builder({ url: `/api/salons/${payload.id}/services`, method: 'GET', payload }),
   list: async () => await builder({ url: '/api/user/salons', method: 'GET', payload: {} }),
   create: async (payload: SalonCreatePayload) =>
     await builder({ url: '/api/salons/', method: 'POST', payload }),

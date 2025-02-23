@@ -23,3 +23,12 @@ export interface BusinessHours {
   startTime: string
   endTime: string
 }
+
+export interface Service {
+  id: number
+  name: string
+  description: string
+  duration: number
+  price: number
+  isEditing?: boolean
+}

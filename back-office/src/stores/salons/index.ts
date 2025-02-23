@@ -3,16 +3,24 @@ import { defineStore } from 'pinia'
 
 import { api } from '@/api'
 
-import type { Salon, SalonCreatePayload, SalonUpdatePayload, BusinessHours } from '@/types/salons'
+import type {
+  Salon,
+  SalonCreatePayload,
+  SalonUpdatePayload,
+  BusinessHours,
+  Service,
+} from '@/types/salons'
 
 export const useSalonsStore = defineStore('salons', () => {
   const salon = ref<Salon | undefined>()
-  const businessHours = ref<BusinessHours[] | undefined>()
   const salons = ref<Salon[]>()
+  const businessHours = ref<BusinessHours[] | undefined>()
+  const services = ref<Service[] | undefined>()
 
   const getterSalon = computed<Salon | undefined>(() => salon.value)
   const getterSalons = computed<Salon[] | undefined>(() => salons.value)
   const getterBusinessHours = computed<BusinessHours[] | undefined>(() => businessHours.value)
+  const getterServices = computed<Service[] | undefined>(() => services.value)
 
   const mutationSalon = (newValue: Salon | undefined) => {
     salon.value = newValue
@@ -23,6 +31,9 @@ export const useSalonsStore = defineStore('salons', () => {
   const mutationBusinessHours = (newValue: BusinessHours[] | undefined) => {
     businessHours.value = newValue
   }
+  const mutationServices = (newValue: Service[] | undefined) => {
+    services.value = newValue
+  }
 
   const getSalon = async (payload: { id: number }) => {
     const response = await api().salons.get(payload)
@@ -31,6 +42,10 @@ export const useSalonsStore = defineStore('salons', () => {
   const getBusinessHours = async (payload: { id: number }) => {
     const response = await api().salons.getBusinessHours(payload)
     mutationBusinessHours(response.data)
+  }
+  const getServices = async (payload: { id: number }) => {
+    const response = await api().salons.getServices(payload)
+    mutationServices(response.data)
   }
   const listSalons = async () => {
     const response = await api().salons.list()
@@ -59,13 +74,18 @@ export const useSalonsStore = defineStore('salons', () => {
   const resetBusinessHours = () => {
     mutationBusinessHours(undefined)
   }
+  const resetServices = () => {
+    mutationServices(undefined)
+  }
 
   return {
     getterSalon,
     getterSalons,
     getterBusinessHours,
+    getterServices,
     getSalon,
     getBusinessHours,
+    getServices,
     listSalons,
     createSalon,
     updateSalon,
@@ -73,5 +93,6 @@ export const useSalonsStore = defineStore('salons', () => {
     resetSalon,
     resetSalons,
     resetBusinessHours,
+    resetServices,
   }
 })

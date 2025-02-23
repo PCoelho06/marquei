@@ -8,8 +8,8 @@ use App\Entity\Service;
 use App\Repository\UserRepository;
 use App\Entity\BusinessHoursRanges;
 use App\Repository\SalonRepository;
+use App\Repository\ServiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Common\Collections\Collection;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -18,6 +18,7 @@ class SalonService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly SalonRepository $salonRepository,
+        private readonly ServiceRepository $serviceRepository,
         private UserRepository $userRepository,
         private EntityHydratorService $hydrator,
         private Security $security,
@@ -69,11 +70,11 @@ class SalonService
         return array_map(fn(BusinessHoursRanges $businessHoursRanges) => $businessHoursRanges->toArray(), $businessHours);
     }
 
-    public function getSalonServices(int $id): array
+    public function getSalonServices(int $id, int $page, int $limit): array
     {
         $salon = $this->getSalon($id);
 
-        $services = $salon->getServices()->toArray();
+        $services = $this->serviceRepository->findByPaginated($salon, $page, $limit);
 
         return array_map(fn(Service $service) => $service->toArray(), $services);
     }

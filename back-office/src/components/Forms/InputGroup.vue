@@ -43,7 +43,7 @@ const props = defineProps<{
     label: string,
     type: string,
     placeholder: string,
-    modelValue?: string,
+    modelValue?: number | string,
     customClasses?: string,
     required?: boolean,
     error?: string,

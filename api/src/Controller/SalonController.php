@@ -85,10 +85,13 @@ final class SalonController extends AbstractController
     }
 
     #[Route('/{id}/services', name: 'get_services', methods: ['GET'])]
-    public function getSalonServices(int $id): JsonResponse
+    public function getSalonServices(Request $request, int $id): JsonResponse
     {
+        $page = $request->query->getInt('page', 1);
+        $limit = $request->query->getInt('limit', 10);
+
         try {
-            $services = $this->salonService->getSalonServices($id);
+            $services = $this->salonService->getSalonServices($id, $page, $limit);
         } catch (\InvalidArgumentException $e) {
             return $this->json([
                 'status' => 'error',
@@ -101,6 +104,10 @@ final class SalonController extends AbstractController
         return $this->json([
             'status' => 'success',
             'data' => $services,
+            'meta' => [
+                'page' => $page,
+                'limit' => $limit,
+            ],
         ]);
     }
 
