@@ -14,7 +14,6 @@ final class ServiceService
         private ServiceRepository $serviceRepository,
         private EntityManagerInterface $entityManager,
         private EntityHydratorService $hydrator,
-        private SalonRepository $salonRepository,
         private SalonService $salonService,
     ) {}
 
@@ -39,7 +38,7 @@ final class ServiceService
     {
         $service = $this->hydrator->hydrate(new Service(), $serviceDTO);
 
-        $salon = $this->salonRepository->find($serviceDTO->salonId);
+        $salon = $this->salonService->getSalon($serviceDTO->salonId);
         $service->setSalon($salon);
 
         $this->entityManager->persist($service);
@@ -52,12 +51,7 @@ final class ServiceService
     {
         $service = $this->getService($id);
 
-        if ($service === null) {
-            throw new \InvalidArgumentException('Prestação de serviço não encontrada');
-        }
-
-        $salon = $this->salonRepository->find($serviceDTO->salonId);
-        $this->salonService->checkUserIsSalonOwner($salon);
+        $this->salonService->checkUserIsSalonOwner($service->getSalon());
 
         $service = $this->hydrator->hydrate($service, $serviceDTO);
 

@@ -2,35 +2,23 @@
 
 namespace App\Controller;
 
-use App\DTO\ServiceDTO;
-use App\Service\ServiceService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use App\DTO\ResourceDTO;
+use App\Service\ResourceService;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/api/services', name: 'services_')]
-class ServiceController extends AbstractController
+#[Route('/api/resources', name: 'resources_')]
+class ResourceController extends AbstractController
 {
-    public function __construct(private ServiceService $serviceService) {}
+    public function __construct(private ResourceService $resourceService) {}
 
-    #[Route('/', name: 'list', methods: ['GET'])]
-    public function index(): JsonResponse
-    {
-        $services = $this->serviceService->getServices();
-
-        return $this->json([
-            'status' => 'success',
-            'data' => $services,
-        ], Response::HTTP_OK);
-    }
-
-    #[Route('/', name: 'add', methods: ['POST'])]
-    public function add(#[MapRequestPayload()] ServiceDTO $serviceDTO): JsonResponse
+    #[Route('/', name: 'create', methods: ['POST'])]
+    public function add(#[MapRequestPayload()] ResourceDTO $resourceDTO): JsonResponse
     {
         try {
-            $service = $this->serviceService->createService($serviceDTO);
+            $resource = $this->resourceService->createResource($resourceDTO);
         } catch (\InvalidArgumentException $e) {
             return $this->json([
                 'status' => 'error',
@@ -42,7 +30,7 @@ class ServiceController extends AbstractController
 
         return $this->json([
             'status' => 'success',
-            'data' => $service->toArray(),
+            'data' => $resource->toArray(),
         ]);
     }
 
@@ -50,7 +38,7 @@ class ServiceController extends AbstractController
     public function get(int $id): JsonResponse
     {
         try {
-            $service = $this->serviceService->getService($id);
+            $resource = $this->resourceService->getResource($id);
         } catch (\InvalidArgumentException $e) {
             return $this->json([
                 'status' => 'error',
@@ -62,28 +50,27 @@ class ServiceController extends AbstractController
 
         return $this->json([
             'status' => 'success',
-            'data' => $service->toArray(),
+            'data' => $resource->toArray(),
         ]);
     }
 
     #[Route('/{id}', name: 'update', methods: ['PUT'])]
-    public function update(#[MapRequestPayload()] ServiceDTO $serviceDTO, int $id): JsonResponse
+    public function update(#[MapRequestPayload()] ResourceDTO $resourceDTO, int $id): JsonResponse
     {
         try {
-            $service = $this->serviceService->updateService($serviceDTO, $id);
-        } catch (\Exception $e) {
-            $statusCode = $e instanceof \InvalidArgumentException ? JsonResponse::HTTP_NOT_FOUND : JsonResponse::HTTP_FORBIDDEN;
+            $resource = $this->resourceService->updateResource($resourceDTO, $id);
+        } catch (\InvalidArgumentException $e) {
             return $this->json([
                 'status' => 'error',
                 'data' => [
                     'message' => $e->getMessage(),
                 ],
-            ], $statusCode);
+            ], JsonResponse::HTTP_NOT_FOUND);
         }
 
         return $this->json([
             'status' => 'success',
-            'data' => $service->toArray(),
+            'data' => $resource->toArray(),
         ]);
     }
 
@@ -91,21 +78,20 @@ class ServiceController extends AbstractController
     public function delete(int $id): JsonResponse
     {
         try {
-            $this->serviceService->deleteService($id);
-        } catch (\Exception $e) {
-            $statusCode = $e instanceof \InvalidArgumentException ? JsonResponse::HTTP_NOT_FOUND : JsonResponse::HTTP_FORBIDDEN;
+            $this->resourceService->deleteResource($id);
+        } catch (\InvalidArgumentException $e) {
             return $this->json([
                 'status' => 'error',
                 'data' => [
                     'message' => $e->getMessage(),
                 ],
-            ], $statusCode);
+            ], JsonResponse::HTTP_NOT_FOUND);
         }
 
         return $this->json([
             'status' => 'success',
             'data' => [
-                'message' => 'Prestação de serviço removida com sucesso',
+                'message' => 'Recurso removido com sucesso',
             ],
         ]);
     }
