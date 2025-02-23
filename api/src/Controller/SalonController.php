@@ -84,6 +84,26 @@ final class SalonController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/services', name: 'get_services', methods: ['GET'])]
+    public function getSalonServices(int $id): JsonResponse
+    {
+        try {
+            $services = $this->salonService->getSalonServices($id);
+        } catch (\InvalidArgumentException $e) {
+            return $this->json([
+                'status' => 'error',
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return $this->json([
+            'status' => 'success',
+            'data' => $services,
+        ]);
+    }
+
     #[Route('/{id}', name: 'update', methods: ['PUT'])]
     public function updateSalon(int $id, #[MapRequestPayload(validationGroups: ['update'])] SalonDTO $salonDTO): JsonResponse
     {

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\DTO\SalonDTO;
 use App\Entity\Salon;
+use App\Entity\Service;
 use App\Repository\UserRepository;
 use App\Entity\BusinessHoursRanges;
 use App\Repository\SalonRepository;
@@ -66,6 +67,15 @@ class SalonService
         $businessHours = $salon->getBusinessHoursRanges()->toArray();
 
         return array_map(fn(BusinessHoursRanges $businessHoursRanges) => $businessHoursRanges->toArray(), $businessHours);
+    }
+
+    public function getSalonServices(int $id): array
+    {
+        $salon = $this->getSalon($id);
+
+        $services = $salon->getServices()->toArray();
+
+        return array_map(fn(Service $service) => $service->toArray(), $services);
     }
 
     public function updateSalon(int $id, SalonDTO $salonDTO): Salon
