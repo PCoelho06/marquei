@@ -5,11 +5,7 @@
             <div class="flex flex-col w-full h-full p-4">
                 <div class="flex flex-col w-full h-1/2 bg-white shadow rounded-lg p-4">
                     <h2 class="text-lg font-semibold text-gray-800">Salons</h2>
-                    <p class="text-sm text-gray-600">Total salons: 0</p>
-                </div>
-                <div class="flex flex-col w-full h-1/2 bg-white shadow rounded-lg p-4 mt-4">
-                    <h2 class="text-lg font-semibold text-gray-800">Stylists</h2>
-                    <p class="text-sm text-gray-600">Total stylists: 0</p>
+                    <p class="text-sm text-gray-600">Total salons: {{ salonData.totalElements }}</p>
                 </div>
             </div>
         </div>
@@ -17,7 +13,23 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
+
+import { useSalonsStore } from '@/stores/salons';
+
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
+const salonsStore = useSalonsStore();
 
+const isReady = ref(false);
+const salonData = ref<{
+    totalElements: number | undefined
+}>({
+    totalElements: 0
+});
+
+onMounted(async () => {
+    await salonsStore.listSalons();
+    salonData.value.totalElements = salonsStore.getterSalons?.length;
+});
 </script>
