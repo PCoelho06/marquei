@@ -77,6 +77,17 @@ final class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/salons', name: 'salons', methods: ['GET'])]
+    public function getUserSalons(#[CurrentUser] User $user): JsonResponse
+    {
+        $salons = $user->getSalons();
+
+        return $this->json([
+            'status' => 'success',
+            'data' => array_map(fn($salon) => $salon->toArray(), $salons->toArray()),
+        ]);
+    }
+
     #[Route('/{id}', name: 'get', methods: ['GET'])]
     public function getUserById(#[CurrentUser] ?User $user, int $id): JsonResponse
     {
