@@ -11,16 +11,22 @@ import type {
   Service,
 } from '@/types/salons'
 
+import type { Employee, Machine } from '@/types/resources'
+
 export const useSalonsStore = defineStore('salons', () => {
   const salon = ref<Salon | undefined>()
   const salons = ref<Salon[]>()
   const businessHours = ref<BusinessHours[] | undefined>()
   const services = ref<Service[] | undefined>()
+  const employees = ref<Employee[] | undefined>()
+  const machines = ref<Machine[] | undefined>()
 
   const getterSalon = computed<Salon | undefined>(() => salon.value)
   const getterSalons = computed<Salon[] | undefined>(() => salons.value)
   const getterBusinessHours = computed<BusinessHours[] | undefined>(() => businessHours.value)
   const getterServices = computed<Service[] | undefined>(() => services.value)
+  const getterEmployees = computed<Employee[] | undefined>(() => employees.value)
+  const getterMachines = computed<Machine[] | undefined>(() => machines.value)
 
   const mutationSalon = (newValue: Salon | undefined) => {
     salon.value = newValue
@@ -34,6 +40,12 @@ export const useSalonsStore = defineStore('salons', () => {
   const mutationServices = (newValue: Service[] | undefined) => {
     services.value = newValue
   }
+  const mutationEmployees = (newValue: Employee[] | undefined) => {
+    employees.value = newValue
+  }
+  const mutationMachines = (newValue: Machine[] | undefined) => {
+    machines.value = newValue
+  }
 
   const getSalon = async (payload: { id: number }) => {
     const response = await api().salons.get(payload)
@@ -46,6 +58,14 @@ export const useSalonsStore = defineStore('salons', () => {
   const getServices = async (payload: { id: number }) => {
     const response = await api().salons.getServices(payload)
     mutationServices(response.data)
+  }
+  const getEmployees = async (payload: { id: number }) => {
+    const response = await api().salons.getEmployees(payload)
+    mutationEmployees(response.data)
+  }
+  const getMachines = async (payload: { id: number }) => {
+    const response = await api().salons.getMachines(payload)
+    mutationMachines(response.data)
   }
   const listSalons = async () => {
     const response = await api().salons.list()
@@ -77,15 +97,25 @@ export const useSalonsStore = defineStore('salons', () => {
   const resetServices = () => {
     mutationServices(undefined)
   }
+  const resetEmployees = () => {
+    mutationEmployees(undefined)
+  }
+  const resetMachines = () => {
+    mutationMachines(undefined)
+  }
 
   return {
     getterSalon,
     getterSalons,
     getterBusinessHours,
     getterServices,
+    getterEmployees,
+    getterMachines,
     getSalon,
     getBusinessHours,
     getServices,
+    getEmployees,
+    getMachines,
     listSalons,
     createSalon,
     updateSalon,
@@ -94,5 +124,7 @@ export const useSalonsStore = defineStore('salons', () => {
     resetSalons,
     resetBusinessHours,
     resetServices,
+    resetEmployees,
+    resetMachines,
   }
 })

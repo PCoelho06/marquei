@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Salon;
 use App\Entity\Resource;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Model\ResourceTypeEnum;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Resource>
@@ -14,6 +16,32 @@ class ResourceRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Resource::class);
+    }
+
+    public function findEmployeeBySalonPaginated(Salon $salon, int $page, int $limit): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.salon = :salon')
+            ->setParameter('salon', $salon)
+            ->andWhere('r.type = :type')
+            ->setParameter('type', ResourceTypeEnum::EMPLOYEE)
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findMachineBySalonPaginated(Salon $salon, int $page, int $limit): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.salon = :salon')
+            ->setParameter('salon', $salon)
+            ->andWhere('r.type = :type')
+            ->setParameter('type', ResourceTypeEnum::MACHINE)
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

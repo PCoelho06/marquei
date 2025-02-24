@@ -111,6 +111,60 @@ final class SalonController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/employees', name: 'get_employees', methods: ['GET'])]
+    public function getSalonEmployees(Request $request, int $id): JsonResponse
+    {
+        $page = $request->query->getInt('page', 1);
+        $limit = $request->query->getInt('limit', 10);
+
+        try {
+            $employees = $this->salonService->getSalonEmployees($id, $page, $limit);
+        } catch (\InvalidArgumentException $e) {
+            return $this->json([
+                'status' => 'error',
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return $this->json([
+            'status' => 'success',
+            'data' => $employees,
+            'meta' => [
+                'page' => $page,
+                'limit' => $limit,
+            ],
+        ]);
+    }
+
+    #[Route('/{id}/machines', name: 'get_machines', methods: ['GET'])]
+    public function getSalonMachines(Request $request, int $id): JsonResponse
+    {
+        $page = $request->query->getInt('page', 1);
+        $limit = $request->query->getInt('limit', 10);
+
+        try {
+            $machines = $this->salonService->getSalonMachines($id, $page, $limit);
+        } catch (\InvalidArgumentException $e) {
+            return $this->json([
+                'status' => 'error',
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return $this->json([
+            'status' => 'success',
+            'data' => $machines,
+            'meta' => [
+                'page' => $page,
+                'limit' => $limit,
+            ],
+        ]);
+    }
+
     #[Route('/{id}', name: 'update', methods: ['PUT'])]
     public function updateSalon(int $id, #[MapRequestPayload(validationGroups: ['update'])] SalonDTO $salonDTO): JsonResponse
     {

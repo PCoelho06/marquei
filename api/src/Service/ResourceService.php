@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\User;
 use App\DTO\ResourceDTO;
 use App\Entity\Resource;
 use App\Repository\ResourceRepository;
@@ -66,5 +67,17 @@ final class ResourceService
 
         $this->entityManager->remove($resource);
         $this->entityManager->flush();
+    }
+
+    public function getResourcesByType(User $user, string $type): array
+    {
+        $salons = $user->getSalons();
+
+        $resources = [];
+        foreach ($salons as $salon) {
+            $resources = array_merge($resources, $salon->getResources()->filter(fn(Resource $resource) => $resource->getType() === $type)->toArray());
+        }
+
+        return array_map(fn(Resource $resource) => $resource->toArray(), $resources);
     }
 }

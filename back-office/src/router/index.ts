@@ -10,6 +10,8 @@ import SalonView from '@/views/Salons/SalonView.vue'
 import HandleSalonView from '@/views/Salons/HandleSalonView.vue'
 import HandleBusinessHoursView from '@/views/Salons/HandleBusinessHoursView.vue'
 import ForfaitsView from '@/views/Subscription/ForfaitsView.vue'
+import RouterResources from '@/views/Resources/RouterResources.vue'
+import ResourcesView from '@/views/Resources/ResourcesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,6 +65,18 @@ const router = createRouter({
           path: ':id/handleBusinessHours',
           name: 'handleBusinessHours',
           component: HandleBusinessHoursView,
+        },
+      ],
+    },
+    {
+      path: '/recursos',
+      name: 'resources',
+      component: RouterResources,
+      children: [
+        {
+          path: '',
+          name: 'listResources',
+          component: ResourcesView,
         },
       ],
     },

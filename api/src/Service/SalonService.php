@@ -5,10 +5,12 @@ namespace App\Service;
 use App\DTO\SalonDTO;
 use App\Entity\Salon;
 use App\Entity\Service;
+use App\Entity\Resource;
 use App\Repository\UserRepository;
 use App\Entity\BusinessHoursRanges;
 use App\Repository\SalonRepository;
 use App\Repository\ServiceRepository;
+use App\Repository\ResourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -19,6 +21,7 @@ class SalonService
         private readonly EntityManagerInterface $entityManager,
         private readonly SalonRepository $salonRepository,
         private readonly ServiceRepository $serviceRepository,
+        private readonly ResourceRepository $resourceRepository,
         private UserRepository $userRepository,
         private EntityHydratorService $hydrator,
         private Security $security,
@@ -77,6 +80,24 @@ class SalonService
         $services = $this->serviceRepository->findByPaginated($salon, $page, $limit);
 
         return array_map(fn(Service $service) => $service->toArray(), $services);
+    }
+
+    public function getSalonEmployees(int $id, int $page, int $limit): array
+    {
+        $salon = $this->getSalon($id);
+
+        $employees = $this->resourceRepository->findEmployeeBySalonPaginated($salon, $page, $limit);
+
+        return array_map(fn(Resource $employee) => $employee->toArray(), $employees);
+    }
+
+    public function getSalonMachines(int $id, int $page, int $limit): array
+    {
+        $salon = $this->getSalon($id);
+
+        $machines = $this->resourceRepository->findMachineBySalonPaginated($salon, $page, $limit);
+
+        return array_map(fn(Resource $machine) => $machine->toArray(), $machines);
     }
 
     public function updateSalon(int $id, SalonDTO $salonDTO): Salon

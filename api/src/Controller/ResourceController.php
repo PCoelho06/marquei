@@ -2,10 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\DTO\ResourceDTO;
+use App\Model\ResourceTypeEnum;
 use App\Service\ResourceService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -34,7 +38,7 @@ class ResourceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'get', methods: ['GET'])]
+    #[Route('/{id}', name: 'get', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
     public function get(int $id): JsonResponse
     {
         try {
@@ -93,6 +97,26 @@ class ResourceController extends AbstractController
             'data' => [
                 'message' => 'Recurso removido com sucesso',
             ],
+        ]);
+    }
+
+    #[Route('/{type}', name: 'list_type', methods: ['GET'])]
+    public function listByType(#[CurrentUser()] User $user, string $type): JsonResponse
+    {
+        try {
+            $resources = $this->resourceService->getResourcesByType($user, $type);
+        } catch (\InvalidArgumentException $e) {
+            return $this->json([
+                'status' => 'error',
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return $this->json([
+            'status' => 'success',
+            'data' => $resources,
         ]);
     }
 }

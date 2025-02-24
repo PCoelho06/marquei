@@ -80,18 +80,18 @@ const menuGroups = ref([
         ]
       },
       // {
+      {
+        icon: 'resources',
+        label: 'Recursos',
+        route: '/recursos',
+        children: [
+          { label: 'Empregados', route: '/recursos/empregados' },
+          { label: 'Maquinas', route: '/recursos/maquinas' }
+        ]
+      },
       //     icon: 'CalendarIcon.vue',
       //     label: 'Agendamentos',
       //     route: '/calendar'
-      // },
-      // {
-      //     icon: 'ResourcesIcon.vue',
-      //     label: 'Recursos',
-      //     route: '/resources',
-      //     children: [
-      //         { label: 'Empregados', route: '/resources/employees' },
-      //         { label: 'Maquinas', route: '/resources/material' }
-      //     ]
       // },
       // {
       //     icon: 'ClientsIcon.vue',
