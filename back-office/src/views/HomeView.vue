@@ -1,16 +1,17 @@
 <template>
   <div class="min-h-screen bg-gradient-to-b from-whitten to-white">
     <!-- Header -->
-    <header class="container mx-auto px-4 py-6">
+    <!-- <header class="container mx-auto px-4 py-6">
       <nav class="flex justify-between items-center">
         <div class="text-2xl font-bold text-primary">💈 Marquei</div>
         <div class="flex items-center space-x-4 ">
           <a href="#features" class="text-dark hover:text-primary">Funcionalidades</a>
           <a href="#testimonials" class="text-dark hover:text-primary">Testemunhos</a>
-          <OutlineButton value="Entrar" size="sm" @click="router.push('/signin')" />
+          <OutlineButton value="Entrar" size="sm" @click="router.push({ name: 'Signin' })" />
         </div>
       </nav>
-    </header>
+    </header> -->
+    <DefaultHeader />
 
     <!-- Hero Section -->
     <section class="container mx-auto px-4 py-20">
@@ -23,7 +24,7 @@
           Otimize seu tempo e aumente seu faturamento.
         </p>
         <div class="flex justify-center space-x-4">
-          <DefaultButton value="Começar agora" @click="router.push('/signup')" />
+          <DefaultButton value="Começar agora" @click="router.push({ name: 'Signup' })" />
           <OutlineButton value="Agendar uma demonstração gratis" @click="requestDemo" />
         </div>
       </div>
@@ -104,6 +105,7 @@ import { useRouter } from 'vue-router'
 
 import OutlineButton from '@/components/Buttons/OutlineButton.vue'
 import DefaultButton from '@/components/Buttons/DefaultButton.vue'
+import DefaultHeader from '@/components/Header/DefaultHeader.vue'
 
 interface Feature {
   title: string

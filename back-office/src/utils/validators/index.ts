@@ -20,7 +20,7 @@ export const validatePassword = (password: string) => {
     return 'A senha deve ter pelo menos 6 caracteres'
   } else if (password.length > 20) {
     return 'A senha deve ter no máximo 20 caracteres'
-  } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(password)) {
+  } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&-_])[A-Za-z\d@$!%*?&]/.test(password)) {
     return 'A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial'
   }
 

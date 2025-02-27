@@ -1,3 +1,5 @@
+import router from '@/router'
+
 import type { BuilderContext, Internals } from '@/types/builder'
 import {
   AxiosError,
@@ -7,8 +9,8 @@ import {
 } from 'axios'
 
 import axios from 'axios'
-import { useUserStore } from '@/stores/user'
-import router from '@/router'
+
+import { useAuthStore } from '@/stores/auth'
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean
@@ -19,43 +21,45 @@ const instance: AxiosInstance = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-// Récupère le token depuis localStorage
-const getAccessToken = () => localStorage.getItem('access_token')
-const getRefreshToken = () => localStorage.getItem('refresh_token')
+const getAccessToken = () => useAuthStore().getterAccessToken
+const getRefreshToken = () => useAuthStore().getterRefreshToken
 
 const setTokens = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem('refresh_token', refreshToken)
-  localStorage.setItem('access_token', accessToken)
+  useAuthStore().mutationAccessToken(accessToken)
+  useAuthStore().mutationRefreshToken(refreshToken)
 
-  // Assigne immédiatement le nouveau token à Axios pour éviter une requête échouée
   instance.defaults.headers.Authorization = `Bearer ${accessToken}`
 }
 
 const refreshToken = async (): Promise<string | null> => {
-  const userStore = useUserStore()
+  const authStore = useAuthStore()
 
   try {
-    const response = await axios.post(`${instance.defaults.baseURL}/api/user/refresh-token`, {
+    const response = await axios.post(`${instance.defaults.baseURL}/api/auth/refresh-token`, {
       refresh_token: getRefreshToken(),
     })
 
+    console.log('🚀 ~ refreshToken ~ response:', response)
     const newAccessToken = response.data.access_token
+    console.log('🚀 ~ refreshToken ~ newAccessToken:', newAccessToken)
+    console.log('🚀 ~ refreshToken ~ response.data.refresh_token:', response.data.refresh_token)
     setTokens(newAccessToken, response.data.refresh_token)
 
     return newAccessToken
   } catch (error) {
     console.error('Error refreshing token:', error)
-    userStore.actionLogout()
-    router.push({ name: 'signin' })
+    await authStore.actionLogout()
+    router.push({ name: 'Signin' })
     return null
   }
 }
 
-// ✅ INTERCEPTEUR DE REQUÊTE : Vérifie que le token est toujours à jour AVANT d'envoyer la requête
 instance.interceptors.request.use(
   async (config) => {
     const token = getAccessToken()
+    console.log('🚀 ~ token:', token)
     if (token) {
+      console.log('🚀 ~ token:', token)
       config.headers.Authorization = `Bearer ${token}`
     }
     return config
@@ -63,29 +67,26 @@ instance.interceptors.request.use(
   (error) => Promise.reject(error),
 )
 
-// ✅ INTERCEPTEUR DE RÉPONSE : Gère l'expiration du token et relance la requête avec le bon token
 instance.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
-    const userStore = useUserStore()
+    const authStore = useAuthStore()
     const originalRequest = error.config as CustomAxiosRequestConfig
 
-    // Si 401 et qu'on n'a pas encore tenté de refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
 
       const newToken = await refreshToken()
 
       if (newToken) {
-        // Assigner le nouveau token immédiatement
         originalRequest.headers.Authorization = `Bearer ${newToken}`
-        return instance(originalRequest) // Relance la requête avec le bon token
+        return instance(originalRequest)
       }
     }
 
     if (originalRequest?._retry) {
-      userStore.actionLogout()
-      router.push({ name: 'signin' })
+      await authStore.actionLogout()
+      router.push({ name: 'Signin' })
     }
 
     return Promise.reject(error)
@@ -107,7 +108,7 @@ const internals: Internals = {
   },
 }
 
-const builder = (context: BuilderContext, isAuthenticationRequest: boolean = false) => {
+const builder = (context: BuilderContext) => {
   return instance
     .request({ ...context, data: context.payload ? JSON.stringify(context.payload) : undefined })
     .then(internals.parseResponse)

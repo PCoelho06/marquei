@@ -24,7 +24,7 @@
                 <div class="mt-6 text-center">
                     <p class="font-medium">
                         Não tem conta ?
-                        <router-link to="/signup" class="text-primary">Registe-se</router-link>
+                        <router-link :to="{ name: 'Signup' }" class="text-primary">Registe-se</router-link>
                     </p>
                 </div>
             </form>
@@ -36,7 +36,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
 
 import AuthCard from '@/components/Cards/AuthCard.vue'
 import InputGroup from '@/components/Forms/InputGroup.vue'
@@ -44,17 +44,20 @@ import MailIcon from '@/components/Icons/MailIcon.vue';
 import LockIcon from '@/components/Icons/LockIcon.vue';
 import DefaultButton from '@/components/Buttons/DefaultButton.vue';
 import GoogleIcon from '@/components/Icons/GoogleIcon.vue';
+import AlertToast from '@/components/Alerts/AlertToast.vue';
 
-import type { UserAuthPayload } from '@/types/user'
+import type { UserLoginForm } from '@/types/user'
 
 import { validateUserLoginData } from '@/utils/validators/user'
-import AlertToast from '@/components/Alerts/AlertToast.vue';
+import { storeToRefs } from 'pinia'
+
 
 const router = useRouter()
 
-const userStore = useUserStore();
+const authStore = useAuthStore();
+const { getterHasSalons } = storeToRefs(authStore);
 
-const user = ref<UserAuthPayload>({
+const user = ref<UserLoginForm>({
     email: '',
     password: '',
 })
@@ -90,13 +93,16 @@ const submitForm = () => {
     }
 
 
-    userStore.actionLogin({ username: user.value.email, password: user.value.password }).then(() => {
-        console.log('User loged successfully');
-        router.push('/dashboard')
+    authStore.actionLogin({ username: user.value.email, password: user.value.password }).then(() => {
+        if (!getterHasSalons.value) {
+            router.push({ name: 'CreateSalon' });
+            return;
+        }
+        router.push({ name: 'ModeSelect' })
     }).catch((error) => {
         alert.value.show = true;
-        alert.value.title = error.data.title;
-        alert.value.message = error.data.message;
+        alert.value.title = error.data ? error.data.title : 'Erro';
+        alert.value.message = error.data ? error.data.message : error.message;
     });
 }
 </script>

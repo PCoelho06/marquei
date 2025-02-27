@@ -2,15 +2,19 @@
 
 namespace App\Service;
 
+use App\Entity\User;
 use App\DTO\SalonDTO;
 use App\Entity\Salon;
 use App\Entity\Service;
 use App\Entity\Resource;
+use App\Model\RolesEnum;
+use App\Entity\UserSalon;
 use App\Repository\UserRepository;
 use App\Entity\BusinessHoursRanges;
 use App\Repository\SalonRepository;
 use App\Repository\ServiceRepository;
 use App\Repository\ResourceRepository;
+use App\Repository\UserSalonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -23,24 +27,51 @@ class SalonService
         private readonly ServiceRepository $serviceRepository,
         private readonly ResourceRepository $resourceRepository,
         private UserRepository $userRepository,
+        private UserSalonRepository $userSalonRepository,
         private EntityHydratorService $hydrator,
         private Security $security,
     ) {}
 
     public function checkUserIsSalonOwner(Salon $salon): void
     {
-        if ($salon->getOwner()->getEmail() !== $this->security->getUser()->getUserIdentifier()) {
+        $user = $this->security->getUser();
+
+        if ($user === null) {
+            throw new AccessDeniedException('Usuário não autenticado');
+        }
+
+        $userSalon = $this->userSalonRepository->findOneByUserAndSalon($user, $salon);
+
+        if ($userSalon === null || $userSalon->getRole() !== RolesEnum::ROLE_OWNER) {
             throw new AccessDeniedException('Usuário não é o proprietário do salão');
         }
     }
 
     public function createSalon(SalonDTO $salonDTO): Salon
     {
+        $user = $this->security->getUser();
+
+        if (!$user) {
+            throw new AccessDeniedException('Usuário não autenticado');
+        }
+
+        $salonExists = $this->salonRepository->findOneBy(['name' => $salonDTO->name]) !== null;
+
+        if ($salonExists) {
+            throw new \Exception('Um salão com este nome já existe');
+        }
+
         $salon = $this->hydrator->hydrate(new Salon(), $salonDTO);
-
-        $salon->setOwner($this->security->getUser());
-
         $this->entityManager->persist($salon);
+
+        $userSalon = new UserSalon();
+        $userSalon->setUser($this->security->getUser());
+        $userSalon->setSalon($salon);
+        $userSalon->setRole(RolesEnum::ROLE_OWNER);
+        $this->entityManager->persist($userSalon);
+
+        $salon->addUser($userSalon);
+
         $this->entityManager->flush();
 
         return $salon;
@@ -51,6 +82,15 @@ class SalonService
         $salons = $this->salonRepository->findAllPaginated($page, $limit);
 
         return array_map(fn(Salon $salon) => $salon->toArray(), $salons);
+    }
+
+    public function listUserSalons(User $user): array
+    {
+        $userSalons = $user->getSalons();
+
+        $salons = array_map(fn(UserSalon $userSalon) => $userSalon->getSalon()->toArray(), $userSalons->toArray());
+
+        return $salons;
     }
 
     public function getSalon(int $id): Salon

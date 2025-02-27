@@ -46,17 +46,16 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 
-import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
 
 import DropdownArrowIcon from '../Icons/DropdownArrowIcon.vue';
-import UserIcon from '../Icons/UserIcon.vue';
 import GearIcon from '../Icons/GearIcon.vue';
 import LogoutIcon from '../Icons/LogoutIcon.vue';
 import ShopIcon from '../Icons/ShopIcon.vue';
 
 const router = useRouter()
 
-const { actionLogout } = useUserStore()
+const { actionLogout } = useAuthStore()
 
 const target = ref(null)
 const dropdownOpen = ref(false)
@@ -65,8 +64,8 @@ onClickOutside(target, () => {
     dropdownOpen.value = false
 })
 
-const logUserOut = () => {
-    actionLogout()
-    router.push('/')
+const logUserOut = async () => {
+    await actionLogout()
+    router.push({ name: 'Home' })
 }
 </script>

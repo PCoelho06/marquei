@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/api/salons', name: 'salons_')]
 final class SalonController extends AbstractController
@@ -18,7 +19,17 @@ final class SalonController extends AbstractController
     #[Route('/', name: 'create', methods: ['POST'])]
     public function createSalon(#[MapRequestPayload(validationGroups: ['create'])] SalonDTO $salonDTO): JsonResponse
     {
-        $salon = $this->salonService->createSalon($salonDTO);
+        try {
+            $salon = $this->salonService->createSalon($salonDTO);
+        } catch (\Exception $e) {
+            $statusCode = $e instanceof AccessDeniedException ? JsonResponse::HTTP_FORBIDDEN : JsonResponse::HTTP_BAD_REQUEST;
+            return $this->json([
+                'status' => 'error',
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], $statusCode);
+        }
 
         return $this->json([
             'status' => 'success',

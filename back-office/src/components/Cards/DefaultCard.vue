@@ -6,9 +6,7 @@
         <div class="p-4">
             <slot></slot>
         </div>
-        <div class="p-4 mt-auto">
-            <slot name="action"></slot>
-        </div>
+        <slot name="action"></slot>
     </div>
 </template>
 

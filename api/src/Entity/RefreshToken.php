@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Model\LoginModesEnum;
 use App\Repository\RefreshTokenRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -26,6 +27,22 @@ class RefreshToken
     #[ORM\ManyToOne(inversedBy: 'refreshTokens')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\ManyToOne(targetEntity: Salon::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Salon $salon = null;
+
+    #[ORM\Column(type: "string", length: 255)]
+    private string $mode;
+
+    public function __construct(User $user, string $token, \DateTimeImmutable $expiresAt, ?Salon $salon, LoginModesEnum $mode)
+    {
+        $this->user = $user;
+        $this->token = $token;
+        $this->expiresAt = $expiresAt;
+        $this->salon = $salon;
+        $this->mode = $mode->value;
+    }
 
     public function getId(): ?int
     {
@@ -77,6 +94,30 @@ class RefreshToken
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getSalon(): ?Salon
+    {
+        return $this->salon;
+    }
+
+    public function setSalon(?Salon $salon): static
+    {
+        $this->salon = $salon;
+
+        return $this;
+    }
+
+    public function getMode(): LoginModesEnum
+    {
+        return LoginModesEnum::from($this->mode);
+    }
+
+    public function setMode(LoginModesEnum $mode): static
+    {
+        $this->mode = $mode->value;
 
         return $this;
     }

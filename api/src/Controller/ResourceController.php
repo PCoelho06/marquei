@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\DTO\ResourceDTO;
-use App\Model\ResourceTypeEnum;
 use App\Service\ResourceService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;

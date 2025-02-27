@@ -27,7 +27,7 @@ class ExceptionListener
 
         if ($exception instanceof UniqueConstraintViolationException) {
             $response = new JsonResponse([
-                'message' => 'Unique Constraint Violation',
+                'message' => 'Este valor já está em uso',
                 'field' => $this->extractUniqueField($exception),
             ], JsonResponse::HTTP_CONFLICT);
 

@@ -29,10 +29,12 @@ security:
       stateless: true
       entry_point: jwt
       json_login:
-        check_path: /api/user/login
+        check_path: /api/auth/login
         success_handler: App\Security\AuthenticationSuccessHandler
         failure_handler: App\Security\AuthenticationFailureHandler
       jwt: ~
+      logout:
+        path: /api/auth/logout
 
       # activate different ways to authenticate
       # https://symfony.com/doc/current/security.html#the-firewall
@@ -43,9 +45,10 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-    - { path: ^/api/user/login, roles: PUBLIC_ACCESS }
-    - { path: ^/api/user/register, roles: PUBLIC_ACCESS }
-    - { path: ^/api/user/refresh-token, roles: PUBLIC_ACCESS }
+    - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
+    - { path: ^/api/auth/logout, roles: PUBLIC_ACCESS }
+    - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
+    - { path: ^/api/auth/refresh-token, roles: PUBLIC_ACCESS }
     - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
     # - { path: ^/admin, roles: ROLE_ADMIN }
     # - { path: ^/profile, roles: ROLE_USER }

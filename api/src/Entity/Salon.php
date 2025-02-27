@@ -40,9 +40,11 @@ class Salon
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'salons')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
+    /**
+     * @var Collection<int, UserSalon>
+     */
+    #[ORM\OneToMany(mappedBy: "salon", targetEntity: UserSalon::class, cascade: ["persist", "remove"])]
+    private Collection $users;
 
     /**
      * @var Collection<int, BusinessHoursRanges>
@@ -64,6 +66,7 @@ class Salon
 
     public function __construct()
     {
+        $this->users = new ArrayCollection();
         $this->businessHoursRanges = new ArrayCollection();
         $this->services = new ArrayCollection();
         $this->resources = new ArrayCollection();
@@ -173,14 +176,31 @@ class Salon
         return $this;
     }
 
-    public function getOwner(): ?User
+    /**
+     * @return Collection<int, UserSalon>
+     */
+    public function getUsers(): Collection
     {
-        return $this->owner;
+        return $this->users;
     }
 
-    public function setOwner(?User $owner): static
+    public function addUser(UserSalon $user): static
     {
-        $this->owner = $owner;
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->setSalon($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(UserSalon $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            if ($user->getSalon() === $this) {
+                $user->setSalon(null);
+            }
+        }
 
         return $this;
     }
@@ -197,7 +217,6 @@ class Salon
             'phone' => $this->phone,
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
-            'owner' => $this->owner->toArray(),
         ];
     }
 

@@ -29,7 +29,7 @@
                 <div class="mt-6 text-center">
                     <p class="font-medium">
                         Já tem conta ?
-                        <router-link to="/signin" class="text-primary">Entrar</router-link>
+                        <router-link :to="{ name: 'Signin' }" class="text-primary">Entrar</router-link>
                     </p>
                 </div>
             </form>
@@ -41,7 +41,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
 
 import { validateUserRegistrationData } from '@/utils/validators/user'
 
@@ -52,13 +52,13 @@ import LockIcon from '@/components/Icons/LockIcon.vue';
 import DefaultButton from '@/components/Buttons/DefaultButton.vue';
 import GoogleIcon from '@/components/Icons/GoogleIcon.vue';
 
-import type { UserRegisterPayload } from '@/types/user'
+import type { UserRegisterForm } from '@/types/user'
 
 const router = useRouter();
 
-const userStore = useUserStore();
+const authStore = useAuthStore();
 
-const user = ref<UserRegisterPayload>({
+const user = ref<UserRegisterForm>({
     email: '',
     password: '',
     confirmPassword: ''
@@ -87,9 +87,8 @@ const submitForm = () => {
         return;
     }
 
-    userStore.actionRegister({ email: user.value.email, password: user.value.password, role: 'ROLE_OWNER' }).then(() => {
-        console.log('User registered successfully');
-        router.push({ name: 'createSalon' });
+    authStore.actionRegister({ email: user.value.email, password: user.value.password }).then(() => {
+        router.push({ name: 'CreateSalon' });
     }).catch((error) => {
         const typedKey = error.field as keyof typeof validationErrors.value;
         validationErrors.value[typedKey] = error.message;

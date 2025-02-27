@@ -13,7 +13,8 @@
                 </template>
                 <template #action>
                     <div class="flex space-x-4">
-                        <LinkButton :to="'/salons/' + getterSalon?.id + '/editar'" value="Editar" size="sm" />
+                        <LinkButton :to="{ name: 'EditSalon', params: { id: getterSalon?.id } }" value="Editar"
+                            size="sm" />
                     </div>
                 </template>
             </DefaultCard>
@@ -33,7 +34,7 @@
                 </template>
                 <template #action>
                     <div class="flex space-x-4">
-                        <LinkButton :to="'/salons/' + getterSalon?.id + '/handleBusinessHours'"
+                        <LinkButton :to="{ name: 'HandleBusinessHours', params: { id: getterSalon?.id } }"
                             :value="getterBusinessHours?.length ? 'Editar' : 'Adicionar horários'" size="sm" />
                     </div>
                 </template>

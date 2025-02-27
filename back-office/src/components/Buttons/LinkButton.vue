@@ -9,7 +9,7 @@
 import { computed } from 'vue'
 
 const props = defineProps<{
-    to: string,
+    to: string | { name: string, params?: Record<string, string | number | undefined> },
     newTab?: boolean,
     value: string,
     type?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning',

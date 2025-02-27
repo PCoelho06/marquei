@@ -45,10 +45,8 @@
                             <FlagIcon class="fill-current" />
                         </InputGroup>
                     </div>
+                    <DefaultButton value="Registar o salão" />
                 </form>
-            </template>
-            <template #action>
-                <DefaultButton value="Registar o salão" />
             </template>
         </DefaultCard>
     </div>
@@ -104,6 +102,7 @@ const validationErrors = ref<SalonGeneralInformationValidation>({
 
 const handleSalon = async () => {
     validationErrors.value = validateSalonData(salon.value);
+    console.log("🚀 ~ handleSalon ~ validationErrors.value:", validationErrors.value)
 
     if (Object.values(validationErrors.value).some((error) => error !== '')) {
         return;

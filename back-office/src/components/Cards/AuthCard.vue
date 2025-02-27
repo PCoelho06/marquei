@@ -13,9 +13,7 @@
                         Não espere mais para registrar seu salão e aproveitar nossos serviços.
                     </p>
 
-                    <span class="mt-15 inline-block">
-                        <img src="@/assets/images/illustrations/authentication.svg" alt="illustration" />
-                    </span>
+                    <img src="@/assets/images/illustrations/authentication.svg" alt="illustration" />
                 </div>
             </div>
             <div class="w-full border-stroke xl:w-1/2 xl:border-l-2">

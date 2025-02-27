@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity('email')]
+#[UniqueEntity('email', message: 'Uma conta com este email já existe.')]
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -23,12 +23,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     private ?string $email = null;
-
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column]
-    private array $roles = [];
 
     /**
      * @var string The hashed password
@@ -43,9 +37,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
-     * @var Collection<int, Salon>
+     * @var Collection<int, UserSalon>
      */
-    #[ORM\OneToMany(targetEntity: Salon::class, mappedBy: 'owner')]
+    #[ORM\OneToMany(mappedBy: "user", targetEntity: UserSalon::class, cascade: ["persist", "remove"])]
     private Collection $salons;
 
     /**
@@ -85,30 +79,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
-    }
-
-    /**
-     * @see UserInterface
-     *
-     * @return list<string>
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    /**
-     * @param list<string> $roles
-     */
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-
-        return $this;
     }
 
     /**
@@ -167,36 +137,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return [
             'id' => $this->id,
             'email' => $this->email,
-            'roles' => $this->roles,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
         ];
     }
 
     /**
-     * @return Collection<int, Salon>
+     * @return Collection<int, UserSalon>
      */
     public function getSalons(): Collection
     {
         return $this->salons;
     }
 
-    public function addSalon(Salon $salon): static
+    public function addSalon(UserSalon $salon): static
     {
         if (!$this->salons->contains($salon)) {
             $this->salons->add($salon);
-            $salon->setOwner($this);
+            $salon->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeSalon(Salon $salon): static
+    public function removeSalon(UserSalon $salon): static
     {
         if ($this->salons->removeElement($salon)) {
             // set the owning side to null (unless already changed)
-            if ($salon->getOwner() === $this) {
-                $salon->setOwner(null);
+            if ($salon->getUser() === $this) {
+                $salon->setUser(null);
             }
         }
 
@@ -231,5 +200,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
     }
 }

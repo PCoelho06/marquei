@@ -25,8 +25,6 @@ class UserService
 
         $user = $this->hydrator->hydrate(new User(), $userDTO);
 
-        $user->setRoles([$userDTO->role]);
-
         $errors = $this->validator->validate($user, null, ['registration']);
 
         if (count($errors) > 0) {

@@ -13,7 +13,7 @@
                 </template>
                 <template #action>
                     <div class="flex space-x-4">
-                        <LinkButton :to="'/salons/' + salon.id" value="Gerir" size="sm" />
+                        <LinkButton :to="{ name: 'GetSalon', params: { id: salon.id } }" value="Gerir" size="sm" />
                         <ModalButton value="Remover" type="danger" size="sm" :modalTexts
                             :action="() => salonsStore.deleteSalon({ id: salon.id })" />
                     </div>
