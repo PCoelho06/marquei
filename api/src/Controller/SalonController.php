@@ -3,18 +3,20 @@
 namespace App\Controller;
 
 use App\DTO\SalonDTO;
+use App\Entity\Subscription;
 use App\Service\SalonService;
+use App\Service\StripeService;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/api/salons', name: 'salons_')]
 final class SalonController extends AbstractController
 {
-    public function __construct(private SalonService $salonService) {}
+    public function __construct(private SalonService $salonService, private StripeService $stripeService) {}
 
     #[Route('/', name: 'create', methods: ['POST'])]
     public function createSalon(#[MapRequestPayload(validationGroups: ['create'])] SalonDTO $salonDTO): JsonResponse
@@ -172,6 +174,30 @@ final class SalonController extends AbstractController
             'meta' => [
                 'page' => $page,
                 'limit' => $limit,
+            ],
+        ]);
+    }
+
+    #[Route('/{id}/subscription', name: 'get_subscription', methods: ['GET'])]
+    public function getSalonSubscription(int $id): JsonResponse
+    {
+        try {
+            $subscription = $this->salonService->getSalonCurrentSubscription($id);
+            $stripeSubscription = $this->stripeService->getStripeSubscription($subscription->getStripeSubscriptionId());
+        } catch (\InvalidArgumentException $e) {
+            return $this->json([
+                'status' => 'error',
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return $this->json([
+            'status' => 'success',
+            'data' => [
+                'subscription' => $subscription ? $subscription->toArray() : new Subscription()->toArray(),
+                'stripeSubscription' => $stripeSubscription,
             ],
         ]);
     }

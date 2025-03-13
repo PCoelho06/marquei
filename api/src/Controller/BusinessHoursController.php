@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\DTO\BusinessHoursDTO;
 use App\Service\BusinessHoursService;
 use App\Service\SalonService;
 use Symfony\Component\HttpFoundation\Request;

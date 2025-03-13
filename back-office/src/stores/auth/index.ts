@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 import { api } from '@/api'
-import { decodeJWT } from '@/utils/helpers/tokens'
+import { decoders } from '@/utils'
 
 import type { Salon } from '@/types/salons'
 import type { User, Permission } from '@/types/user'
@@ -99,7 +99,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const initialize = async () => {
     if (getterAccessToken.value) {
-      const decoded: JWTPayload = decodeJWT(getterAccessToken.value)
+      const decoded: JWTPayload = decoders.decodeJWT(getterAccessToken.value)
       if (decoded) {
         mutationMode(decoded.currentMode)
       }

@@ -24,11 +24,15 @@ const instance: AxiosInstance = axios.create({
 const getAccessToken = () => useAuthStore().getterAccessToken
 const getRefreshToken = () => useAuthStore().getterRefreshToken
 
-const setTokens = (accessToken: string, refreshToken: string) => {
+const setTokens = (accessToken: string | undefined, refreshToken: string | undefined) => {
   useAuthStore().mutationAccessToken(accessToken)
   useAuthStore().mutationRefreshToken(refreshToken)
 
-  instance.defaults.headers.Authorization = `Bearer ${accessToken}`
+  if (accessToken) {
+    instance.defaults.headers.Authorization = `Bearer ${accessToken}`
+  } else {
+    delete instance.defaults.headers.Authorization
+  }
 }
 
 const refreshToken = async (): Promise<string | null> => {
@@ -38,18 +42,19 @@ const refreshToken = async (): Promise<string | null> => {
     const response = await axios.post(`${instance.defaults.baseURL}/api/auth/refresh-token`, {
       refresh_token: getRefreshToken(),
     })
-
     console.log('🚀 ~ refreshToken ~ response:', response)
-    const newAccessToken = response.data.access_token
+
+    const newAccessToken = response.data.data.access_token
     console.log('🚀 ~ refreshToken ~ newAccessToken:', newAccessToken)
-    console.log('🚀 ~ refreshToken ~ response.data.refresh_token:', response.data.refresh_token)
+
     setTokens(newAccessToken, response.data.refresh_token)
 
     return newAccessToken
   } catch (error) {
     console.error('Error refreshing token:', error)
+    setTokens(undefined, undefined)
     await authStore.actionLogout()
-    router.push({ name: 'Signin' })
+    router.push({ name: 'Login' })
     return null
   }
 }
@@ -57,9 +62,7 @@ const refreshToken = async (): Promise<string | null> => {
 instance.interceptors.request.use(
   async (config) => {
     const token = getAccessToken()
-    console.log('🚀 ~ token:', token)
     if (token) {
-      console.log('🚀 ~ token:', token)
       config.headers.Authorization = `Bearer ${token}`
     }
     return config
@@ -72,13 +75,16 @@ instance.interceptors.response.use(
   async (error: AxiosError) => {
     const authStore = useAuthStore()
     const originalRequest = error.config as CustomAxiosRequestConfig
+    console.log('🚀 ~ originalRequest:', originalRequest)
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
+      console.log('🚀 ~ originalRequest._retry:', originalRequest._retry)
 
       const newToken = await refreshToken()
 
       if (newToken) {
+        console.log('🚀 ~ newToken:', newToken)
         originalRequest.headers.Authorization = `Bearer ${newToken}`
         return instance(originalRequest)
       }
@@ -86,7 +92,7 @@ instance.interceptors.response.use(
 
     if (originalRequest?._retry) {
       await authStore.actionLogout()
-      router.push({ name: 'Signin' })
+      router.push({ name: 'Login' })
     }
 
     return Promise.reject(error)
@@ -95,16 +101,14 @@ instance.interceptors.response.use(
 
 const internals: Internals = {
   parseResponse: (response: AxiosResponse) => response.data,
-  parseError: (error: Error | AxiosError, context: BuilderContext) => {
+  parseError: (error: Error | AxiosError) => {
     if (axios.isAxiosError(error)) {
       if (error.response) {
         return Promise.reject(error.response.data)
-      } else {
-        return Promise.reject(new Error('Network Error'))
       }
-    } else {
-      return Promise.reject(error)
+      return Promise.reject(new Error('Network Error'))
     }
+    return Promise.reject(error)
   },
 }
 
@@ -112,7 +116,7 @@ const builder = (context: BuilderContext) => {
   return instance
     .request({ ...context, data: context.payload ? JSON.stringify(context.payload) : undefined })
     .then(internals.parseResponse)
-    .catch((error: Error | AxiosError) => internals.parseError(error, context))
+    .catch((error: Error | AxiosError) => internals.parseError(error))
 }
 
 export { builder }

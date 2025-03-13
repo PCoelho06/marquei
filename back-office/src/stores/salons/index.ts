@@ -9,6 +9,7 @@ import type {
   SalonUpdatePayload,
   BusinessHours,
   Service,
+  Subscriptions,
 } from '@/types/salons'
 
 import type { Employee, Machine } from '@/types/resources'
@@ -48,8 +49,12 @@ export const useSalonsStore = defineStore('salons', () => {
   }
 
   const getSalon = async (payload: { id: number }) => {
-    const response = await api().salons.get(payload)
-    mutationSalon(response.data)
+    try {
+      const response = await api().salons.get(payload)
+      mutationSalon(response.data)
+    } catch (error) {
+      mutationSalon(undefined)
+    }
   }
   const getBusinessHours = async (payload: { id: number }) => {
     const response = await api().salons.getBusinessHours(payload)

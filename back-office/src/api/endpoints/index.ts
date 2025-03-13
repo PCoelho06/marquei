@@ -5,6 +5,7 @@ import businessHours from './business-hours'
 import services from './services'
 import employees from './resources/employees'
 import machines from './resources/machines'
+import subscriptions from './subscriptions'
 
 export default {
   auth,
@@ -14,4 +15,5 @@ export default {
   services,
   employees,
   machines,
+  subscriptions,
 }

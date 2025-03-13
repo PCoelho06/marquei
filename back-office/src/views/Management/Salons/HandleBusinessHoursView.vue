@@ -1,12 +1,8 @@
 <template>
     <div class="max-w-7xl mx-auto p-4" v-if="isReady">
-        <div class="flex justify-between items-center mb-4" v-if="isEdit">
-            <h1 class="text-2xl font-semibold">Editar o salão : Horários de Funcionamento</h1>
-        </div>
-        <div class="flex justify-between items-center mb-4" v-else>
-            <h1 class="text-2xl font-semibold">Registar o salão : Horários de Funcionamento</h1>
-            <p class="font-bold">2 / 2</p>
-        </div>
+        <h1 class="text-2xl font-semibold mb-4">
+            {{ getterSalon?.name }} : {{ isEdit ? 'Editar' : 'Registar' }} horários de funcionamento
+        </h1>
 
         <!-- Vue Calendrier -->
         <div class="mb-8 bg-white rounded-lg shadow-lg p-4">
@@ -86,6 +82,7 @@ import ptLocale from '@fullcalendar/core/locales/pt'
 import type { CalendarOptions } from '@fullcalendar/core/index.js'
 import DefaultButton from '@/components/Buttons/DefaultButton.vue'
 import SpinLoader from '@/components/Loaders/SpinLoader.vue';
+import { storeToRefs } from 'pinia';
 
 interface TimeRange {
     start: string
@@ -114,6 +111,7 @@ const route = useRoute()
 const router = useRouter()
 
 const salonsStore = useSalonsStore()
+const { getterSalon } = storeToRefs(salonsStore)
 
 const days = [
     'Segunda-feira',
@@ -217,18 +215,22 @@ const saveSchedules = async () => {
     try {
         console.log('Horaires à sauvegarder:', schedules.value)
         await api().businessHours.create({ id: Array.isArray(route.params.id) ? route.params.id[0] : route.params.id, businessHoursRanges: schedules.value });
-        router.push({ name: 'getSalon', params: { id: route.params.id } })
+        // router.push({ name: 'GetSalon', params: { id: route.params.id } })
+        router.push({ name: 'HandleForfait', params: { id: route.params.id } })
     } catch (error) {
         console.error('Erreur lors de la sauvegarde:', error)
     }
 }
 
 onMounted(async () => {
+    await salonsStore.getSalon({ id: Array.isArray(route.params.id) ? Number(route.params.id[0]) : Number(route.params.id) });
+    console.log("🚀 ~ onMounted ~ getterSalon:", getterSalon.value?.name)
     await salonsStore.getBusinessHours({ id: Array.isArray(route.params.id) ? Number(route.params.id[0]) : Number(route.params.id) });
     salonsStore.getterBusinessHours?.forEach((businessHour) => {
         addTimeRange(Number(businessHour.dayOfWeek), businessHour.startTime, businessHour.endTime)
     })
     isEdit.value = salonsStore.getterBusinessHours?.length ? true : false
+    console.log("🚀 ~ onMounted ~ isEdit:", isEdit.value)
     isReady.value = true
 })
 </script>

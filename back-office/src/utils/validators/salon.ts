@@ -1,9 +1,9 @@
-import { validatePhone, validatePostalCode } from './'
+import { validatePhone, validatePostalCode } from './base'
 
 import type { SalonCreatePayload } from '@/types/salons'
 import type { SalonGeneralInformationValidation } from '@/types/validators'
 
-export const validateSalonData = (data: SalonCreatePayload) => {
+const validateSalonData = (data: SalonCreatePayload) => {
   const errors: SalonGeneralInformationValidation = {
     name: '',
     phone: '',
@@ -37,3 +37,5 @@ export const validateSalonData = (data: SalonCreatePayload) => {
 
   return errors
 }
+
+export default { validateSalonData }

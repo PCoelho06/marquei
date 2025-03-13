@@ -1,6 +1,6 @@
-import { validateEmail, validatePassword } from './'
+import { validateEmail, validatePassword } from './base'
 
-export const validateUserLoginData = (data: { email: string; password: string }) => {
+const validateUserLoginData = (data: { email: string; password: string }) => {
   const errors: { email?: string; password?: string } = {}
 
   const emailError = validateEmail(data.email)
@@ -13,7 +13,7 @@ export const validateUserLoginData = (data: { email: string; password: string })
   return errors
 }
 
-export const validateUserRegistrationData = (data: {
+const validateUserRegistrationData = (data: {
   email: string
   password: string
   confirmPassword: string
@@ -32,3 +32,5 @@ export const validateUserRegistrationData = (data: {
 
   return errors
 }
+
+export default { validateUserLoginData, validateUserRegistrationData }

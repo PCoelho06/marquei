@@ -7,8 +7,9 @@
     }" ref="target">
 
     <div class="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-      <router-link to="/" class="text-4xl text-white font-semibold">
-        💈 Marquei
+      <router-link to="/" class="flex items-center gap-4 text-4xl text-white font-semibold">
+        <img src="@/assets/images/logos/icon-white.svg" alt="Logo" class="inline h-8" />
+        Marquei
       </router-link>
 
       <button class="block lg:hidden" @click="sidebarStore.isSidebarOpen = false">
@@ -34,13 +35,6 @@
           </div>
         </template>
       </nav>
-
-      <div v-if="authStore.getterMode === 'management'"
-        class="mx-auto mb-10 w-full max-w-60 rounded-sm border border-strokedark bg-boxdark py-6 px-4 text-center shadow-xl">
-        <h3 class="mb-1 font-semibold text-white">Marquei Pro</h3>
-        <p class="mb-4 text-xs">Aproveite todos os benefícios premium com a Marquei Pro !</p>
-        <LinkButton to="/adherir" :newTab="false" value="Compre agora" />
-      </div>
     </div>
   </aside>
 </template>
@@ -50,13 +44,10 @@ import { ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
 import { useSidebarStore } from '@/stores/sidebar'
-import { useAuthStore } from '@/stores/auth'
 
 import SidebarItem from './SidebarItem.vue'
-import LinkButton from '../Buttons/LinkButton.vue'
 
 const sidebarStore = useSidebarStore()
-const authStore = useAuthStore()
 
 defineProps<{
   menuGroups: {

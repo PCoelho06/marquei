@@ -11,6 +11,7 @@ use App\Model\RolesEnum;
 use App\Entity\UserSalon;
 use App\Repository\UserRepository;
 use App\Entity\BusinessHoursRanges;
+use App\Entity\Subscription;
 use App\Repository\SalonRepository;
 use App\Repository\ServiceRepository;
 use App\Repository\ResourceRepository;
@@ -101,6 +102,8 @@ class SalonService
             throw new \InvalidArgumentException('Salão não encontrado');
         }
 
+        $this->checkUserIsSalonOwner($salon);
+
         return $salon;
     }
 
@@ -138,6 +141,19 @@ class SalonService
         $machines = $this->resourceRepository->findMachineBySalonPaginated($salon, $page, $limit);
 
         return array_map(fn(Resource $machine) => $machine->toArray(), $machines);
+    }
+
+    public function getSalonCurrentSubscription(int $id): Subscription
+    {
+        $salon = $this->getSalon($id);
+
+        $subscription = $salon->getSubscriptions()->filter(fn($subscription) => $subscription->getStatus() == 'active')->first();
+
+        if ($subscription === null || !$subscription) {
+            throw new \InvalidArgumentException('Salão não possui assinatura ativa');
+        }
+
+        return $subscription;
     }
 
     public function updateSalon(int $id, SalonDTO $salonDTO): Salon

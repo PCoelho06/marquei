@@ -6,5 +6,5 @@ export interface BuilderContext {
 
 export interface Internals {
   parseResponse: (response: any) => any
-  parseError: (error: any, context: BuilderContext) => any
+  parseError: (error: any) => any
 }

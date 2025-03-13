@@ -6,7 +6,9 @@
         <div class="p-4">
             <slot></slot>
         </div>
-        <slot name="action"></slot>
+        <div class="flex space-x-4 m-2 mt-auto">
+            <slot name="action"></slot>
+        </div>
     </div>
 </template>
 

@@ -32,3 +32,12 @@ export interface Service {
   price: number
   isEditing?: boolean
 }
+
+export interface Subscription {
+  id: number
+  status: string
+  startDate: string
+  endDate: string
+  createdAt: string
+  updatedAt: string
+}

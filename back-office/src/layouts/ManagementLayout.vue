@@ -18,54 +18,12 @@ import { ref } from 'vue'
 import HeaderArea from '@/components/Header/HeaderArea.vue'
 import SidebarArea from '@/components/Sidebar/SidebarArea.vue'
 
+import { managementSidebarMenuItems } from '@/composables/routing';
+
 const menuGroups = ref([
     {
         name: 'MENU',
-        menuItems: [
-            {
-                icon: 'dashboard',
-                label: 'Painel',
-                route: '/',
-                // children: [{ label: 'eCommerce', route: '/' }]
-            },
-            {
-                icon: 'shop',
-                label: 'Salões',
-                route: '/saloes',
-                children: [
-                    { label: 'Listar', route: '/saloes' },
-                    { label: 'Registar', route: '/saloes/registar' },
-                ]
-            },
-            // {
-            {
-                icon: 'resources',
-                label: 'Recursos',
-                route: '/recursos',
-                children: [
-                    { label: 'Empregados', route: '/recursos/empregados' },
-                    { label: 'Maquinas', route: '/recursos/maquinas' }
-                ]
-            },
-            //     icon: 'CalendarIcon.vue',
-            //     label: 'Agendamentos',
-            //     route: '/calendar'
-            // },
-            // {
-            //     icon: 'ClientsIcon.vue',
-            //     label: 'Clientes',
-            //     route: '/clients'
-            // },
-            // {
-            //     icon: 'ServicesIcon.vue',
-            //     label: 'Serviços',
-            //     route: '/services',
-            //     children: [
-            //         { label: 'Categorias', route: '/services/categories' },
-            //         { label: 'Serviços', route: '/services/services' }
-            //     ]
-            // },
-        ]
+        menuItems: managementSidebarMenuItems
     },
     {
         name: 'DATA',

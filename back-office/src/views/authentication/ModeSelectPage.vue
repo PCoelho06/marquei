@@ -1,26 +1,18 @@
 <template>
     <div class="h-screen flex flex-col justify-around items-center">
         <h1 class="font-bold text-5xl">💈 Marquei</h1>
-        <DoubleCard>
+        <DoubleCard @clickLeft="() => handleClick('management')" @clickRight="() => handleClick('store')">
             <template #leftCard>
-                <div class="w-1/2 cursor-pointer hover:bg-blue-50 hover:shadow-2xl" @click="handleClick('management')">
-                    <div class="p-14 text-center">
-                        <img src="@/assets/images/illustrations/management-mode.svg" alt="illustration" />
-                        <h2 class="text-3xl font-bold">
-                            Modo de gestão
-                        </h2>
-                    </div>
-                </div>
+                <img src="@/assets/images/illustrations/management-mode.svg" alt="illustration" />
+                <h2 class="text-3xl font-bold">
+                    Modo de gestão
+                </h2>
             </template>
             <template #rightCard>
-                <div class="w-1/2 cursor-pointer hover:bg-blue-50 hover:shadow-2xl" @click="handleClick('store')">
-                    <div class="p-14 text-center">
-                        <img src="@/assets/images/illustrations/store-mode.svg" alt="illustration" />
-                        <h2 class="text-3xl font-bold">
-                            Modo de loja
-                        </h2>
-                    </div>
-                </div>
+                <img src="@/assets/images/illustrations/store-mode.svg" alt="illustration" />
+                <h2 class="text-3xl font-bold">
+                    Modo de loja
+                </h2>
             </template>
         </DoubleCard>
         <DialogModal :showModal title="Selecione o salão que deseja gerenciar">

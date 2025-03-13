@@ -64,12 +64,19 @@ class Salon
     #[ORM\OneToMany(targetEntity: Resource::class, mappedBy: 'salon', orphanRemoval: true)]
     private Collection $resources;
 
+    /**
+     * @var Collection<int, Subscription>
+     */
+    #[ORM\OneToMany(targetEntity: Subscription::class, mappedBy: 'salon')]
+    private Collection $subscriptions;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->businessHoursRanges = new ArrayCollection();
         $this->services = new ArrayCollection();
         $this->resources = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -304,6 +311,36 @@ class Salon
             // set the owning side to null (unless already changed)
             if ($resource->getSalon() === $this) {
                 $resource->setSalon(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Subscription>
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    public function addSubscription(Subscription $subscription): static
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions->add($subscription);
+            $subscription->setSalon($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(Subscription $subscription): static
+    {
+        if ($this->subscriptions->removeElement($subscription)) {
+            // set the owning side to null (unless already changed)
+            if ($subscription->getSalon() === $this) {
+                $subscription->setSalon(null);
             }
         }
 

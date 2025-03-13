@@ -1,6 +1,6 @@
 <template>
     <div class="relative" ref="target">
-        <router-link class="flex items-center gap-4" to="#" @click.prevent="dropdownOpen = !dropdownOpen">
+        <div class="flex items-center gap-4" @click.prevent="dropdownOpen = !dropdownOpen">
             <span class="hidden text-right lg:block">
                 <span class="block text-sm font-medium text-black">Salão Maria</span>
                 <span class="block text-xs font-medium">Santo Tirso</span>
@@ -11,7 +11,7 @@
             </span>
 
             <DropdownArrowIcon :dropdownOpen />
-        </router-link>
+        </div>
 
         <div v-show="dropdownOpen"
             class="absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-xl">

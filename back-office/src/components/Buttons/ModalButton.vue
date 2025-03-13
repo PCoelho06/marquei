@@ -1,6 +1,13 @@
 <template>
     <DefaultButton :value :type :size @click="handleClick" />
-    <DefaultModal :showModal :modalTexts :action @cancel="showModal = false" />
+    <DefaultModal :title :actionClose="() => showModal = false">
+        <template #content>
+            <slot id="content"></slot>>
+        </template>
+        <template #actions>
+            <slot id="actions"></slot>
+        </template>
+    </DefaultModal>
 </template>
 
 <script setup lang="ts">
@@ -12,13 +19,7 @@ defineProps<{
     value: string,
     type?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning',
     size?: 'sm' | 'md' | 'xl'
-    modalTexts?: {
-        title: string
-        content: string
-        validate: string
-        dismiss: string
-    }
-    action: () => void
+    title?: string
 }>()
 
 const emit = defineEmits(['click'])

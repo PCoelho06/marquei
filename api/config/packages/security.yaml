@@ -49,6 +49,7 @@ security:
     - { path: ^/api/auth/logout, roles: PUBLIC_ACCESS }
     - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
     - { path: ^/api/auth/refresh-token, roles: PUBLIC_ACCESS }
+    - { path: ^/api/webhook, roles: PUBLIC_ACCESS }
     - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
     # - { path: ^/admin, roles: ROLE_ADMIN }
     # - { path: ^/profile, roles: ROLE_USER }

@@ -1,22 +1,44 @@
 <template>
-    <BaseHeader>
-        <nav class="flex justify-between items-center">
-            <div class="flex items-center space-x-4 ">
-                <router-link :to="{ name: 'Home', hash: '#features' }"
-                    class="text-dark hover:text-primary">Funcionalidades</router-link>
-                <router-link :to="{ name: 'Home', hash: '#testimonials' }"
-                    class="text-dark hover:text-primary">Testemunhos</router-link>
-                <OutlineButton value="Entrar" size="sm" @click="router.push({ name: 'Signin' })" />
-            </div>
-        </nav>
-    </BaseHeader>
+    <header class="fixed top-0 z-999 flex w-full">
+        <div class="flex flex-grow items-center justify-between py-4 px-4 md:px-6 2xl:px-11">
+            <h1 class="text-2xl font-bold" :class="[isBackgroundDark ? 'text-white' : 'text-primary']">
+                <RouterLink :to="{ name: 'Home' }">
+                    <img v-if="isBackgroundDark" src="@/assets/images/logos/icon-white.svg" alt="Logo"
+                        class="inline mx-2 h-8" />
+                    <img v-else src="@/assets/images/logos/icon.svg" alt="Logo" class="inline mx-2 h-8" />
+                    Marquei
+                </RouterLink>
+            </h1>
+            <nav class="flex justify-between items-center">
+                <div class="flex items-center space-x-4 ">
+                    <router-link v-for="navItem in navItems" :key="navItem.name"
+                        :to="{ name: 'Home', hash: navItem.hash }"
+                        :class="[isBackgroundDark ? 'text-white hover:text-stroke' : 'text-primary hover:text-dark']">{{
+                            navItem.name }}</router-link>
+                </div>
+            </nav>
+            <CoelhoButton v-if="isBackgroundDark" :outlined="true" variant="secondary"
+                @click="router.push({ name: 'Login' })">Entrar</CoelhoButton>
+            <CoelhoButton v-else @click="router.push({ name: 'Login' })">Entrar</CoelhoButton>
+        </div>
+    </header>
 </template>
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
-import BaseHeader from './BaseHeader.vue';
+import { CoelhoButton } from '@coelhoui';
+
 import OutlineButton from '@/components/Buttons/OutlineButton.vue';
 
 const router = useRouter();
+
+const navItems = [
+    { name: 'Funcionalidades', hash: '#features' },
+    { name: 'Testemunhos', hash: '#testimonials' },
+];
+
+defineProps<{
+    isBackgroundDark: boolean
+}>();
 </script>

@@ -4,8 +4,7 @@
             <div class="hidden w-full xl:block xl:w-1/2">
                 <div class="py-17.5 px-26 text-center">
                     <router-link class="mb-5.5 inline-block text-5xl font-bold" to="/">
-                        <!-- <img src="@/assets/images/logo/logo-dark.svg" alt="Logo" /> -->
-                        💈
+                        <img src="@/assets/images/logos/icon.svg" alt="Logo" class="inline mx-2 h-8" />
                         Marquei
                     </router-link>
 

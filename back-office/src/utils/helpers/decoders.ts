@@ -1,4 +1,4 @@
-export const decodeJWT = (token: string) => {
+const decodeJWT = (token: string) => {
   const base64Url = token.split('.')[1]
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
   const jsonPayload = decodeURIComponent(
@@ -10,3 +10,5 @@ export const decodeJWT = (token: string) => {
 
   return JSON.parse(jsonPayload)
 }
+
+export default { decodeJWT }

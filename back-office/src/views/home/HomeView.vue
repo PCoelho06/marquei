@@ -1,31 +1,25 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-whitten to-white">
-    <!-- Header -->
-    <!-- <header class="container mx-auto px-4 py-6">
-      <nav class="flex justify-between items-center">
-        <div class="text-2xl font-bold text-primary">💈 Marquei</div>
-        <div class="flex items-center space-x-4 ">
-          <a href="#features" class="text-dark hover:text-primary">Funcionalidades</a>
-          <a href="#testimonials" class="text-dark hover:text-primary">Testemunhos</a>
-          <OutlineButton value="Entrar" size="sm" @click="router.push({ name: 'Signin' })" />
-        </div>
-      </nav>
-    </header> -->
-    <DefaultHeader />
-
+  <DefaultLayout :isBackgroundDark>
     <!-- Hero Section -->
-    <section class="container mx-auto px-4 py-20">
-      <div class="max-w-4xl mx-auto text-center">
-        <h1 class="text-5xl font-bold text-dark mb-6">
-          Gerencie seu salão de beleza com simplicidade
+    <section
+      class="flex flex-col justify-center items-center px-4 py-20 bg-linear-to-br to-primary from-blue-500 min-h-dvh"
+      ref="heroSection">
+      <div class="max-w-4xl mx-auto text-center -translate-y-[40%] heroSection">
+        <h1 class="flex items-center justify-center gap-4 text-5xl font-bold text-white mb-6">
+          <img src="@/assets/images/logos/icon-white.svg" alt="Logo" class="inline h-12" />
+          Marquei
         </h1>
-        <p class="text-xl text-strokedark mb-8">
+        <h2 class="text-3xl font-bold text-whitten mb-6">
+          Gerencie seu salão de beleza com simplicidade
+        </h2>
+        <p class="text-xl text-stroke mb-8">
           Uma solução completa para a gestão dos seus agendamentos, recursos e equipe.
           Otimize seu tempo e aumente seu faturamento.
         </p>
         <div class="flex justify-center space-x-4">
-          <DefaultButton value="Começar agora" @click="router.push({ name: 'Signup' })" />
-          <OutlineButton value="Agendar uma demonstração gratis" @click="requestDemo" />
+          <CoelhoButton variant="secondary" @click="router.push({ name: 'Registration' })">Começar agora</CoelhoButton>
+          <CoelhoButton :outlined="true" variant="secondary" @click="requestDemo">Agendar uma demonstração grátis
+          </CoelhoButton>
         </div>
       </div>
     </section>
@@ -96,16 +90,18 @@
         </div>
       </div>
     </div>
-  </div>
+  </DefaultLayout>
+
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, useTemplateRef, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
+import { useElementBounding } from '@vueuse/core'
 
-import OutlineButton from '@/components/Buttons/OutlineButton.vue'
+import { CoelhoButton } from '@coelhoui'
 import DefaultButton from '@/components/Buttons/DefaultButton.vue'
-import DefaultHeader from '@/components/Header/DefaultHeader.vue'
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
 interface Feature {
   title: string
@@ -121,6 +117,17 @@ interface Testimonial {
 }
 
 const router = useRouter()
+const isBackgroundDark = ref(true)
+const heroSection = useTemplateRef('heroSection')
+const { top: topHeroSection, bottom: bottomHeroSection } = useElementBounding(heroSection)
+
+watchEffect(() => {
+  if (topHeroSection.value <= 60 && bottomHeroSection.value >= 60) {
+    isBackgroundDark.value = true
+  } else {
+    isBackgroundDark.value = false
+  }
+})
 
 const features: Feature[] = [
   {
@@ -167,3 +174,21 @@ const requestDemo = () => {
   showDemoModal.value = true
 }
 </script>
+
+<style scoped>
+.heroSection {
+  animation: heroSection 1s ease-in-out;
+}
+
+@keyframes heroSection {
+  0% {
+    opacity: 0;
+    transform: translateY(30%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+</style>
