@@ -18,7 +18,7 @@
             </InputGroup>
             <InputGroup id="postalCode" autocomplete="postal-code" label="Codigo Postal" type="text"
                 placeholder="Entre o codigo postal" v-model="salon.postalCode" :error="validationErrors.postalCode"
-                :required=true @input="() => validationErrors.postalCode = ''">
+                :required=true @input="handlePostalCodeChange">
                 <MailboxIcon class="fill-current" />
             </InputGroup>
             <InputGroup id="city" autocomplete="address-level2" label="Cidade" type="text"
@@ -108,10 +108,22 @@ const formatPhone = (phone: string) => {
     return ((formattedPhone.length > 0 ? '+351 ' : '') + formattedPhone).trim();
 };
 
+const formatPostalCode = (postalCode: string) => {
+    const cleanedPostalCode = postalCode.replace('-', '').trim();
+    const formattedPostalCode = cleanedPostalCode.replace(/(\d{4})(\d{3})/, '$1-$2');
+    return formattedPostalCode;
+};
+
 const handlePhoneChange = () => {
     validationErrors.value.phone = '';
 
     salon.value.phone = formatPhone(salon.value.phone);
+};
+
+const handlePostalCodeChange = () => {
+    validationErrors.value.postalCode = '';
+
+    salon.value.postalCode = formatPostalCode(salon.value.postalCode);
 };
 
 onMounted(() => {
@@ -126,7 +138,7 @@ watchEffect(() => {
         salon.value.name = getterSalon.value.name ?? '';
         salon.value.phone = formatPhone(getterSalon.value.phone ?? '');
         salon.value.address = getterSalon.value.address ?? '';
-        salon.value.postalCode = getterSalon.value.postalCode ?? '';
+        salon.value.postalCode = formatPostalCode(getterSalon.value.postalCode ?? '');
         salon.value.city = getterSalon.value.city ?? '';
         salon.value.country = getterSalon.value.country ?? '';
     }
