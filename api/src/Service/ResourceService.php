@@ -5,8 +5,10 @@ namespace App\Service;
 use App\Entity\User;
 use App\DTO\ResourceDTO;
 use App\Entity\Resource;
+use App\Model\ResourceTypeEnum;
 use App\Repository\ResourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 final class ResourceService
 {
@@ -14,12 +16,19 @@ final class ResourceService
         private EntityManagerInterface $entityManager,
         private ResourceRepository $resourceRepository,
         private SalonService $salonService,
-        private EntityHydratorService $hydrator
+        private EntityHydratorService $hydrator,
+        private Security $security,
     ) {}
 
-    public function getResources(): array
+    public function getResources(User $user): array
     {
-        $resources = $this->resourceRepository->findAll();
+        $resources = [];
+        $userSalons = $user->getSalons();
+
+        foreach ($userSalons as $userSalon) {
+            $resources = array_merge($resources, $userSalon->getSalon()->getResources()->toArray());
+        }
+
         return array_map(fn(Resource $resource) => $resource->toArray(), $resources);
     }
 
@@ -30,6 +39,8 @@ final class ResourceService
         if ($resource === null) {
             throw new \InvalidArgumentException('Recurso não encontrado');
         }
+
+        $this->salonService->checkUserIsSalonOwner($resource->getSalon());
 
         return $resource;
     }
@@ -71,11 +82,11 @@ final class ResourceService
 
     public function getResourcesByType(User $user, string $type): array
     {
-        $salons = $user->getSalons();
+        $userSalons = $user->getSalons();
 
         $resources = [];
-        foreach ($salons as $salon) {
-            $resources = array_merge($resources, $salon->getResources()->filter(fn(Resource $resource) => $resource->getType() === $type)->toArray());
+        foreach ($userSalons as $userSalon) {
+            $resources = array_merge($resources, $userSalon->getSalon()->getResources()->filter(fn(Resource $resource) => $resource->getType() === $type)->toArray());
         }
 
         return array_map(fn(Resource $resource) => $resource->toArray(), $resources);

@@ -65,3 +65,8 @@ export interface ModalContent {
   validate?: string
   action?: () => void
 }
+
+export interface Option {
+  value: string | number
+  label: string
+}

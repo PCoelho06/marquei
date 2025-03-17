@@ -1,29 +1,22 @@
-export type Employee = {
+import type { Salon } from '../salons'
+
+export type ResourceType = 'employee' | 'machine'
+
+export interface Resource {
   id: number
   name: string
+  salon: Salon
+  type: ResourceType
+  createdAt: string
+  updatedAt: string
 }
 
-export type Machine = {
-  id: number
+export interface CreateResourcePayload {
   name: string
+  salon: number
+  type: ResourceType
 }
 
-export interface CreateEmployeePayload {
-  name: string
-  type: 'employee'
-  salonId: number
-}
-
-export interface CreateMachinePayload {
-  name: string
-  type: 'machine'
-  salonId: number
-}
-
-export interface UpdateEmployeePayload extends CreateEmployeePayload {
-  id: number
-}
-
-export interface UpdateMachinePayload extends CreateMachinePayload {
+export interface UpdateResourcePayload extends CreateResourcePayload {
   id: number
 }

@@ -4,7 +4,7 @@
             <div class="mb-6">
                 <p class="text-sm text-gray-600 mb-4">
                     Você selecionou o plano <strong>{{ selectedPlan.name }}</strong>
-                    com faturamento {{ isYearly ? 'anual' : 'mensal' }}.
+                    com faturamento <strong>{{ isYearly ? 'anual' : 'mensal' }}</strong>.
                 </p>
                 <p class="text-lg font-bold text-gray-900 mb-4">
                     {{ formatters.formatPrice(selectedPlan.price) }} /
@@ -13,9 +13,10 @@
             </div>
 
             <div class="mb-6">
-                <div v-show="showPaymentModal" id="payment-element" class="border border-gray-300 p-3 rounded-md"></div>
-                <div v-show="!showPaymentModal" class="flex justify-center items-center gap-4 text-gray-600">
-                    <CoelhoSpinner v-show="!showPaymentModal" />
+                <div v-show="showPaymentElement" id="payment-element" class="border border-gray-300 p-3 rounded-md">
+                </div>
+                <div v-show="!showPaymentElement" class="flex justify-center items-center gap-4 text-gray-600">
+                    <CoelhoSpinner />
                     Carregando...
                 </div>
                 <div id="payment-errors" role="alert" v-if="paymentError" class="mt-2 text-red-600 text-sm">{{
@@ -34,21 +35,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router';
 import { loadStripe } from '@stripe/stripe-js'
 
-import { api } from '@/api';
+import { useSubscriptionsStore } from '@/stores/subscriptions';
+
 import { formatters } from '@/utils';
 
 import type { SelectedPlan } from '@/types/subscriptions'
 
 import DefaultModal from '@/components/Modals/DefaultModal.vue'
 import { CoelhoSpinner } from '@coelhoui'
+import { storeToRefs } from 'pinia';
 
-const props = defineProps<{
+const { getterClientSecret, getterSubscriptionId, getterStripeSubscriptionId } = storeToRefs(useSubscriptionsStore())
+
+defineProps<{
     selectedPlan: SelectedPlan
-    clientSecret: string | undefined
     isYearly: boolean
 }>()
 
@@ -62,7 +66,7 @@ const paymentProcessing = ref(false)
 const stripe = ref<any>(null)
 const elements = ref<any>(null)
 
-const showPaymentModal = computed<boolean>(() => props.clientSecret !== null)
+const showPaymentElement = computed<boolean>(() => getterClientSecret.value !== undefined)
 
 onMounted(async () => {
     try {
@@ -76,16 +80,15 @@ onUnmounted(() => {
     cleanupStripe()
 })
 
-watch(() => props.clientSecret, () => {
-    if (props.clientSecret) {
-        initPaymentElement()
-    }
+watch(() => showPaymentElement.value, () => {
+    console.log("🚀 ~ watch ~ getterClientSecret.value:", getterClientSecret.value)
+    initPaymentElement()
 })
 
 const initPaymentElement = () => {
     const options = {
         // mode: 'subscription',
-        clientSecret: props.clientSecret,
+        clientSecret: getterClientSecret.value,
     }
 
     elements.value = stripe.value.elements(options)
@@ -112,10 +115,19 @@ const cleanupStripe = () => {
     }
 }
 
-const closePaymentModal = () => {
+const closePaymentModal = async () => {
     cleanupStripe()
 
     emit('cancel')
+
+    if (!getterSubscriptionId.value || !getterStripeSubscriptionId.value) {
+        return
+    }
+    await useSubscriptionsStore().cancelSubscription({
+        subscriptionId: getterSubscriptionId.value.toString(),
+        stripeSubscriptionId: getterStripeSubscriptionId.value
+    })
+
     paymentError.value = ''
     paymentProcessing.value = false
 }

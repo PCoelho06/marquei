@@ -57,17 +57,16 @@ export const useSubscriptionsStore = defineStore('subscriptions', () => {
 
   const switchSubscription = async (payload: SubscriptionSwitchPayload) => {
     const response = await api().subscriptions.switch(payload)
-    console.log('🚀 ~ switchSubscription ~ response:', response)
     mutationSubscription(response.data.subscription)
     mutationStripeSubscription(response.data.stripeSubscription)
   }
   const cancelSubscription = async (payload: SubscriptionCancelPayload) => {
-    await api().subscriptions.cancel(payload)
     resetSubscription()
     resetSubscriptionId()
     resetStripeSubscription()
     resetStripeSubscriptionId()
     resetClientSecret()
+    await api().subscriptions.cancel(payload)
   }
 
   const resetSubscription = () => {

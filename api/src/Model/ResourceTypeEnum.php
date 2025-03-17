@@ -8,6 +8,6 @@ enum ResourceTypeEnum: string
 {
     use EnumHelperTrait;
 
-    case MACHINE = 'maquina';
-    case EMPLOYEE = 'empregado';
+    case MACHINE = 'machine';
+    case EMPLOYEE = 'employee';
 }

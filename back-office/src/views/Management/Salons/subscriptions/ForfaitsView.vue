@@ -1,7 +1,8 @@
 <template>
     <div class="min-h-screen flex justify-center items-center bg-stroke py-12 px-4 sm:px-6 lg:px-8">
         <div v-if="isReady" class="max-w-7xl mx-auto">
-            <CoelhoLink :to="router.resolve({ name: 'GetSalon', params: { id: route.params.id } }).href"
+            <CoelhoLink v-if="getterSubscription"
+                :to="router.resolve({ name: 'GetSalon', params: { id: route.params.id } }).href"
                 class="flex items-center gap-2">
                 <CoelhoIcon :icon="ArrowLeftIcon" />
                 Voltar
@@ -79,7 +80,7 @@
                                     plan.pricing.monthly) }}
                             </span>
                             <span class="text-base font-medium text-gray-500 ms-2">/{{ isYearly ? 'ano' : 'mês'
-                                }}</span>
+                            }}</span>
                         </p>
                     </div>
 
@@ -103,7 +104,7 @@
                 </template>
             </CoelhoModal>
 
-            <PaymentElement v-if="selectedPlan" :selectedPlan :clientSecret :isYearly @cancel="cancelSubscription" />
+            <PaymentElement v-if="selectedPlan" :selectedPlan :isYearly @cancel="cancelSubscription" />
         </div>
     </div>
 </template>
@@ -134,9 +135,6 @@ const isModalOpen = ref<boolean>(false)
 const isYearly = ref<boolean>(false)
 const isReady = ref<boolean>(false)
 const selectedPlan = ref<SelectedPlan | null>()
-const subscriptionId = ref<string | undefined>(undefined)
-const stripeSubscriptionId = ref<string | undefined>(undefined)
-const clientSecret = ref<string | undefined>(undefined)
 
 const modal = ref<ModalContent>()
 
@@ -195,14 +193,10 @@ const selectPlan = async (plan: PricingPlan) => {
         interval: isYearly.value ? 'yearly' : 'monthly'
     }
 
-    subscriptionsStore.createSubscription({
-        priceId: selectedPlan.value.price_id,
+    await subscriptionsStore.createSubscription({
+        priceId: isYearly.value ? plan.priceIds.yearly : plan.priceIds.monthly,
         salonId: Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
     })
-
-    subscriptionId.value = getterSubscriptionId.value?.toString()
-    stripeSubscriptionId.value = getterStripeSubscriptionId.value
-    clientSecret.value = getterClientSecret.value
 }
 
 const switchPlan = async (plan: PricingPlan) => {
@@ -241,12 +235,8 @@ const switchSubscription = async (plan: PricingPlan) => {
 
 const cancelSubscription = async () => {
     selectedPlan.value = null
-    clientSecret.value = undefined
-    if (!subscriptionId.value || !stripeSubscriptionId.value) return
-    await subscriptionsStore.cancelSubscription({
-        subscriptionId: subscriptionId.value,
-        stripeSubscriptionId: stripeSubscriptionId.value
-    })
+
+    console.log("🚀 ~ cancelSubscription ~ getterClientSecret.value:", getterClientSecret.value)
 }
 
 const defineActualPlan = () => {
@@ -263,7 +253,7 @@ const defineActualPlan = () => {
 onMounted(async () => {
     await subscriptionsStore.getSubscription({ id: Array.isArray(route.params.id) ? Number(route.params.id[0]) : Number(route.params.id) })
 
-    defineActualPlan()
+    if (getterSubscription.value) defineActualPlan()
     isReady.value = true
 })
 </script>

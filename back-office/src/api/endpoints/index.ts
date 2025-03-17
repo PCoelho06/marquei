@@ -3,8 +3,7 @@ import user from './user'
 import salons from './salons'
 import businessHours from './business-hours'
 import services from './services'
-import employees from './resources/employees'
-import machines from './resources/machines'
+import resources from './resources'
 import subscriptions from './subscriptions'
 
 export default {
@@ -13,7 +12,6 @@ export default {
   salons,
   businessHours,
   services,
-  employees,
-  machines,
+  resources,
   subscriptions,
 }

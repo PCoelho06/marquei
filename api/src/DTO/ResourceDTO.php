@@ -13,16 +13,16 @@ final class ResourceDTO
 
     #[Assert\NotBlank]
     #[Assert\Choice(callback: [ResourceTypeEnum::class, 'values'], message: 'Invalid resource type')]
-    public ResourceTypeEnum $type;
+    public string $type;
 
     #[Assert\NotBlank]
     #[Assert\Positive]
     public int $salonId;
 
-    public function __construct(string $name, ResourceTypeEnum $type, int $salonId)
+    public function __construct(string $name, string $type, int $salon)
     {
         $this->name = $name;
         $this->type = $type;
-        $this->salonId = $salonId;
+        $this->salonId = $salon;
     }
 }

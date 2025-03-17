@@ -99,6 +99,26 @@ class ResourceController extends AbstractController
         ]);
     }
 
+    #[Route('/', name: 'list', methods: ['GET'])]
+    public function list(#[CurrentUser()] User $user): JsonResponse
+    {
+        try {
+            $resources = $this->resourceService->getResources($user);
+        } catch (\InvalidArgumentException $e) {
+            return $this->json([
+                'status' => 'error',
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return $this->json([
+            'status' => 'success',
+            'data' => $resources,
+        ]);
+    }
+
     #[Route('/{type}', name: 'list_type', methods: ['GET'])]
     public function listByType(#[CurrentUser()] User $user, string $type): JsonResponse
     {

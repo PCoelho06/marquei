@@ -1,3 +1,6 @@
+import type { Option } from '@/types'
+import type { Salon } from '@/types/salons'
+
 const mapNumberToDayOfWeek = (dayOfWeek: number) => {
   switch (dayOfWeek) {
     case 1:
@@ -61,4 +64,28 @@ const mapDayOfWeekToNumber = (dayOfWeek: string) => {
   }
 }
 
-export default { mapNumberToDayOfWeek, mapNumberToDayOfWeekShort, mapDayOfWeekToNumber }
+const mapSalonsToOptions = (salons: Salon[]) => {
+  return salons.map((salon) => ({
+    value: salon.id,
+    label: salon.name,
+  }))
+}
+
+const mapResourceTypeValueToLabel = (resourceType: string) => {
+  switch (resourceType) {
+    case 'employee':
+      return 'Empregado'
+    case 'machine':
+      return 'Máquina'
+    default:
+      return ''
+  }
+}
+
+export default {
+  mapNumberToDayOfWeek,
+  mapNumberToDayOfWeekShort,
+  mapDayOfWeekToNumber,
+  mapSalonsToOptions,
+  mapResourceTypeValueToLabel,
+}

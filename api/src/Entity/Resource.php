@@ -105,6 +105,7 @@ class Resource
             'id' => $this->id,
             'type' => $this->type,
             'name' => $this->name,
+            'salon' => $this->salon->toArray(),
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
         ];

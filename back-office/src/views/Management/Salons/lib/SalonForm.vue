@@ -58,7 +58,6 @@ import MailboxIcon from '@/components/Icons/MailboxIcon.vue';
 
 const route = useRoute();
 const router = useRouter();
-console.log("🚀 ~ router:", router.getRoutes())
 
 const salonsStore = useSalonsStore();
 const { getterSalon } = storeToRefs(salonsStore);
