@@ -1,6 +1,6 @@
 <template>
     <div class="h-screen flex flex-col justify-around items-center">
-        <h1 class="font-bold text-5xl">💈 Marquei</h1>
+        <DefaultLogo size="lg" :is-title="true" />
         <DoubleCard @clickLeft="() => handleClick('management')" @clickRight="() => handleClick('store')">
             <template #leftCard>
                 <img src="@/assets/images/illustrations/management-mode.svg" alt="illustration" />
@@ -38,6 +38,7 @@ import { useAuthStore } from '@/stores/auth';
 
 import DoubleCard from '@/components/Cards/DoubleCard.vue';
 import DialogModal from '@/components/Modals/DialogModal.vue';
+import DefaultLogo from '@/components/Logos/DefaultLogo.vue';
 
 const router = useRouter();
 

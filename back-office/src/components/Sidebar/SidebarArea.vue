@@ -7,10 +7,8 @@
     }" ref="target">
 
     <div class="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-      <router-link to="/" class="flex items-center gap-4 text-4xl text-white font-semibold">
-        <img src="@/assets/images/logos/icon-white.svg" alt="Logo" class="inline h-8" />
-        Marquei
-      </router-link>
+      <DefaultLogo size="sm" contrast="light" :isLink=true :href="router.resolve({ name: 'Home' }).href"
+        class="mx-auto" />
 
       <button class="block lg:hidden" @click="sidebarStore.isSidebarOpen = false">
         <svg class="fill-current" width="20" height="18" viewBox="0 0 20 18" fill="none"
@@ -41,11 +39,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 
 import { useSidebarStore } from '@/stores/sidebar'
 
 import SidebarItem from './SidebarItem.vue'
+import DefaultLogo from '@/components/Logos/DefaultLogo.vue'
+
+const router = useRouter()
 
 const sidebarStore = useSidebarStore()
 

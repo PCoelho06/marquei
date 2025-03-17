@@ -1,61 +1,151 @@
 <template>
   <DefaultLayout :isBackgroundDark>
-    <!-- Hero Section -->
-    <section
-      class="flex flex-col justify-center items-center px-4 py-20 bg-linear-to-br to-primary from-blue-500 min-h-dvh"
-      ref="heroSection">
-      <div class="max-w-4xl mx-auto text-center -translate-y-[40%] heroSection">
-        <h1 class="flex items-center justify-center gap-4 text-5xl font-bold text-white mb-6">
-          <img src="@/assets/images/logos/icon-white.svg" alt="Logo" class="inline h-12" />
-          Marquei
-        </h1>
-        <h2 class="text-3xl font-bold text-whitten mb-6">
-          Gerencie seu salão de beleza com simplicidade
+
+    <section class="grid grid-cols-2 h-dvh" ref="heroSection">
+      <div class="flex flex-col justify-center items-center bg-linear-to-br px-4 py-20 to-primary from-blue-500"
+        ref="heroSection">
+        <div class="max-w-4xl mx-auto text-center heroSection">
+          <DefaultLogo size="lg" contrast="light" :isTitle=true class="mb-8" />
+          <h2 class="text-3xl font-bold text-whitten mb-6">
+            Gerencie seu salão de beleza com simplicidade
+          </h2>
+          <p class="text-xl text-stroke mb-8">
+            Uma solução completa para a gestão dos seus agendamentos, recursos e equipe.
+            Otimize seu tempo e aumente seu faturamento.
+          </p>
+          <div class="flex flex-col justify-center items-center gap-4">
+            <CoelhoButton size="lg" variant="secondary" @click="router.push({ name: 'Registration' })">Começar agora
+            </CoelhoButton>
+            <CoelhoButton size="lg" :outlined="true" variant="secondary" @click="requestDemo">Agendar uma demonstração
+              grátis
+            </CoelhoButton>
+          </div>
+        </div>
+      </div>
+      <CoelhoCarousel :autoplay="true" :show-arrows="false" :show-dots="false">
+        <template #slide-0>
+          <div class="size-full relative transition-transform duration-500 ease-in-out">
+            <img src="@/assets/images/landing/hero1.jpg" alt="" class="absolute inset-0 w-full h-full object-cover ">
+            <div class="absolute bg-black opacity-40 z-10 size-full"></div>
+          </div>
+        </template>
+        <template #slide-1>
+          <div class="size-full relative transition-transform duration-500 ease-in-out">
+            <img src="@/assets/images/landing/hero2.jpg" alt="" class="absolute inset-0 size-full object-cover ">
+            <div class="absolute bg-black opacity-40 z-10 size-full"></div>
+          </div>
+        </template>
+        <template #slide-2>
+          <div class="size-full relative transition-transform duration-500 ease-in-out">
+            <img src="@/assets/images/landing/hero3.jpg" alt="" class="absolute inset-0 size-full object-cover ">
+            <div class="absolute bg-black opacity-40 z-10 size-full"></div>
+          </div>
+        </template>
+        <template #slide-3>
+          <div class="size-full relative transition-transform duration-500 ease-in-out">
+            <img src="@/assets/images/landing/hero4.jpg" alt="" class="absolute inset-0 size-full object-cover ">
+            <div class="absolute bg-black opacity-40 z-10 size-full"></div>
+          </div>
+        </template>
+        <template #slide-4>
+          <div class="size-full relative transition-transform duration-500 ease-in-out">
+            <img src="@/assets/images/landing/hero5.jpg" alt="" class="absolute inset-0 size-full object-cover ">
+            <div class="absolute bg-black opacity-40 z-10 size-full"></div>
+          </div>
+        </template>
+      </CoelhoCarousel>
+    </section>
+
+    <AnimatedSection class="bg-primary/40 h-[600px] flex justify-center items-center" animationType="scale">
+      <div class="p-4 flex items-center justify-center">
+        <div>
+          <h2 class="text-3xl font-bold text-white mb-6">Gestão de Agendamentos</h2>
+          <p class="text-whitten">
+            Agende e gerencie facilmente todas as suas marcações. Sistema de lembretes automáticos e
+            confirmação online
+          </p>
+        </div>
+        <div class="size-full">
+          <img src="@/assets/images/illustrations/reminders.svg" alt="Gestão de Agendamentos" />
+        </div>
+      </div>
+    </AnimatedSection>
+
+    <AnimatedSection class="bg-primary/40 h-[600px] flex justify-center items-center" animationType="scale">
+      <div class="p-4 flex items-center justify-center">
+        <div class="size-full">
+          <img src="@/assets/images/illustrations/manage.svg" alt="Gestão de Recursos" />
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-white mb-6">Gestão de Recursos</h2>
+          <p class="text-whitten">
+            Otimize a utilização dos seus equipamentos e produtos. Controle o seu stock em tempo real.
+          </p>
+        </div>
+      </div>
+    </AnimatedSection>
+
+    <AnimatedSection class="bg-primary/40 h-[600px] flex justify-center items-center" animationType="scale">
+      <div class="p-4 flex items-center justify-center">
+        <div>
+          <h2 class="text-3xl font-bold text-white mb-6">Gestão de Funcionários</h2>
+          <p class="text-whitten">
+            Horários, desempenho e gestão de férias. Tudo para otimizar o trabalho da sua equipe.
+          </p>
+        </div>
+        <div class="size-full">
+          <img src="@/assets/images/illustrations/employees.svg" alt="Gestão de Funcionários" />
+        </div>
+      </div>
+    </AnimatedSection>
+
+    <AnimatedSection class="bg-primary/40 h-[600px] flex justify-center items-center" animationType="scale">
+      <div class="p-4 flex items-center justify-center">
+        <div class="size-full">
+          <img src="@/assets/images/illustrations/dashboard.svg" alt="Análise e Estatísticas" />
+        </div>
+        <div>
+          <h2 class="text-3xl font-bold text-white mb-6">Análise e Estatísticas</h2>
+          <p class="text-whitten">
+            Painéis detalhados para acompanhar o crescimento do seu negócio e tomar as melhores decisões.
+          </p>
+        </div>
+      </div>
+    </AnimatedSection>
+
+    <AnimatedSection class="bg-primary h-[600px] flex justify-center items-center" animationType="scale"
+      ref="callToActionSection">
+      <div class="flex flex-col">
+        <h2 class="text-3xl font-bold text-white mb-6">Não perca tempo e comece jà a geranciar o seu salão com Marquei
         </h2>
-        <p class="text-xl text-stroke mb-8">
-          Uma solução completa para a gestão dos seus agendamentos, recursos e equipe.
-          Otimize seu tempo e aumente seu faturamento.
-        </p>
-        <div class="flex justify-center space-x-4">
-          <CoelhoButton variant="secondary" @click="router.push({ name: 'Registration' })">Começar agora</CoelhoButton>
-          <CoelhoButton :outlined="true" variant="secondary" @click="requestDemo">Agendar uma demonstração grátis
+        <div class="p-4 flex items-center justify-center space-x-8">
+          <CoelhoButton size="lg" variant="secondary" @click="router.push({ name: 'Registration' })">Começar agora
+          </CoelhoButton>
+          <CoelhoButton size="lg" :outlined="true" variant="secondary" @click="requestDemo">Agendar uma demonstração
+            grátis
           </CoelhoButton>
         </div>
       </div>
-    </section>
+    </AnimatedSection>
 
-    <!-- Features Section -->
-    <section id="features" class="container mx-auto px-4 py-20">
-      <h2 class="text-4xl font-bold text-center text-dark mb-12">
-        Tudo o que você precisa
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div v-for="feature in features" :key="feature.title"
-          class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-          <div class="text-4xl mb-4">{{ feature.icon }}</div>
-          <h3 class="text-xl font-bold text-dark mb-2">{{ feature.title }}</h3>
-          <p class="text-strokedark">{{ feature.description }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Testimonials Section -->
     <section id="testimonials" class="container mx-auto px-4 py-20">
       <h2 class="text-4xl font-bold text-center text-dark mb-12">
         O que dizem nossos clientes
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        <div v-for="testimonial in testimonials" :key="testimonial.name" class="bg-white p-6 rounded-xl shadow-lg">
-          <p class="text-strokedark mb-4">{{ testimonial.content }}</p>
-          <div class="flex items-center">
-            <img :src="testimonial.avatar" :alt="testimonial.name" class="w-12 h-12 rounded-full mr-4" />
-            <div>
-              <div class="font-bold text-dark">{{ testimonial.name }}</div>
-              <div class="text-strokedark text-sm">{{ testimonial.role }}</div>
+      <CoelhoCarousel :autoplay="true" :show-arrows="true" :show-dots="true" class="w-full py-20">
+        <template v-for="(testimonial, index) in testimonials" :key="testimonial.name" #[`slide-${index}`]>
+          <div class="w-8/10 mx-auto bg-white p-6 rounded-xl shadow-lg border">
+            <p class="text-strokedark mb-4">{{ testimonial.content }}</p>
+            <div class="flex items-center">
+              <img :src="testimonial.avatar" :alt="testimonial.name" class="w-12 h-12 rounded-full mr-4" />
+              <div>
+                <div class="font-bold text-dark">{{ testimonial.name }}</div>
+                <div class="text-strokedark text-sm">{{ testimonial.role }}</div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </template>
+      </CoelhoCarousel>
     </section>
 
     <!-- CTA Section -->
@@ -99,15 +189,11 @@ import { ref, useTemplateRef, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { useElementBounding } from '@vueuse/core'
 
-import { CoelhoButton } from '@coelhoui'
+import { CoelhoButton, CoelhoCarousel } from '@coelhoui'
 import DefaultButton from '@/components/Buttons/DefaultButton.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-
-interface Feature {
-  title: string
-  description: string
-  icon: string
-}
+import DefaultLogo from '@/components/Logos/DefaultLogo.vue'
+import AnimatedSection from '@/components/Sections/AnimatedSection.vue'
 
 interface Testimonial {
   name: string
@@ -119,38 +205,17 @@ interface Testimonial {
 const router = useRouter()
 const isBackgroundDark = ref(true)
 const heroSection = useTemplateRef('heroSection')
+const callToActionSection = useTemplateRef('callToActionSection')
 const { top: topHeroSection, bottom: bottomHeroSection } = useElementBounding(heroSection)
+const { top: topCallToActionSection, bottom: bottomCallToActionSection } = useElementBounding(callToActionSection)
 
 watchEffect(() => {
-  if (topHeroSection.value <= 60 && bottomHeroSection.value >= 60) {
+  if (topHeroSection.value <= 60 && bottomHeroSection.value >= 60 || topCallToActionSection.value <= 60 && bottomCallToActionSection.value >= 60) {
     isBackgroundDark.value = true
   } else {
     isBackgroundDark.value = false
   }
 })
-
-const features: Feature[] = [
-  {
-    title: "Gestão de Agendamentos",
-    description: "Agende e gerencie facilmente todas as suas marcações. Sistema de lembretes automáticos e confirmação online.",
-    icon: "📅"
-  },
-  {
-    title: "Gestão de Recursos",
-    description: "Otimize a utilização dos seus equipamentos e produtos. Controle de estoque em tempo real.",
-    icon: "📦"
-  },
-  {
-    title: "Gestão de Funcionários",
-    description: "Horários, desempenho e gestão de férias. Tudo para otimizar o trabalho da sua equipe.",
-    icon: "👥"
-  },
-  {
-    title: "Análise e Estatísticas",
-    description: "Painéis detalhados para acompanhar o crescimento do seu negócio e tomar as melhores decisões.",
-    icon: "📊"
-  }
-]
 
 const testimonials: Testimonial[] = [
   {
@@ -168,7 +233,6 @@ const testimonials: Testimonial[] = [
 ]
 
 const showDemoModal = ref(false)
-const email = ref('')
 
 const requestDemo = () => {
   showDemoModal.value = true
@@ -183,7 +247,7 @@ const requestDemo = () => {
 @keyframes heroSection {
   0% {
     opacity: 0;
-    transform: translateY(30%);
+    transform: translateY(50%);
   }
 
   100% {

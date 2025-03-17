@@ -2,12 +2,8 @@
     <header class="fixed top-0 z-999 flex w-full">
         <div class="flex flex-grow items-center justify-between py-4 px-4 md:px-6 2xl:px-11">
             <h1 class="text-2xl font-bold" :class="[isBackgroundDark ? 'text-white' : 'text-primary']">
-                <RouterLink :to="{ name: 'Home' }">
-                    <img v-if="isBackgroundDark" src="@/assets/images/logos/icon-white.svg" alt="Logo"
-                        class="inline mx-2 h-8" />
-                    <img v-else src="@/assets/images/logos/icon.svg" alt="Logo" class="inline mx-2 h-8" />
-                    Marquei
-                </RouterLink>
+                <DefaultLogo size="sm" :contrast="isBackgroundDark ? 'light' : 'dark'" :is-link=true
+                    :href="router.resolve({ name: 'Home' }).href" />
             </h1>
             <nav class="flex justify-between items-center">
                 <div class="flex items-center space-x-4 ">
@@ -30,6 +26,7 @@ import { useRouter } from 'vue-router';
 import { CoelhoButton } from '@coelhoui';
 
 import OutlineButton from '@/components/Buttons/OutlineButton.vue';
+import DefaultLogo from '../Logos/DefaultLogo.vue';
 
 const router = useRouter();
 

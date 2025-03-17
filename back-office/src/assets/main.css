@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap');
 @import "tailwindcss";
 
 @theme {
+    --font-brand: "Jura", sans-serif;
+
     --color-primary: #3C50E0;
     --color-whitten: #f1f5f9;
     --color-stroke: #E2E8F0;
