@@ -159,7 +159,8 @@
           para a gestão diária do seu estabelecimento.
         </p>
         <div class="max-w-md mx-auto">
-          <DefaultButton value="Experimente Grátis" type="secondary" @click="requestDemo" />
+          <CoelhoButton size="lg" variant="secondary" @click="router.push({ name: 'Registration' })">Começar agora
+          </CoelhoButton>
         </div>
       </div>
     </section>
@@ -189,8 +190,7 @@ import { ref, useTemplateRef, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { useElementBounding } from '@vueuse/core'
 
-import { CoelhoButton, CoelhoCarousel } from '@coelhoui'
-import DefaultButton from '@/components/Buttons/DefaultButton.vue'
+import { CoelhoButton, CoelhoCarousel } from '@/components'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import DefaultLogo from '@/components/Logos/DefaultLogo.vue'
 import AnimatedSection from '@/components/Sections/AnimatedSection.vue'

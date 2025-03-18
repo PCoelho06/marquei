@@ -30,8 +30,8 @@ import { mappers, validators } from '@/utils';
 import { useSalonsStore } from '@/stores/salons';
 import { useResourcesStore } from '@/stores/resources';
 
-import { CoelhoButton, CoelhoInputGroup } from '@coelhoui';
-import type { Option } from '@/types';
+import { CoelhoButton, CoelhoInputGroup } from '@/components';
+import type { SelectOption } from '@/types';
 import type { ResourceType } from '@/types/resources';
 
 interface Resource {
@@ -48,7 +48,7 @@ const resourcesStore = useResourcesStore();
 
 const isEdit = route.params.id ? true : false;
 
-const salonOptions = ref<Option[]>();
+const salonOptions = ref<SelectOption[]>();
 const hasAtLeastOneSalon = ref(true);
 const isReady = ref(false);
 const validationErrors = ref({

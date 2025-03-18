@@ -23,9 +23,8 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
-import { CoelhoButton } from '@coelhoui';
+import { CoelhoButton } from '@/components';
 
-import OutlineButton from '@/components/Buttons/OutlineButton.vue';
 import DefaultLogo from '../Logos/DefaultLogo.vue';
 
 const router = useRouter();

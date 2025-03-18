@@ -66,7 +66,7 @@ export interface ModalContent {
   action?: () => void
 }
 
-export interface Option {
+export interface SelectOption {
   value: string | number
   label: string
 }

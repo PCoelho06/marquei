@@ -81,7 +81,7 @@ import { columnsResources } from '@/views/$composable/columnsResources'
 
 import DefaultCard from '@/components/Cards/DefaultCard.vue'
 import ManagementLayout from '@/layouts/ManagementLayout.vue'
-import { CoelhoDataTable, CoelhoButton, CoelhoIcon, CoelhoModal } from '@coelhoui'
+import { CoelhoDataTable, CoelhoButton, CoelhoIcon, CoelhoModal } from '@/components'
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/solid'
 
 const router = useRouter()
@@ -95,12 +95,12 @@ const { getterEmployees, getterMachines, getterResources } = storeToRefs(resourc
 
 const deleteResource = async (id: number) => {
     console.log('delete resource', id)
-    await resourcesStore.deleteResource({ id })
+    await resourcesStore.deleteResource({ id: id })
     loadResources()
     isModalOpen.value = false
 }
 
-const openModal = (type: string, id: number) => {
+const openModal = (type: string, id: number | string) => {
     switch (type) {
         case 'delete:resource':
             modal.value = {
@@ -108,7 +108,7 @@ const openModal = (type: string, id: number) => {
                 content: 'Tem a certeza que deseja eliminar este recurso?',
                 dismiss: 'Cancelar',
                 validate: 'Eliminar',
-                action: async () => await deleteResource(id),
+                action: async () => await deleteResource(Number(id)),
             }
             isModalOpen.value = true
             break

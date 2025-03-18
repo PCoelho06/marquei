@@ -104,7 +104,7 @@
                 </template>
             </CoelhoModal>
 
-            <PaymentElement v-if="selectedPlan" :selectedPlan :isYearly @cancel="cancelSubscription" />
+            <PaymentElement :selectedPlan :isYearly @cancel="cancelSubscription" />
         </div>
     </div>
 </template>
@@ -120,7 +120,7 @@ import { useSubscriptionsStore } from '@/stores/subscriptions'
 
 import type { PricingPlan, SelectedPlan } from '@/types/subscriptions'
 
-import { CoelhoBadge, CoelhoButton, CoelhoIcon, CoelhoLink, CoelhoModal } from '@coelhoui'
+import { CoelhoIcon, CoelhoBadge, CoelhoButton, CoelhoLink, CoelhoModal } from '@/components'
 import PaymentElement from '@/components/Payment/PaymentElement.vue'
 import { ArrowLeftIcon } from '@heroicons/vue/24/solid'
 import type { ModalContent } from '@/types'
@@ -134,7 +134,7 @@ const { getterSubscription, getterSubscriptionId, getterStripeSubscription, gett
 const isModalOpen = ref<boolean>(false)
 const isYearly = ref<boolean>(false)
 const isReady = ref<boolean>(false)
-const selectedPlan = ref<SelectedPlan | null>()
+const selectedPlan = ref<SelectedPlan | null>(null)
 
 const modal = ref<ModalContent>()
 

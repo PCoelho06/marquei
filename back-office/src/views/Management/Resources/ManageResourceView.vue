@@ -22,7 +22,7 @@ import { useRoute, useRouter } from 'vue-router';
 import ResourceForm from './lib/ResourceForm.vue';
 
 import CenteredLayout from '@/layouts/CenteredLayout.vue';
-import { CoelhoLink, CoelhoIcon, CoelhoCard } from '@coelhoui';
+import { CoelhoLink, CoelhoIcon, CoelhoCard } from '@/components';
 import { ArrowLeftIcon } from '@heroicons/vue/24/solid';
 
 const route = useRoute();

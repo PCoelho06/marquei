@@ -1,37 +1,36 @@
 <template>
-    <DefaultModal title="Finalizar assinatura" :actionClose="closePaymentModal">
-        <template #content>
-            <div class="mb-6">
-                <p class="text-sm text-gray-600 mb-4">
-                    Você selecionou o plano <strong>{{ selectedPlan.name }}</strong>
-                    com faturamento <strong>{{ isYearly ? 'anual' : 'mensal' }}</strong>.
-                </p>
-                <p class="text-lg font-bold text-gray-900 mb-4">
-                    {{ formatters.formatPrice(selectedPlan.price) }} /
-                    {{ isYearly ? 'ano' : 'mês' }}
-                </p>
-            </div>
+    <CoelhoModal title="Finalizar assinatura" v-model="showModal">
+        <div class="mb-6" v-if="selectedPlan">
+            <p class="text-sm text-gray-600 mb-4">
+                Você selecionou o plano <strong>{{ selectedPlan.name }}</strong>
+                com faturamento <strong>{{ isYearly ? 'anual' : 'mensal' }}</strong>.
+            </p>
+            <p class="text-lg font-bold text-gray-900 mb-4">
+                {{ formatters.formatPrice(selectedPlan.price) }} /
+                {{ isYearly ? 'ano' : 'mês' }}
+            </p>
+        </div>
 
-            <div class="mb-6">
-                <div v-show="showPaymentElement" id="payment-element" class="border border-gray-300 p-3 rounded-md">
-                </div>
-                <div v-show="!showPaymentElement" class="flex justify-center items-center gap-4 text-gray-600">
-                    <CoelhoSpinner />
-                    Carregando...
-                </div>
-                <div id="payment-errors" role="alert" v-if="paymentError" class="mt-2 text-red-600 text-sm">{{
-                    paymentError }}</div>
+        <div class="mb-6">
+            <div v-show="showPaymentElement" id="payment-element" class="border border-gray-300 p-3 rounded-md">
             </div>
-        </template>
-        <template #actions>
-            <button @click="processPayment"
+            <div v-show="!showPaymentElement" class="flex justify-center items-center gap-4 text-gray-600">
+                <CoelhoSpinner type="dots" size="lg" aria-label="Carregando" />
+            </div>
+            <div id="payment-errors" role="alert" v-if="paymentError" class="mt-2 text-red-600 text-sm">{{
+                paymentError }}</div>
+        </div>
+        <template #footer>
+            <CoelhoButton variant="secondary" @click="showModal = false">
+                Cancelar
+            </CoelhoButton>
+            <CoelhoButton @click="processPayment" v-show="showPaymentElement"
                 class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out"
-                :disabled="paymentProcessing">
-                <CoelhoSpinner v-if="paymentProcessing" color="white" />
-                {{ paymentProcessing ? 'Processando...' : 'Confirmar assinatura' }}
-            </button>
+                :disabled="paymentProcessing" :loading="paymentProcessing">
+                {{ paymentProcessing ? 'Processando' : 'Confirmar assinatura' }}
+            </CoelhoButton>
         </template>
-    </DefaultModal>
+    </CoelhoModal>
 </template>
 
 <script setup lang="ts">
@@ -45,14 +44,13 @@ import { formatters } from '@/utils';
 
 import type { SelectedPlan } from '@/types/subscriptions'
 
-import DefaultModal from '@/components/Modals/DefaultModal.vue'
-import { CoelhoSpinner } from '@coelhoui'
+import { CoelhoSpinner, CoelhoModal, CoelhoButton } from '@/components'
 import { storeToRefs } from 'pinia';
 
 const { getterClientSecret, getterSubscriptionId, getterStripeSubscriptionId } = storeToRefs(useSubscriptionsStore())
 
-defineProps<{
-    selectedPlan: SelectedPlan
+const props = defineProps<{
+    selectedPlan: SelectedPlan | null
     isYearly: boolean
 }>()
 
@@ -65,8 +63,12 @@ const paymentError = ref('')
 const paymentProcessing = ref(false)
 const stripe = ref<any>(null)
 const elements = ref<any>(null)
+const showPaymentElement = ref<boolean>(false)
+const showModal = ref<boolean>(!!props.selectedPlan)
 
-const showPaymentElement = computed<boolean>(() => getterClientSecret.value !== undefined)
+watch(() => props.selectedPlan, () => {
+    showModal.value = !!props.selectedPlan
+})
 
 onMounted(async () => {
     try {
@@ -80,9 +82,14 @@ onUnmounted(() => {
     cleanupStripe()
 })
 
-watch(() => showPaymentElement.value, () => {
-    console.log("🚀 ~ watch ~ getterClientSecret.value:", getterClientSecret.value)
-    initPaymentElement()
+watch(() => getterClientSecret.value, () => {
+    if (getterClientSecret.value !== undefined) initPaymentElement()
+})
+
+watch(() => showModal.value, (show) => {
+    if (!show) {
+        closePaymentModal()
+    }
 })
 
 const initPaymentElement = () => {
@@ -98,6 +105,8 @@ const initPaymentElement = () => {
     })
 
     paymentElement.value.mount('#payment-element')
+
+    showPaymentElement.value = true
 
     paymentElement.value.on('change', (event: any) => {
         if (event.error) {
@@ -116,8 +125,6 @@ const cleanupStripe = () => {
 }
 
 const closePaymentModal = async () => {
-    cleanupStripe()
-
     emit('cancel')
 
     if (!getterSubscriptionId.value || !getterStripeSubscriptionId.value) {
@@ -130,6 +137,9 @@ const closePaymentModal = async () => {
 
     paymentError.value = ''
     paymentProcessing.value = false
+
+    cleanupStripe()
+    showPaymentElement.value = false
 }
 
 const processPayment = async () => {

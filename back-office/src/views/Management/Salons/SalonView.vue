@@ -46,7 +46,7 @@
                         <div v-if="getterSubscription" class="flex flex-col py-2 px-4">
                             <p class="text-sm text-gray-500">Subscrição: Gestão</p>
                             <p class="text-sm text-gray-500">Estado: {{ getterStripeSubscription['status']
-                            }}</p>
+                                }}</p>
                             <p class="text-sm text-gray-500">Proxima faturação :
                                 {{
                                     formatters.formatDateFromTimestamp(getterStripeSubscription['current_period_end'])
@@ -165,7 +165,7 @@ import type { SubscriptionCancelPayload } from '@/types/subscriptions'
 import DefaultCard from '@/components/Cards/DefaultCard.vue';
 import LinkButton from '@/components/Buttons/LinkButton.vue';
 import DefaultButton from '@/components/Buttons/DefaultButton.vue';
-import { CoelhoModal, CoelhoButton } from '@coelhoui';
+import { CoelhoModal, CoelhoButton } from '@/components';
 import InputGroup from '@/components/Forms/InputGroup.vue';
 import ManagementLayout from '@/layouts/ManagementLayout.vue';
 import type { ModalContent } from '@/types';

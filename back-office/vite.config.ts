@@ -12,7 +12,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@coelhoui': path.resolve(__dirname, '../CoelhoUI/src/components'),
     },
   },
 })
