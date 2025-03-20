@@ -42,10 +42,8 @@ const refreshToken = async (): Promise<string | null> => {
     const response = await axios.post(`${instance.defaults.baseURL}/api/auth/refresh-token`, {
       refresh_token: getRefreshToken(),
     })
-    console.log('🚀 ~ refreshToken ~ response:', response)
 
     const newAccessToken = response.data.data.access_token
-    console.log('🚀 ~ refreshToken ~ newAccessToken:', newAccessToken)
 
     setTokens(newAccessToken, response.data.refresh_token)
 
@@ -75,16 +73,13 @@ instance.interceptors.response.use(
   async (error: AxiosError) => {
     const authStore = useAuthStore()
     const originalRequest = error.config as CustomAxiosRequestConfig
-    console.log('🚀 ~ originalRequest:', originalRequest)
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
-      console.log('🚀 ~ originalRequest._retry:', originalRequest._retry)
 
       const newToken = await refreshToken()
 
       if (newToken) {
-        console.log('🚀 ~ newToken:', newToken)
         originalRequest.headers.Authorization = `Bearer ${newToken}`
         return instance(originalRequest)
       }
@@ -110,13 +105,47 @@ const internals: Internals = {
     }
     return Promise.reject(error)
   },
+  httpQuery: (context: BuilderContext) => {
+    if (!context.httpQuery) return context.url
+    const { httpQuery, url } = context
+
+    const params = Object.entries(httpQuery)
+    const query = params.reduce((acc: string, [key, val], index: number) => {
+      return queryReduce(acc, val, index, key)
+    }, '')
+    return `${url}${query}`
+  },
 }
 
 const builder = (context: BuilderContext) => {
+  const url = internals.httpQuery(context)
   return instance
-    .request({ ...context, data: context.payload ? JSON.stringify(context.payload) : undefined })
+    .request({
+      ...context,
+      url,
+      data: context.payload ? JSON.stringify(context.payload) : undefined,
+    })
     .then(internals.parseResponse)
     .catch((error: Error | AxiosError) => internals.parseError(error))
+}
+
+const queryReduce = (acc: string, val: any, index: number, key: string) => {
+  if (val === undefined || val === null || val === 'null' || val === '') return acc
+  if (Array.isArray(val) && !val.length) return acc
+  if (typeof val === 'string' && !val) return acc
+
+  let symbol = '?'
+  if (acc && index > 0) symbol = '&'
+
+  if (typeof val === 'boolean') {
+    let bool = 'true'
+    if (!val) bool = 'false'
+    acc += `${symbol}${key}=${bool}`
+    return acc
+  }
+
+  acc += `${symbol}${key}=${val}`
+  return acc
 }
 
 export { builder }

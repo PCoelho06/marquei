@@ -1,15 +1,18 @@
 import { builder } from '@/api/engine'
-import type { CreateResourcePayload, UpdateResourcePayload, ResourceType } from '@/types/resources'
+import type {
+  ResourceGetPayload,
+  ResourceCreatePayload,
+  ResourceUpdatePayload,
+} from '@/types/resources'
 
 const resources = {
-  get: async (payload: { id: number }) =>
-    await builder({ url: `/api/resources/${payload.id}`, method: 'GET', payload }),
-  listAll: async () => await builder({ url: `/api/resources/`, method: 'GET', payload: {} }),
-  listByType: async (payload: { type: ResourceType }) =>
-    await builder({ url: `/api/resources/${payload.type}`, method: 'GET', payload: {} }),
-  create: async (payload: CreateResourcePayload) =>
+  get: async ({ payload, httpQuery }: { payload: ResourceGetPayload; httpQuery?: object }) =>
+    await builder({ url: `/api/resources/${payload.id}`, method: 'GET', payload, httpQuery }),
+  search: async ({ httpQuery }: { httpQuery?: object }) =>
+    await builder({ url: `/api/resources/`, method: 'GET', payload: {}, httpQuery }),
+  create: async (payload: ResourceCreatePayload) =>
     await builder({ url: '/api/resources/', method: 'POST', payload }),
-  update: async (payload: UpdateResourcePayload) =>
+  update: async (payload: ResourceUpdatePayload) =>
     await builder({ url: `/api/resources/${payload.id}`, method: 'PUT', payload }),
   delete: async (payload: { id: number }) =>
     await builder({ url: `/api/resources/${payload.id}`, method: 'DELETE', payload }),

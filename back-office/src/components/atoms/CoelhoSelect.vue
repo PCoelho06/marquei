@@ -19,7 +19,7 @@
                 :class="{ 'opacity-50 cursor-not-allowed': disabled }" @click="!disabled && toggleDropdown()"
                 tabindex="0" @keydown.space.prevent="!disabled && toggleDropdown()"
                 @keydown.enter.prevent="!disabled && toggleDropdown()" @blur="handleBlur">
-                <span v-if="multiple">
+                <span v-if="multiple && Array.isArray(selectedValues)">
                     <span v-if="selectedValues.length === 0">{{ placeholder }}</span>
                     <div v-else class="flex flex-wrap gap-1">
                         <span v-for="value in selectedValues" :key="value"
@@ -202,7 +202,7 @@ const getOptionLabel = (value: string) => {
 
 const isSelected = (value: string) => {
     if (props.multiple) {
-        return Array.isArray(props.modelValue) && props.modelValue.includes(value);
+        return Array.isArray(props.modelValue) && (props.modelValue as string[]).includes(value);
     }
     return props.modelValue === value;
 };

@@ -1,4 +1,3 @@
-import type { Option } from '@/types'
 import type { Salon } from '@/types/salons'
 
 const mapNumberToDayOfWeek = (dayOfWeek: number) => {
@@ -66,7 +65,7 @@ const mapDayOfWeekToNumber = (dayOfWeek: string) => {
 
 const mapSalonsToOptions = (salons: Salon[]) => {
   return salons.map((salon) => ({
-    value: salon.id,
+    value: salon.id.toString(),
     label: salon.name,
   }))
 }

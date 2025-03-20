@@ -3,108 +3,108 @@ import { defineStore } from 'pinia'
 
 import { api } from '@/api'
 
-import type { CreateResourcePayload, Resource, UpdateResourcePayload } from '@/types/resources'
+import type {
+  Resource,
+  ResourceQuery,
+  ResourceGetPayload,
+  ResourceCreatePayload,
+  ResourceUpdatePayload,
+  ResourceDeletePayload,
+} from '@/types/resources'
+import type { ListSettings } from '@/types'
 
 export const useResourcesStore = defineStore('resources', () => {
-  const resources = ref<Resource[] | undefined>()
-  const employees = ref<Resource[] | undefined>()
-  const machines = ref<Resource[] | undefined>()
+  /**
+   * @constant resource               <Resource | undefined>
+   * @constant resourceList           <Resource[] | undefined>
+   * @constant resourceSettings       <ListSettings | undefined>
+   * @constant query                  <ResourceQuery | undefined>
+   */
+  const resource = ref<Resource | undefined>()
+  const resourceList = ref<Resource[] | undefined>()
+  const resourceSettings = ref<ListSettings | undefined>()
+  const query = ref<ResourceQuery | undefined>()
 
-  const getterResources = computed<Resource[] | undefined>(() => resources.value)
-  const getterEmployees = computed<Resource[] | undefined>(() => employees.value)
-  const getterMachines = computed<Resource[] | undefined>(() => machines.value)
+  /**
+   * @constant getterResource         <Resource | undefined>
+   * @constant getterResourceList     <Resource[] | undefined>
+   * @constant getterResourceSettings <ListSettings | undefined>
+   * @constant getterQuery            <ResourceQuery | undefined>
+   */
+  const getterResource = computed<Resource | undefined>(() => resource.value)
+  const getterResourceList = computed<Resource[] | undefined>(() => resourceList.value)
+  const getterResourceSettings = computed<ListSettings | undefined>(() => resourceSettings.value)
+  const getterQuery = computed<ResourceQuery | undefined>(() => query.value)
 
-  const mutationResources = (newValue: Resource[]) => {
-    resources.value = newValue
+  /**
+   * @function mutationResource             (value: Resource | undefined) => void
+   * @function mutationResourceList         (value: Resource[] | undefined) => void
+   * @function mutationResourceSettings     (value: ListSettings | undefined) => void
+   * @function mutationQuery                (value: ResourceQuery | undefined) => void
+   */
+  const mutationResource = (value: Resource | undefined) => {
+    resource.value = value
   }
-  const mutationEmployees = (newValue: Resource[]) => {
-    employees.value = newValue
+  const mutationResourceList = (value: Resource[] | undefined) => {
+    resourceList.value = value
   }
-  const mutationMachines = (newValue: Resource[]) => {
-    machines.value = newValue
+  const mutationResourceSettings = (value: ListSettings | undefined) => {
+    resourceSettings.value = value
+  }
+  const mutationQuery = (value: ResourceQuery | undefined) => {
+    query.value = value
   }
 
-  const getResources = async () => {
-    const response = await api().resources.listAll()
-    mutationResources(response.data)
+  const getResource = async (payload: ResourceGetPayload) => {
+    const response = await api().resources.get({ payload })
+    mutationResource(response.data)
   }
-  const getEmployees = async () => {
-    const response = await api().resources.listByType({ type: 'employee' })
-    mutationEmployees(response.data)
+  const searchResources = async (httpQuery: object) => {
+    const response = await api().resources.search(httpQuery)
+    mutationResourceList(response.data.resources)
+    mutationResourceSettings(response.data.settings)
   }
-  const getMachines = async () => {
-    const response = await api().resources.listByType({ type: 'machine' })
-    mutationMachines(response.data)
-  }
-  const createResource = async (payload: CreateResourcePayload) => {
+  const createResource = async (payload: ResourceCreatePayload) => {
     const response = await api().resources.create(payload)
-    mutationResources([...(resources.value || []), response.data])
-    if (payload.type === 'employee') {
-      mutationEmployees([...(employees.value || []), response.data])
-    } else {
-      mutationMachines([...(machines.value || []), response.data])
-    }
+    mutationResource(response.data)
   }
-  const updateResource = async (payload: UpdateResourcePayload) => {
+  const updateResource = async (payload: ResourceUpdatePayload) => {
     const response = await api().resources.update(payload)
-    const updatedResources = (resources.value || []).map((resource) =>
-      resource.id === payload.id ? response.data : resource,
-    )
-    mutationResources(updatedResources)
-    if (payload.type === 'employee') {
-      const updatedEmployees = (employees.value || []).map((resource) =>
-        resource.id === payload.id ? response.data : resource,
-      )
-      mutationEmployees(updatedEmployees)
-    } else {
-      const updatedMachines = (machines.value || []).map((resource) =>
-        resource.id === payload.id ? response.data : resource,
-      )
-      mutationMachines(updatedMachines)
-    }
+    mutationResource(response.data)
   }
-  const deleteResource = async (payload: { id: number }) => {
+  const deleteResource = async (payload: ResourceDeletePayload) => {
     await api().resources.delete(payload)
-    const updatedResources = (resources.value || []).filter(
-      (resource) => resource.id !== payload.id,
-    )
-    mutationResources(updatedResources)
-    if (employees.value) {
-      const updatedEmployees = (employees.value || []).filter(
-        (resource) => resource.id !== payload.id,
-      )
-      mutationEmployees(updatedEmployees)
-    }
-    if (machines.value) {
-      const updatedMachines = (machines.value || []).filter(
-        (resource) => resource.id !== payload.id,
-      )
-      mutationMachines(updatedMachines)
-    }
+    searchResources(payload)
+    resetResource()
   }
 
-  const resetResources = () => {
-    resources.value = undefined
+  const setQuery = (value: ResourceQuery | undefined) => {
+    mutationQuery(value)
   }
-  const resetEmployees = () => {
-    employees.value = undefined
+
+  const resetResource = () => {
+    mutationResource(undefined)
   }
-  const resetMachines = () => {
-    machines.value = undefined
+  const resetResourceList = () => {
+    mutationResourceList(undefined)
+  }
+  const resetResourceSettings = () => {
+    mutationResourceSettings(undefined)
   }
 
   return {
-    getterResources,
-    getterEmployees,
-    getterMachines,
-    getResources,
-    getEmployees,
-    getMachines,
+    getterResource,
+    getterResourceList,
+    getterResourceSettings,
+    getterQuery,
+    getResource,
+    searchResources,
     createResource,
     updateResource,
     deleteResource,
-    resetResources,
-    resetEmployees,
-    resetMachines,
+    setQuery,
+    resetResource,
+    resetResourceList,
+    resetResourceSettings,
   }
 })

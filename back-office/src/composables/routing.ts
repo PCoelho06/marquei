@@ -45,8 +45,3 @@ export const managementSidebarMenuItems = managementRoutes
     }
     return managementSidebarMenuItem
   })
-
-console.log(
-  '🚀 ~ managementSidebarMenuItems ~ managementSidebarMenuItems:',
-  managementSidebarMenuItems,
-)

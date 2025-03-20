@@ -1,11 +1,44 @@
+import type { ResourceType } from './resources'
+
 export interface Payload {
   token: string
+}
+
+export interface BaseQuery {
+  sort?: Array<string>
+  page?: number
+  size?: number
+}
+
+export interface ResourceQuery extends BaseQuery {
+  salon?: number
+  type?: ResourceType
+  name?: string
 }
 
 export type SidebarCategories = 'Painel' | 'Relatórios' | 'Financeiro'
 export type SidebarItems = 'Empregados' | 'Material' | 'Registar'
 
-export interface ListSettings {}
+export interface Pageable {
+  sort: []
+  offset: number
+  pageNumber: number
+  pageSize: number
+  paged: boolean
+  unpaged: boolean
+}
+export interface ListSettings {
+  pageable: Pageable
+  last: boolean
+  totalPages: number
+  totalElements: number
+  size: number
+  number: number
+  sort: []
+  first: boolean
+  numberOfElements: number
+  empty: boolean
+}
 
 export interface JWTPayload {
   exp: number
@@ -69,4 +102,20 @@ export interface ModalContent {
 export interface SelectOption {
   value: string | number
   label: string
+}
+
+export interface Libraries {
+  key: string
+  label: string
+  list?: boolean
+  action: 'sort' | 'default'
+}
+
+export interface ObjectKeysLibraries {
+  [key: string]: Libraries
+}
+
+export interface QueryTag {
+  label: string | null
+  key: string | null
 }

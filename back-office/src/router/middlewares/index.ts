@@ -27,10 +27,8 @@ export const middlewares = (router: Router) => {
 
     const requiresOwnership = await checkOwnership(to)
     if (requiresOwnership) return next(requiresOwnership)
-    console.log('🚀 ~ router.beforeEach ~ requiresOwnership:', requiresOwnership)
 
     const redirect = redirectOnAuthenticated(to, getterMode)
-    console.log('🚀 ~ router.beforeEach ~ redirect:', redirect)
     if (redirect && isAuthenticated) return next(redirect)
 
     next()

@@ -19,8 +19,7 @@
       </div>
 
       <!-- Dynamic Form Component -->
-      <component :is="componentType" :id="inputId" :prefix="prefix || $slots.prefix ? true : false"
-        :suffix="suffix || $slots.suffix || action ? true : false" :type="type" v-model="inputValue" v-bind="$attrs"
+      <component :is="componentType" :id="inputId" :type="type" v-model="inputValue" v-bind="$attrs"
         :disabled="disabled" :placeholder="placeholder" :options="options" :multiple="multiple" :searchable="searchable"
         class="flex-1" :error="!!error" @blur="handleBlur" />
 

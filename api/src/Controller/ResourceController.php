@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\DTO\ResourceDTO;
 use App\Service\ResourceService;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Requirement\Requirement;
@@ -100,7 +101,7 @@ class ResourceController extends AbstractController
     }
 
     #[Route('/', name: 'list', methods: ['GET'])]
-    public function list(#[CurrentUser()] User $user): JsonResponse
+    public function list(#[CurrentUser()] User $user, Request $request): JsonResponse
     {
         try {
             $resources = $this->resourceService->getResources($user);
@@ -115,7 +116,10 @@ class ResourceController extends AbstractController
 
         return $this->json([
             'status' => 'success',
-            'data' => $resources,
+            'data' => [
+                'resources' => $resources,
+                'settings' => $request->attributes,
+            ],
         ]);
     }
 

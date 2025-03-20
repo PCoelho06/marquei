@@ -1,28 +1,9 @@
 <template>
     <ManagementLayout>
-        <div class="container mx-auto">
-            <h1 class="text-2xl font-semibold">Recursos</h1>
-            <div class="grid grid-cols-2 gap-4 my-4">
-                <DefaultCard cardTitle="Empregados">
-                    <template #default>
-                        <p class="text-center">
-                            <span class="text-5xl font-semibold block">{{ getterEmployees ? getterEmployees.length : 0
-                            }}</span>
-                            <span class="text-sm text-gray-500">empregados</span>
-                        </p>
-                    </template>
-                </DefaultCard>
-                <DefaultCard cardTitle="Maquinas">
-                    <template #default>
-                        <p class="text-center">
-                            <span class="text-5xl font-semibold block">{{ getterMachines ? getterMachines.length : 0
-                            }}</span>
-                            <span class="text-sm text-gray-500">máquinas disponiveis</span>
-                        </p>
-                    </template>
-                </DefaultCard>
-            </div>
-            <CoelhoDataTable v-if="resources?.length" :items="resources" :columns="columnsResources">
+        <div v-if="isReady" class="container mx-auto">
+            <SearchResource :loading=false @submit="fetchResourcesList" />
+            <CoelhoDataTable v-if="formattedResourcesList?.length" :items="formattedResourcesList"
+                :columns="columnsResources">
                 <template #actions>
                     <CoelhoButton variant="primary" @click="router.push({ name: 'AddRessource' })">
                         Adicionar
@@ -69,34 +50,54 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, ref, computed } from 'vue'
+import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { storeToRefs } from 'pinia'
 
 import { mappers } from '@/utils'
+import { engineQueries } from '@/composables/engineQueries'
 
 import { useResourcesStore } from '@/stores/resources'
 
-import { columnsResources } from '@/views/$composable/columnsResources'
+import { columnsResources } from '@/views/commons/composables/columnsResources'
 
 import DefaultCard from '@/components/Cards/DefaultCard.vue'
 import ManagementLayout from '@/layouts/ManagementLayout.vue'
 import { CoelhoDataTable, CoelhoButton, CoelhoIcon, CoelhoModal } from '@/components'
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/solid'
+import SearchResource from './$filters/SearchResource.vue'
+import type { ResourceQuery } from '@/types'
 
+const { formatForRouter } = engineQueries()
 const router = useRouter()
 
-const resources = ref<{ id: number, type: string, name: string, salon: string }[]>()
 const isModalOpen = ref(false)
 const modal = ref<{ title: string, content: string, dismiss: string, validate: string, action: () => void }>()
+const isReady = ref<boolean>(false)
+const query = ref<ResourceQuery>({
+    page: 0,
+    size: 10,
+    sort: [],
+});
 
 const resourcesStore = useResourcesStore()
-const { getterEmployees, getterMachines, getterResources } = storeToRefs(resourcesStore)
+const { getterResourceList, getterQuery } = storeToRefs(resourcesStore)
+
+const formattedResourcesList = computed(() => {
+    return getterResourceList.value?.map((resource) => {
+        return {
+            id: resource.id,
+            type: mappers.mapResourceTypeValueToLabel(resource.type),
+            name: resource.name,
+            salon: resource.salon.name,
+        }
+    })
+})
 
 const deleteResource = async (id: number) => {
     console.log('delete resource', id)
-    await resourcesStore.deleteResource({ id: id })
-    loadResources()
+    await resourcesStore.deleteResource({ id, ...query.value })
+    fetchResourcesList()
     isModalOpen.value = false
 }
 
@@ -115,19 +116,26 @@ const openModal = (type: string, id: number | string) => {
     }
 }
 
-const loadResources = async () => {
-    await resourcesStore.getResources()
-    resources.value = getterResources.value?.map((resource) => {
-        return {
-            id: resource.id,
-            type: mappers.mapResourceTypeValueToLabel(resource.type),
-            name: resource.name,
-            salon: resource.salon.name,
-        }
-    })
+const fetchResourcesList = async (args = {}) => {
+    query.value = { ...query.value, ...args }
+
+    await resourcesStore.searchResources({ httpQuery: query.value })
+
+    resourcesStore.setQuery(query.value)
+
+    router.push({ query: formatForRouter(query.value) });
 }
 
 onMounted(async () => {
-    await loadResources()
+    const httpQuery = getterQuery.value
+        ? { ...getterQuery.value, ...router.currentRoute.value.query }
+        : router.currentRoute.value.query;
+
+    await fetchResourcesList(httpQuery)
+    isReady.value = true
 })
+
+onBeforeRouteLeave((leaveGuard) => {
+    if (!leaveGuard.path.includes("/employeurs")) resourcesStore.setQuery(undefined);
+});
 </script>
