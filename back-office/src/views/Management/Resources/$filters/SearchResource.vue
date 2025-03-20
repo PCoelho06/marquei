@@ -9,7 +9,10 @@
           :options="resourceTypesOptions" />
         <CoelhoInputGroup v-model="httpQuery.name" label="Nome" placeholder="Nome do recurso" />
       </div>
-      <div class="mt-4 flex justify-end">
+      <div class="mt-4 flex gap-4 justify-end">
+        <CoelhoButton v-if="hasFilters" variant="danger" @click="clearFilters">
+          Apagar filtros
+        </CoelhoButton>
         <CoelhoButton type="submit" variant="primary" :loading="loading">
           Procurar
         </CoelhoButton>
@@ -19,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 
 import { CoelhoInputGroup, CoelhoButton, CoelhoCard } from "@/components";
@@ -51,6 +54,7 @@ const httpQuery = ref<ResourceFilters>({
   name: ""
 });
 const salonOptions = ref<SelectOption[]>();
+const hasFilters = ref(false);
 
 const submit = () => {
   const query = formatForRouter({ ...httpQuery.value, page: 1 });
@@ -73,4 +77,17 @@ onMounted(async () => {
   }
   setQueries();
 })
+
+watch(httpQuery, () => {
+  hasFilters.value = Object.values({ salon: httpQuery.value.salon, type: httpQuery.value.type, name: httpQuery.value.name }).some((value) => value.length > 0);
+}, { deep: true });
+
+const clearFilters = () => {
+  httpQuery.value = {
+    salon: [],
+    type: [],
+    name: ""
+  };
+  submit();
+};
 </script>
