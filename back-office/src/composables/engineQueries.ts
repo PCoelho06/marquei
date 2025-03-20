@@ -9,9 +9,9 @@ export const baseQuery = computed<ObjectKeysLibraries>(() => ({
     label: 'Page',
     action: 'default',
   },
-  size: {
-    key: 'size',
-    label: 'Size',
+  limit: {
+    key: 'limit',
+    label: 'Limit',
     action: 'default',
   },
   sort: {
@@ -82,10 +82,10 @@ export const engineQueries = () => ({
   //   return query
   // },
 
-  // updateSize: (query: any, val: number | string, fn: Function): any => {
-  //   query.size = val
+  // updateLimit: (query: any, val: number | string, fn: Function): any => {
+  //   query.limit = val
   //   query.page = 0
-  //   fn(undefined, 'updtSize')
+  //   fn(undefined, 'updtLimit')
   //   return query
   // },
 

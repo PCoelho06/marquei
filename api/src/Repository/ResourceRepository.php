@@ -4,14 +4,16 @@ namespace App\Repository;
 
 use App\Entity\Salon;
 use App\Entity\Resource;
+use App\DTO\ResourceFilterDTO;
 use App\Model\ResourceTypeEnum;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Resource>
  */
-class ResourceRepository extends ServiceEntityRepository
+class ResourceRepository extends AbstractRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -43,6 +45,26 @@ class ResourceRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByFilters(ResourceFilterDto $filters, Collection $salons): array
+    {
+        $queryBuilder = $this->createQueryBuilder('r')
+            ->where('r.salon IN (:salons)')
+            ->setParameter('salons', $salons);
+
+        if (!empty($filters->types)) {
+            $queryBuilder->andWhere('r.type IN (:types)')
+                ->setParameter('types', $filters->types);
+        }
+
+        if (!empty($filters->name)) {
+            $queryBuilder->andWhere('r.name LIKE :name')
+                ->setParameter('name', "%{$filters->name}%");
+        }
+
+        return $this->paginate($queryBuilder, $filters->page, $filters->limit);
+    }
+
 
     //    /**
     //     * @return Resource[] Returns an array of Resource objects

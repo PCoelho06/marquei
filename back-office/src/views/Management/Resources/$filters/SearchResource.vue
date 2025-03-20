@@ -53,7 +53,7 @@ const httpQuery = ref<ResourceFilters>({
 const salonOptions = ref<SelectOption[]>();
 
 const submit = () => {
-  const query = formatForRouter({ ...httpQuery.value, page: 0 });
+  const query = formatForRouter({ ...httpQuery.value, page: 1 });
   emits("submit", query);
 };
 

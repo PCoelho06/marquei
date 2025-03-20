@@ -7,7 +7,7 @@ export interface Payload {
 export interface BaseQuery {
   sort?: Array<string>
   page?: number
-  size?: number
+  limit?: number
 }
 
 export interface ResourceQuery extends BaseQuery {
@@ -23,7 +23,7 @@ export interface Pageable {
   sort: []
   offset: number
   pageNumber: number
-  pageSize: number
+  pageLimit: number
   paged: boolean
   unpaged: boolean
 }
@@ -32,7 +32,7 @@ export interface ListSettings {
   last: boolean
   totalPages: number
   totalElements: number
-  size: number
+  limit: number
   number: number
   sort: []
   first: boolean

@@ -5,6 +5,8 @@ namespace App\Service;
 use App\Entity\User;
 use App\DTO\ResourceDTO;
 use App\Entity\Resource;
+use App\Entity\UserSalon;
+use App\DTO\ResourceFilterDTO;
 use App\Model\ResourceTypeEnum;
 use App\Repository\ResourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,16 +22,10 @@ final class ResourceService
         private Security $security,
     ) {}
 
-    public function getResources(User $user): array
+    public function searchResources(User $user, ResourceFilterDTO $filters): array
     {
-        $resources = [];
-        $userSalons = $user->getSalons();
-
-        foreach ($userSalons as $userSalon) {
-            $resources = array_merge($resources, $userSalon->getSalon()->getResources()->toArray());
-        }
-
-        return array_map(fn(Resource $resource) => $resource->toArray(), $resources);
+        $userSalons = $user->getSalons()->map(fn(UserSalon $userSalon) => $userSalon->getSalon());
+        return $this->resourceRepository->findByFilters($filters, $userSalons);
     }
 
     public function getResource(int $id): ?Resource

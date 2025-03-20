@@ -78,7 +78,7 @@ const manageResource = async () => {
             await resourcesStore.updateResource({ id: Number(route.params.id), ...resource.value });
             router.push({ name: 'ListResources' });
         } else {
-            await resourcesStore.createResource(resource.value);
+            await resourcesStore.createResource({ ...resource.value, salon: Number(resource.value.salon) });
             router.push({ name: 'ListResources' });
         }
     } catch (error) {
@@ -95,7 +95,7 @@ onMounted(async () => {
     }
 
     if (isEdit) {
-        const resourceToEdit = resourcesStore.getterResources?.find((resource) => resource.id === Number(route.params.id));
+        const resourceToEdit = resourcesStore.getterResourceList?.find((resource) => resource.id === Number(route.params.id));
         if (resourceToEdit) {
             resource.value = {
                 type: resourceToEdit.type,

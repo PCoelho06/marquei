@@ -75,8 +75,8 @@ const isModalOpen = ref(false)
 const modal = ref<{ title: string, content: string, dismiss: string, validate: string, action: () => void }>()
 const isReady = ref<boolean>(false)
 const query = ref<ResourceQuery>({
-    page: 0,
-    size: 10,
+    page: 1,
+    limit: 10,
     sort: [],
 });
 
