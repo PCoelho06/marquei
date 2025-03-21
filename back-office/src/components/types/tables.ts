@@ -13,3 +13,8 @@ export interface SortConfig {
   key: string
   direction: 'asc' | 'desc'
 }
+
+export interface SelectOption {
+  label: string
+  value: string | number
+}

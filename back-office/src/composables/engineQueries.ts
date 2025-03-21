@@ -76,25 +76,23 @@ export const engineQueries = () => ({
       return acc
     }, {}),
 
-  // updatePage: (query: any, val: number, totalPages: number, fn: Function): any => {
-  //   query.page = Math.min(Math.max(0, val - 1), totalPages - 1)
-  //   fn(undefined, 'updtPage')
-  //   return query
-  // },
+  updatePage: (query: any, val: number, totalPages: number, fn: Function): any => {
+    query.page = Math.min(Math.max(1, val), totalPages)
+    fn(undefined, 'updtPage')
+    return query
+  },
 
-  // updateLimit: (query: any, val: number | string, fn: Function): any => {
-  //   query.limit = val
-  //   query.page = 0
-  //   fn(undefined, 'updtLimit')
-  //   return query
-  // },
+  updateLimit: (query: any, val: number | string, fn: Function): any => {
+    query.limit = val
+    query.page = 1
+    fn(undefined, 'updtLimit')
+    return query
+  },
 
-  // updateSort: (query: any, val: any, lib: any, fn: Function): any => {
-  //   query.sort = [
-  //     `${!lib[val.sortField] ? val.sortField : lib[val.sortField]},${val.sortDirection}`,
-  //   ]
-  //   query.page = 0
-  //   fn(undefined, 'updtSort')
-  //   return query
-  // },
+  updateSort: (query: any, val: any, lib: any, fn: Function): any => {
+    query.sort = [`${!lib[val.key] ? val.key : lib[val.key]},${val.order}`]
+    query.page = 1
+    fn(undefined, 'updtSort')
+    return query
+  },
 })

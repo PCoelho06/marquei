@@ -4,79 +4,57 @@
     <div class="flex flex-1 justify-between sm:hidden">
       <CoelhoButton variant="secondary" size="sm" :disabled="currentPage === 1"
         @click="handlePageChange(currentPage - 1)">
-        Précédent
+        Anterior
       </CoelhoButton>
       <CoelhoButton variant="secondary" size="sm" :disabled="currentPage === totalPages"
         @click="handlePageChange(currentPage + 1)">
-        Suivant
+        Seguinte
       </CoelhoButton>
     </div>
 
-    <!-- Version Desktop -->
-    <div class="hidden sm:flex sm:flex-col sm:gap-4 sm:flex-1 sm:items-center sm:justify-between">
-      <!-- Information sur les résultats -->
-      <div v-if="showInfo" class="text-sm text-gray-500">
-        <span>Affichage de </span>
-        <span class="font-medium">{{ startItem }}</span>
-        <span> à </span>
-        <span class="font-medium">{{ endItem }}</span>
-        <span> sur </span>
-        <span class="font-medium">{{ totalItems }}</span>
-        <span> résultats</span>
-      </div>
+    <div class="hidden sm:flex sm:items-center sm:space-x-1">
+      <CoelhoButton variant="secondary" size="sm" :disabled="currentPage === 1"
+        @click="handlePageChange(currentPage - 1)">
+        <ChevronLeftIcon class="h-4 w-4" />
+        <span class="ml-1">Anterior</span>
+      </CoelhoButton>
 
-      <!-- Navigation par pages -->
       <div class="flex items-center space-x-1">
-        <!-- Bouton Précédent -->
-        <CoelhoButton variant="secondary" size="sm" :disabled="currentPage === 1"
-          @click="handlePageChange(currentPage - 1)">
-          <ChevronLeftIcon class="h-4 w-4" />
-          <span class="ml-1">Précédent</span>
-        </CoelhoButton>
+        <button v-if="shouldShowFirst" type="button" :class="[
+          'px-3 py-1 text-sm rounded-md',
+          currentPage === 1 ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100',
+        ]
+          " @click="handlePageChange(1)">
+          1
+        </button>
 
-        <!-- Numéros de pages -->
-        <div class="flex items-center space-x-1">
-          <!-- Première page -->
-          <button v-if="shouldShowFirst" type="button" :class="[
-            'px-3 py-1 text-sm rounded-md',
-            currentPage === 1 ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100',
-          ]
-            " @click="handlePageChange(1)">
-            1
-          </button>
+        <span v-if="shouldShowFirstEllipsis" class="px-2 text-gray-500">...</span>
 
-          <!-- Ellipsis début -->
-          <span v-if="shouldShowFirstEllipsis" class="px-2 text-gray-500">...</span>
+        <button v-for="page in visiblePages" :key="page" type="button" :class="[
+          'px-3 py-1 text-sm rounded-md',
+          page === currentPage ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100',
+        ]
+          " @click="handlePageChange(page)">
+          {{ page }}
+        </button>
 
-          <!-- Pages centrales -->
-          <button v-for="page in visiblePages" :key="page" type="button" :class="[
-            'px-3 py-1 text-sm rounded-md',
-            page === currentPage ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100',
-          ]
-            " @click="handlePageChange(page)">
-            {{ page }}
-          </button>
+        <span v-if="shouldShowLastEllipsis" class="px-2 text-gray-500">...</span>
 
-          <!-- Ellipsis fin -->
-          <span v-if="shouldShowLastEllipsis" class="px-2 text-gray-500">...</span>
-
-          <!-- Dernière page -->
-          <button v-if="shouldShowLast" type="button" :class="[
-            'px-3 py-1 text-sm rounded-md',
-            currentPage === totalPages ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100',
-          ]
-            " @click="handlePageChange(totalPages)">
-            {{ totalPages }}
-          </button>
-        </div>
-
-        <!-- Bouton Suivant -->
-        <CoelhoButton variant="secondary" size="sm" :disabled="currentPage === totalPages"
-          @click="handlePageChange(currentPage + 1)">
-          <span class="mr-1">Suivant</span>
-          <ChevronRightIcon class="h-4 w-4" />
-        </CoelhoButton>
+        <button v-if="shouldShowLast" type="button" :class="[
+          'px-3 py-1 text-sm rounded-md',
+          currentPage === totalPages ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100',
+        ]
+          " @click="handlePageChange(totalPages)">
+          {{ totalPages }}
+        </button>
       </div>
+
+      <!-- Bouton Suivant -->
+      <CoelhoButton variant="secondary" size="sm" :disabled="currentPage === totalPages"
+        @click="handlePageChange(currentPage + 1)">
+        <span class="mr-1">Seguinte</span>
+        <ChevronRightIcon class="h-4 w-4" />
+      </CoelhoButton>
     </div>
   </nav>
 </template>
@@ -146,6 +124,5 @@ const shouldShowLastEllipsis = computed(() => {
 const handlePageChange = (page: number) => {
   if (page < 1 || page > props.totalPages) return;
   emit('update:currentPage', page);
-  emit('change', page);
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
-  <CoelhoCard class="bg-white my-4">
+  <CoelhoCard class="bg-white my-4" size="full">
     <form @submit.prevent="submit()">
-      <div class="grid grid-cols-1 gap-x-10 md:grid-cols-2 lg:grid-cols-3 lg:place-items-start xl:grid-cols-4"
+      <div class="grid grid-cols-1 gap-x-10 md:grid-cols-2 lg:grid-cols-3 lg:place-items-start xl:grid-cols-4 gap-4"
         id="automResourcesAll">
         <CoelhoInputGroup v-model="httpQuery.salon" label="Salão" component="select" :multiple=true
           :options="salonOptions" />

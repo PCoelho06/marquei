@@ -3,7 +3,12 @@
         <div v-if="isReady" class="container mx-auto">
             <SearchResource :loading=false @submit="fetchResourcesList" />
             <CoelhoDataTable v-if="formattedResourcesList?.length" :items="formattedResourcesList"
-                :columns="columnsResources">
+                :columns="columnsResources" :totalElements="getterResourceSettings?.totalElements"
+                :first="getterResourceSettings?.first" :last="getterResourceSettings?.last"
+                :totalPages="getterResourceSettings?.totalPages"
+                @update:limit="query = { ...updateLimit(query, $event, fetchResourcesList) }"
+                @update:sort="query = { ...updateSort(query, $event, libQuerySort, fetchResourcesList) }"
+                @update:page="query = { ...updatePage(query, $event, getterResourceSettings?.totalPages ? getterResourceSettings.totalPages : 1, fetchResourcesList) }">
                 <template #actions>
                     <CoelhoButton variant="primary" @click="router.push({ name: 'AddRessource' })">
                         Adicionar
@@ -50,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { storeToRefs } from 'pinia'
 
@@ -68,7 +73,7 @@ import { PencilIcon, TrashIcon } from '@heroicons/vue/24/solid'
 import SearchResource from './$filters/SearchResource.vue'
 import type { ResourceQuery } from '@/types'
 
-const { formatForRouter } = engineQueries()
+const { formatForRouter, updateLimit, updatePage, updateSort } = engineQueries()
 const router = useRouter()
 
 const isModalOpen = ref(false)
@@ -80,8 +85,10 @@ const query = ref<ResourceQuery>({
     sort: [],
 });
 
+const libQuerySort = ['name', 'salon', 'type']
+
 const resourcesStore = useResourcesStore()
-const { getterResourceList, getterQuery } = storeToRefs(resourcesStore)
+const { getterResourceList, getterQuery, getterResourceSettings } = storeToRefs(resourcesStore)
 
 const formattedResourcesList = computed(() => {
     return getterResourceList.value?.map((resource) => {
@@ -133,6 +140,7 @@ onMounted(async () => {
 
     await fetchResourcesList(httpQuery)
     isReady.value = true
+
 })
 
 onBeforeRouteLeave((leaveGuard) => {

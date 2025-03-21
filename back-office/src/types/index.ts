@@ -28,16 +28,16 @@ export interface Pageable {
   unpaged: boolean
 }
 export interface ListSettings {
-  pageable: Pageable
-  last: boolean
+  // pageable: Pageable
+  page: number
+  limit: number
+  first: number
+  last: number
   totalPages: number
   totalElements: number
-  limit: number
-  number: number
+  hasPrevious: boolean
+  hasNext: boolean
   sort: []
-  first: boolean
-  numberOfElements: number
-  empty: boolean
 }
 
 export interface JWTPayload {

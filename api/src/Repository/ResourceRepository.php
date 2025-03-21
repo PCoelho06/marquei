@@ -62,7 +62,7 @@ class ResourceRepository extends AbstractRepository
                 ->setParameter('name', "%{$filters->name}%");
         }
 
-        return $this->paginate($queryBuilder, $filters->page, $filters->limit);
+        return $this->paginate($queryBuilder, $filters->page, $filters->limit, $filters->sort);
     }
 
 

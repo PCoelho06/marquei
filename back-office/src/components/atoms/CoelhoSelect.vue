@@ -1,19 +1,15 @@
 <template>
     <div class="relative">
-        <!-- Label -->
         <label v-if="label" :for="id" class="block mb-2 text-sm font-medium text-dark">
             {{ label }}
         </label>
 
-        <!-- Select Container -->
         <div class="relative">
-            <!-- Search Input (for searchable variant) -->
             <input v-if="searchable" ref="searchInput" type="text" v-model="displayValue"
                 class="w-full rounded-md border border-stroke bg-white px-3 py-2 pr-10 text-sm focus:border-primary focus:outline-none"
                 :class="{ 'opacity-50 cursor-not-allowed': disabled }" :placeholder="placeholder"
                 @focus="handleSearchFocus" @input="handleSearchInput" @blur="handleBlur" :disabled="disabled" />
 
-            <!-- Selected Value Display (for non-searchable variant) -->
             <div v-else ref="selectTrigger"
                 class="w-full rounded-md border border-stroke bg-white px-3 py-2 pr-10 text-sm cursor-pointer focus:border-primary"
                 :class="{ 'opacity-50 cursor-not-allowed': disabled }" @click="!disabled && toggleDropdown()"
@@ -65,7 +61,7 @@
                     </div>
                 </template>
                 <div v-else class="px-3 py-2 text-gray-500">
-                    Aucun résultat
+                    Nenhum resultado encontrado
                 </div>
             </div>
         </div>
@@ -74,14 +70,10 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
-
-interface SelectOption {
-    label: string;
-    value: string;
-}
+import type { SelectOption } from '../types/tables';
 
 interface Props {
-    modelValue: string | string[];
+    modelValue: number | number[] | string | string[];
     options: SelectOption[];
     label?: string;
     placeholder?: string;
@@ -95,12 +87,12 @@ const props = withDefaults(defineProps<Props>(), {
     disabled: false,
     multiple: false,
     searchable: false,
-    placeholder: 'Sélectionner...',
+    placeholder: 'Selecionar',
     id: computed(() => `select-${Math.random().toString(36).slice(2, 11)}`).value,
 });
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | string[]): void;
+    (e: 'update:modelValue', value: number | string | (number | string)[]): void;
 }>();
 
 // State
@@ -188,21 +180,21 @@ const selectOption = (option: SelectOption) => {
     }
 };
 
-const removeValue = (value: string) => {
+const removeValue = (value: string | number) => {
     if (props.multiple) {
         const values = (props.modelValue as string[]).filter(v => v !== value);
         emit('update:modelValue', values);
     }
 };
 
-const getOptionLabel = (value: string) => {
+const getOptionLabel = (value: string | number) => {
     const option = props.options.find(opt => opt.value === value);
     return option ? option.label : value;
 };
 
-const isSelected = (value: string) => {
+const isSelected = (value: string | number) => {
     if (props.multiple) {
-        return Array.isArray(props.modelValue) && (props.modelValue as string[]).includes(value);
+        return Array.isArray(props.modelValue) && (props.modelValue as string[]).includes(value.toString());
     }
     return props.modelValue === value;
 };

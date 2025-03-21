@@ -12,7 +12,7 @@ class BaseFilterDTO
     #[Assert\Positive]
     public int $limit = 10;
 
-    #[Assert\Regex(pattern: "/^[a-zA-Z0-9_]+:(asc|desc)$/", message: "Sort format must be 'field:asc' or 'field:desc'")]
+    #[Assert\Regex(pattern: "/^[a-zA-Z0-9_]+,(asc|desc)$/", message: "Sort format must be 'field,asc' or 'field,desc'")]
     public ?string $sort = null;
 
     public function __construct(array $queryParams)
