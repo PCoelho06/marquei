@@ -10,10 +10,10 @@
         <CoelhoInputGroup v-model="httpQuery.name" label="Nome" placeholder="Nome do recurso" />
       </div>
       <div class="mt-4 flex gap-4 justify-end">
-        <CoelhoButton v-if="hasFilters" variant="danger" @click="clearFilters">
+        <CoelhoButton v-if="hasFilters" variant="danger" :icon="XCircleIcon" @click="clearFilters">
           Apagar filtros
         </CoelhoButton>
-        <CoelhoButton type="submit" variant="primary" :loading="loading">
+        <CoelhoButton type="submit" variant="primary" :loading="loading" :icon="MagnifyingGlassIcon">
           Procurar
         </CoelhoButton>
       </div>
@@ -37,6 +37,7 @@ import { useSalonsStore } from "@/stores/salons";
 
 import type { ResourceFilters } from "@/types/resources";
 import type { SelectOption } from "@/types";
+import { MagnifyingGlassIcon, XCircleIcon } from "@heroicons/vue/24/solid";
 
 const { formatForRouter, formatFromRouter } = engineQueries();
 

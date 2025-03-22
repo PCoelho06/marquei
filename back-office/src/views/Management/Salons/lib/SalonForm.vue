@@ -32,7 +32,9 @@
                 <FlagIcon class="fill-current" />
             </InputGroup>
         </div>
-        <DefaultButton value="Registar o salão" />
+        <CoelhoButton type="submit" :icon="BookmarkSquareIcon">
+            {{ isEdit ? 'Atualizar o salão' : 'Registar o salão' }}
+        </CoelhoButton>
     </form>
 </template>
 
@@ -48,13 +50,14 @@ import type { SalonCreatePayload } from '@/types/salons';
 import type { SalonGeneralInformationValidation } from '@/types/validators';
 
 import InputGroup from '@/components/Forms/InputGroup.vue';
-import DefaultButton from '@/components/Buttons/DefaultButton.vue';
 import IDCardIcon from '@/components/Icons/IDCardIcon.vue';
 import PhoneIcon from '@/components/Icons/PhoneIcon.vue';
 import PostalAddressIcon from '@/components/Icons/PostalAddressIcon.vue';
 import CityIcon from '@/components/Icons/CityIcon.vue';
 import FlagIcon from '@/components/Icons/FlagIcon.vue';
 import MailboxIcon from '@/components/Icons/MailboxIcon.vue';
+import { CoelhoButton } from '@/components';
+import { BookmarkSquareIcon } from '@heroicons/vue/24/solid';
 
 const route = useRoute();
 const router = useRouter();

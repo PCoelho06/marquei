@@ -7,7 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 
 abstract class AbstractRepository extends ServiceEntityRepository
 {
-    protected function paginate(QueryBuilder $queryBuilder, int $page, int $limit, string $sort): array
+    protected function paginate(QueryBuilder $queryBuilder, int $page, int $limit, ?string $sort): array
     {
         $totalQueryBuilder = clone $queryBuilder;
         $total = (int) $totalQueryBuilder->select('COUNT(r.id)')->getQuery()->getSingleScalarResult();

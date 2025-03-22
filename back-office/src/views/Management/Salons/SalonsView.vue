@@ -14,18 +14,24 @@
                         </div>
                     </template>
                     <template #action>
-                        <LinkButton :to="{ name: 'GetSalon', params: { id: salon.id } }" value="Gerir" size="sm" />
-                        <DefaultButton value="Remover" type="danger" size="sm" @click="showModal = true" />
+                        <CoelhoButton :to="router.resolve({ name: 'GetSalon', params: { id: salon.id } }).href"
+                            :icon="CogIcon">
+                            Gerir
+                        </CoelhoButton>
+                        <CoelhoButton variant="danger" :icon="TrashIcon" @click="showModal = true">
+                            Remover
+                        </CoelhoButton>
                         <DefaultModal v-if="showModal" title="Remover o salão" :actionClose="() => showModal = false">
                             <template #content>
                                 <p>Tem a certeza que deseja remover este salão ? Esta ação é irreversível.</p>
                             </template>
                             <template #actions>
                                 <div class="flex space-x-4">
-                                    <DefaultButton value="Cancelar" type="primary" size="sm"
-                                        @click="showModal = false" />
-                                    <DefaultButton value="Remover" type="danger" size="sm"
-                                        @click="handleRemoveSalon(salon.id)" />
+                                    <CoelhoButton variant="secondary" :icon="XMarkIcon" @click="showModal = false"
+                                        class="w-full">Cancelar
+                                    </CoelhoButton>
+                                    <CoelhoButton variant="danger" :icon="TrashIcon"
+                                        @click="handleRemoveSalon(salon.id)" class="w-full">Remover</CoelhoButton>
                                 </div>
                             </template>
                         </DefaultModal>
@@ -38,14 +44,17 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useSalonsStore } from '@/stores/salons';
 import { storeToRefs } from 'pinia';
 import DefaultCard from '@/components/Cards/DefaultCard.vue';
-import LinkButton from '@/components/Buttons/LinkButton.vue';
-import DefaultButton from '@/components/Buttons/DefaultButton.vue';
 import DefaultModal from '@/components/Modals/DefaultModal.vue';
 import ManagementLayout from '@/layouts/ManagementLayout.vue';
+import { CoelhoButton } from '@/components';
+import { CogIcon, TrashIcon, XMarkIcon } from '@heroicons/vue/24/solid';
+
+const router = useRouter();
 
 const salonsStore = useSalonsStore();
 const { getterSalons } = storeToRefs(salonsStore);

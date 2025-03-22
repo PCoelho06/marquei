@@ -45,8 +45,10 @@
                                   focus:outline-none">
                                     </div>
                                 </div>
-                                <DefaultButton value="Remover" type="danger" size="sm"
-                                    @click="removeTimeRange(dayIndex, rangeIndex)" />
+                                <CoelhoButton :icon="TrashIcon" variant="danger" size="sm"
+                                    @click="removeTimeRange(dayIndex, rangeIndex)">
+                                    Remover
+                                </CoelhoButton>
                             </div>
                         </div>
                     </div>
@@ -54,10 +56,9 @@
             </div>
 
             <div class="mt-6 flex justify-end">
-                <button @click="saveSchedules"
-                    class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition">
+                <CoelhoButton :icon="BookmarkSquareIcon" size="lg" @click="saveSchedules">
                     Guardar horários
-                </button>
+                </CoelhoButton>
             </div>
         </div>
     </div>
@@ -80,9 +81,10 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import ptLocale from '@fullcalendar/core/locales/pt'
 import type { CalendarOptions } from '@fullcalendar/core/index.js'
-import DefaultButton from '@/components/Buttons/DefaultButton.vue'
 import SpinLoader from '@/components/Loaders/SpinLoader.vue';
 import { storeToRefs } from 'pinia';
+import { CoelhoButton } from '@/components';
+import { TrashIcon, BookmarkSquareIcon } from '@heroicons/vue/24/solid'
 
 interface TimeRange {
     start: string
@@ -213,10 +215,9 @@ const removeTimeRange = (dayIndex: number, rangeIndex: number) => {
 
 const saveSchedules = async () => {
     try {
-        console.log('Horaires à sauvegarder:', schedules.value)
         await api().businessHours.create({ id: Array.isArray(route.params.id) ? route.params.id[0] : route.params.id, businessHoursRanges: schedules.value });
-        // router.push({ name: 'GetSalon', params: { id: route.params.id } })
-        router.push({ name: 'HandleForfait', params: { id: route.params.id } })
+        router.push({ name: 'GetSalon', params: { id: route.params.id } })
+        // router.push({ name: 'HandleForfait', params: { id: route.params.id } })
     } catch (error) {
         console.error('Erreur lors de la sauvegarde:', error)
     }

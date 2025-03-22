@@ -14,8 +14,10 @@
                     </template>
                     <template #action>
                         <div class="flex space-x-4">
-                            <LinkButton :to="{ name: 'EditSalon', params: { id: getterSalon?.id } }" value="Editar"
-                                size="sm" />
+                            <CoelhoButton :icon="PencilIcon"
+                                :to="router.resolve({ name: 'EditSalon', params: { id: getterSalon?.id } }).href">
+                                Editar
+                            </CoelhoButton>
                         </div>
                     </template>
                 </DefaultCard>
@@ -36,8 +38,10 @@
                     </template>
                     <template #action>
                         <div class="flex space-x-4">
-                            <LinkButton :to="{ name: 'HandleBusinessHours', params: { id: getterSalon?.id } }"
-                                :value="getterBusinessHours?.length ? 'Editar' : 'Adicionar horários'" size="sm" />
+                            <CoelhoButton :icon="PencilIcon"
+                                :to="router.resolve({ name: 'HandleBusinessHours', params: { id: getterSalon?.id } }).href">
+                                {{ getterBusinessHours?.length ? 'Editar' : 'Adicionar horários' }}
+                            </CoelhoButton>
                         </div>
                     </template>
                 </DefaultCard>
@@ -61,16 +65,18 @@
                     </template>
                     <template #action>
                         <div v-if="getterSubscription" class="flex w-full justify-center space-x-4">
-                            <CoelhoButton
-                                @click="router.push({ name: 'HandleForfait', params: { id: getterSalon?.id } })">
+                            <CoelhoButton :icon="ArrowPathRoundedSquareIcon"
+                                :to="router.resolve({ name: 'HandleForfait', params: { id: getterSalon?.id } }).href">
                                 Mudar o plano</CoelhoButton>
-                            <CoelhoButton @click="openModal('delete:subscription')" variant="danger">
+                            <CoelhoButton :icon="XMarkIcon" @click="openModal('delete:subscription')" variant="danger">
                                 Cancelar subscrição
                             </CoelhoButton>
                         </div>
                         <div v-else class="flex space-x-4">
-                            <LinkButton :to="{ name: 'HandleForfait', params: { id: getterSalon?.id } }"
-                                value="Subscrever agora" size="sm" />
+                            <CoelhoButton :icon="ShoppingCartIcon"
+                                :to="router.resolve({ name: 'HandleForfait', params: { id: getterSalon?.id } }).href">
+                                Subscrever agora
+                            </CoelhoButton>
                         </div>
                     </template>
                 </DefaultCard>
@@ -103,7 +109,8 @@
                                     </td>
                                     <td class="px-2">
                                         <div class="flex gap-4">
-                                            <DefaultButton value="Guardar" size="sm" @click="saveService(service)" />
+                                            <CoelhoButton :icon="BookmarkSquareIcon" @click="saveService(service)">
+                                                Guardar</CoelhoButton>
                                         </div>
                                     </td>
                                 </template>
@@ -116,9 +123,11 @@
                                     <td class="px-2">{{ service.price }}€</td>
                                     <td class="px-2">
                                         <div class="flex gap-4">
-                                            <CoelhoButton @click="service.isEditing = true">Editar</CoelhoButton>
-                                            <CoelhoButton @click="openModal('delete:service', service.id)"
-                                                variant="danger">Eliminar
+                                            <CoelhoButton :icon="PencilIcon" @click="service.isEditing = true">Editar
+                                            </CoelhoButton>
+                                            <CoelhoButton :icon="TrashIcon"
+                                                @click="openModal('delete:service', service.id)" variant="danger">
+                                                Eliminar
                                             </CoelhoButton>
                                         </div>
                                     </td>
@@ -129,7 +138,7 @@
                 </template>
                 <template #action>
                     <div class="flex space-x-2">
-                        <DefaultButton value="Adicionar uma prestação" size="sm" @click="addService" />
+                        <CoelhoButton :icon="PlusCircleIcon" @click="addService">Adicionar uma prestação</CoelhoButton>
                     </div>
                 </template>
             </DefaultCard>
@@ -163,12 +172,11 @@ import type { Service } from '@/types/salons';
 import type { SubscriptionCancelPayload } from '@/types/subscriptions'
 
 import DefaultCard from '@/components/Cards/DefaultCard.vue';
-import LinkButton from '@/components/Buttons/LinkButton.vue';
-import DefaultButton from '@/components/Buttons/DefaultButton.vue';
 import { CoelhoModal, CoelhoButton } from '@/components';
 import InputGroup from '@/components/Forms/InputGroup.vue';
 import ManagementLayout from '@/layouts/ManagementLayout.vue';
 import type { ModalContent } from '@/types';
+import { ArrowPathRoundedSquareIcon, BookmarkSquareIcon, PencilIcon, PlusCircleIcon, ShoppingCartIcon, TrashIcon, XMarkIcon } from '@heroicons/vue/24/solid';
 
 const route = useRoute();
 const router = useRouter();

@@ -11,7 +11,9 @@
             <LockIcon class="fill-current" />
         </InputGroup>
 
-        <DefaultButton value="Entrar" class="my-6" />
+        <CoelhoButton type="submit" :icon="ArrowRightEndOnRectangleIcon" size="lg" class="w-full my-4">
+            Entrar
+        </CoelhoButton>
     </form>
 </template>
 
@@ -29,9 +31,10 @@ import AlertToast from '@/components/Alerts/AlertToast.vue';
 import InputGroup from '@/components/Forms/InputGroup.vue'
 import MailIcon from '@/components/Icons/MailIcon.vue';
 import LockIcon from '@/components/Icons/LockIcon.vue';
-import DefaultButton from '@/components/Buttons/DefaultButton.vue';
 
 import type { UserLoginForm } from '@/types/user'
+import { CoelhoButton } from '@/components'
+import { ArrowRightEndOnRectangleIcon } from '@heroicons/vue/24/solid'
 
 const router = useRouter()
 

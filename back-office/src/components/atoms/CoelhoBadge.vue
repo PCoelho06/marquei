@@ -1,22 +1,33 @@
 <template>
-  <div class="inline-flex items-center justify-center" :class="[
-    sizeClasses,
-    variantClasses,
-    roundedClasses,
-    {
-      'animate-pulse': pulse,
-    }
-  ]">
-    <CoelhoIcon v-if="icon" :icon="icon" :size="iconSize" class="mr-1" />
+  <div class="inline-flex items-center justify-center" :class="{
+    'rounded-full': rounded && type !== 'dot',
+    'rounded': !rounded && type !== 'dot',
+    'text-xs px-1.5 py-0.5 min-w-[1.25rem]': size === 'sm',
+    'text-sm px-2 py-1 min-w-[1.5rem]': size === 'md',
+    'text-base px-2.5 py-1.5 min-w-[1.75rem]': size === 'lg',
+    'bg-primary text-white': variant === 'primary' && type !== 'dot',
+    'bg-stroke text-dark': variant === 'secondary' && type !== 'dot',
+    'bg-green-500 text-white': variant === 'success' && type !== 'dot',
+    'bg-red-500 text-white': variant === 'danger' && type !== 'dot',
+    'bg-yellow-500 text-white': variant === 'warning' && type !== 'dot',
+    'bg-blue-500 text-white': variant === 'info' && type !== 'dot',
+    'animate-pulse': pulse,
+  }">
+    <CoelhoIcon v-if="icon" :icon="icon" :size="size === 'sm' ? 'xs' : size === 'md' ? 'sm' : 'md'" class="mr-1" />
 
     <span v-if="hasContent" :class="{ 'ml-1': icon }">
       <slot>{{ content }}</slot>
     </span>
 
-    <!-- Notification dot -->
-    <div v-if="type === 'dot'" class="h-2 w-2 rounded-full" :class="[dotVariantClasses]" />
+    <div v-if="type === 'dot'" class="h-2 w-2 rounded-full" :class="{
+      'bg-primary': variant === 'primary',
+      'bg-stroke': variant === 'secondary',
+      'bg-green-500': variant === 'success',
+      'bg-red-500': variant === 'danger',
+      'bg-yellow-500': variant === 'warning',
+      'bg-blue-500': variant === 'info',
+    }" />
 
-    <!-- Counter -->
     <span v-if="type === 'counter' && count !== undefined">
       {{ count > max ? `${max}+` : count }}
     </span>
@@ -26,7 +37,8 @@
 <script setup lang="ts">
 import { computed, useSlots } from 'vue';
 import type { Component } from 'vue';
-import CoelhoIcon from './CoelhoIcon.vue';
+
+import { CoelhoIcon } from '..';
 
 type BadgeVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
 type BadgeType = 'default' | 'counter' | 'status' | 'dot';
@@ -55,53 +67,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const hasContent = computed(() => {
   return props.content || props.type === 'counter' || !!slots.default;
-});
-
-const variantClasses = computed(() => {
-  const variants = {
-    primary: 'bg-primary text-white',
-    secondary: 'bg-stroke text-dark',
-    success: 'bg-green-500 text-white',
-    danger: 'bg-red-500 text-white',
-    warning: 'bg-yellow-500 text-white',
-    info: 'bg-blue-500 text-white',
-  };
-  return props.type !== 'dot' ? variants[props.variant] : '';
-});
-
-const dotVariantClasses = computed(() => {
-  const variants = {
-    primary: 'bg-primary',
-    secondary: 'bg-stroke',
-    success: 'bg-green-500',
-    danger: 'bg-red-500',
-    warning: 'bg-yellow-500',
-    info: 'bg-blue-500',
-  };
-  return variants[props.variant];
-});
-
-const sizeClasses = computed(() => {
-  const sizes = {
-    sm: 'text-xs px-1.5 py-0.5 min-w-[1.25rem]',
-    md: 'text-sm px-2 py-1 min-w-[1.5rem]',
-    lg: 'text-base px-2.5 py-1.5 min-w-[1.75rem]',
-  };
-  return sizes[props.size];
-});
-
-const iconSize = computed(() => {
-  const sizes: Record<BadgeSize, 'xs' | 'sm' | 'md'> = {
-    sm: 'xs',
-    md: 'sm',
-    lg: 'md',
-  };
-  return sizes[props.size];
-});
-
-const roundedClasses = computed(() => {
-  if (props.type === 'dot') return '';
-  return props.rounded ? 'rounded-full' : 'rounded';
 });
 
 const slots = useSlots();

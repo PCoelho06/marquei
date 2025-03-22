@@ -7,10 +7,10 @@
             </div>
             <h2 class="text-3xl font-bold text-gray-900 mt-8">Assinatura realizada com sucesso!</h2>
             <p class="text-lg text-gray-600 mt-4 text-center">Agora você pode gerenciar seu salão com a Marquei.</p>
-            <button @click="() => router.push({ name: 'ManagementDashboard' })"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md mt-8 transition duration-150 ease-in-out">
+            <CoelhoButton :icon="ArrowRightCircleIcon" :to="router.resolve({ name: 'ManagementDashboard' }).href"
+                size="lg">
                 Começar a gerenciar
-            </button>
+            </CoelhoButton>
         </div>
     </CenteredLayout>
 </template>
@@ -20,6 +20,8 @@ import { useRouter } from 'vue-router';
 
 import DefaultLogo from '@/components/Logos/DefaultLogo.vue';
 import CenteredLayout from '@/layouts/CenteredLayout.vue';
+import { CoelhoButton } from '@/components';
+import { ArrowRightCircleIcon } from '@heroicons/vue/24/solid';
 
 const router = useRouter();
 </script>

@@ -10,20 +10,18 @@
                 @update:sort="query = { ...updateSort(query, $event, libQuerySort, fetchResourcesList) }"
                 @update:page="query = { ...updatePage(query, $event, getterResourceSettings?.totalPages ? getterResourceSettings.totalPages : 1, fetchResourcesList) }">
                 <template #actions>
-                    <CoelhoButton variant="primary" @click="router.push({ name: 'AddRessource' })">
+                    <CoelhoButton variant="primary" :icon="PlusCircleIcon"
+                        @click="router.push({ name: 'AddRessource' })">
                         Adicionar
                     </CoelhoButton>
                 </template>
 
                 <template #rowActions="{ item }">
                     <div class="flex space-x-2">
-                        <CoelhoButton variant="primary" size="sm"
-                            @click="router.push({ name: 'EditResource', params: { id: item.id } })">
-                            <CoelhoIcon :icon="PencilIcon" size="sm" />
-                        </CoelhoButton>
-                        <CoelhoButton variant="danger" size="sm" @click="openModal('delete:resource', item.id)">
-                            <CoelhoIcon :icon="TrashIcon" size="sm" />
-                        </CoelhoButton>
+                        <CoelhoButton variant="primary" size="sm" :icon="PencilIcon"
+                            @click="router.push({ name: 'EditResource', params: { id: item.id } })" />
+                        <CoelhoButton variant="danger" size="sm" :icon="TrashIcon"
+                            @click="openModal('delete:resource', item.id)" />
                         <CoelhoModal v-model="isModalOpen" :title="modal?.title">
                             <p>{{ modal?.content }}</p>
                             <template #footer>
@@ -69,7 +67,7 @@ import { columnsResources } from '@/views/commons/composables/columnsResources'
 import DefaultCard from '@/components/Cards/DefaultCard.vue'
 import ManagementLayout from '@/layouts/ManagementLayout.vue'
 import { CoelhoDataTable, CoelhoButton, CoelhoIcon, CoelhoModal } from '@/components'
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/solid'
+import { PencilIcon, TrashIcon, PlusCircleIcon } from '@heroicons/vue/24/solid'
 import SearchResource from './$filters/SearchResource.vue'
 import type { ResourceQuery } from '@/types'
 

@@ -16,7 +16,9 @@
             <LockIcon class="fill-current" />
         </InputGroup>
 
-        <DefaultButton value="Registar-me" class="my-6" />
+        <CoelhoButton type="submit" :icon="UserPlusIcon" size="lg" class="w-full my-4">
+            Registar-me
+        </CoelhoButton>
 
         <div class="mt-6 text-center">
             <p class="font-medium">
@@ -38,7 +40,9 @@ import { validators } from '@/utils'
 import InputGroup from '@/components/Forms/InputGroup.vue'
 import MailIcon from '@/components/Icons/MailIcon.vue';
 import LockIcon from '@/components/Icons/LockIcon.vue';
-import DefaultButton from '@/components/Buttons/DefaultButton.vue';
+
+import { CoelhoButton } from '@/components'
+import { UserPlusIcon } from '@heroicons/vue/24/solid'
 
 import type { UserRegisterForm } from '@/types/user'
 
