@@ -16,15 +16,8 @@
                     class="p-4 border border-stroke rounded-lg">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-4">
+                            <CoelhoCheckbox v-model="schedule.isOpen" variant="switch" :disabled=true size="sm" />
                             <span class="font-medium text-dark">{{ days[(schedule.day + 6) % 7] }}</span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" v-model="schedule.isOpen" class="sr-only peer">
-                                <div class="w-11 h-6 bg-stroke peer-focus:outline-none peer-focus:ring-4 
-                           peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full 
-                           peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] 
-                           after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 
-                           after:transition-all"></div>
-                            </label>
                         </div>
                     </div>
 
@@ -83,7 +76,7 @@ import ptLocale from '@fullcalendar/core/locales/pt'
 import type { CalendarOptions } from '@fullcalendar/core/index.js'
 import SpinLoader from '@/components/Loaders/SpinLoader.vue';
 import { storeToRefs } from 'pinia';
-import { CoelhoButton } from '@/components';
+import { CoelhoButton, CoelhoCheckbox } from '@/components';
 import { TrashIcon, BookmarkSquareIcon } from '@heroicons/vue/24/solid'
 
 interface TimeRange {

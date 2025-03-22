@@ -17,17 +17,7 @@
             </div>
 
             <div class="mt-12 flex flex-col justify-center items-center gap-8">
-                <div class="flex items-center gap-3">
-                    <span :class="[!isYearly ? 'text-gray-900' : 'text-gray-500']">Mensal</span>
-                    <button @click="isYearly = !isYearly"
-                        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                        :class="[isYearly ? 'bg-blue-600' : 'bg-gray-900']">
-                        <span
-                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                            :class="[isYearly ? 'translate-x-5' : 'translate-x-0']" />
-                    </button>
-                    <span :class="[isYearly ? 'text-gray-900' : 'text-gray-500']">Anual</span>
-                </div>
+                <CoelhoCheckbox v-model="isYearly" variant="switch" switchOnLabel="Anual" switchOffLabel="Mensal" />
             </div>
 
             <div class="mt-12 space-y-4 sm:mt-16 sm:grid sm:grid-cols-2 sm:gap-6 sm:space-y-0">
@@ -80,7 +70,7 @@
                                     plan.pricing.monthly) }}
                             </span>
                             <span class="text-base font-medium text-gray-500 ms-2">/{{ isYearly ? 'ano' : 'mês'
-                            }}</span>
+                                }}</span>
                         </p>
                     </div>
 
@@ -124,6 +114,7 @@ import { CoelhoIcon, CoelhoBadge, CoelhoButton, CoelhoLink, CoelhoModal } from '
 import PaymentElement from '@/components/Payment/PaymentElement.vue'
 import { ArrowLeftIcon } from '@heroicons/vue/24/solid'
 import type { ModalContent } from '@/types'
+import CoelhoCheckbox from '@/components/atoms/CoelhoCheckbox.vue'
 
 const route = useRoute()
 const router = useRouter()

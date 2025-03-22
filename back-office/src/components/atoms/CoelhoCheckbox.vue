@@ -1,23 +1,32 @@
 <template>
     <label class="inline-flex items-center" :class="{ 'cursor-not-allowed': disabled }">
         <div class="relative">
-            <!-- Switch variant -->
             <template v-if="variant === 'switch'">
                 <input type="checkbox" class="peer hidden" :checked="modelValue" :disabled="disabled"
                     :indeterminate="indeterminate" @change="handleChange">
-                <div class="relative h-5 w-8 rounded-full transition-colors duration-200 ease-in-out" :class="[
-                    modelValue ? 'bg-primary' : 'bg-stroke',
-                    disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                ]">
-                    <div class="absolute left-0.5 top-0.5 h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-200 ease-in-out"
+                <div class="flex items-center gap-3">
+                    <span v-if="switchOffLabel" :class="[!modelValue ? 'text-gray-900' : 'text-gray-500']">
+                        {{ switchOffLabel }}
+                    </span>
+                    <div class="relative rounded-full transition-colors duration-200 ease-in-out border-2 border-transparent"
                         :class="[
-                            modelValue ? 'translate-x-3' : 'translate-x-0',
-                            disabled ? 'cursor-not-allowed' : 'cursor-pointer'
-                        ]" />
+                            { 'w-8 h-4': size === 'sm', 'w-12 h-6': size === 'md', 'w-16 h-8': size === 'lg' },
+                            modelValue ? 'bg-primary' : 'bg-dark',
+                            disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                        ]">
+                        <div class="absolute transform rounded-full bg-white shadow-md transition-transform duration-200 ease-in-out"
+                            :class="[
+                                { 'w-3 h-3': size === 'sm', 'w-5 h-5': size === 'md', 'w-7 h-7': size === 'lg' },
+                                modelValue ? { 'translate-x-4': size === 'sm', 'translate-x-6': size === 'md', 'translate-x-8': size === 'lg' } : 'translate-x-0',
+                                disabled ? 'cursor-not-allowed' : 'cursor-pointer'
+                            ]" />
+                    </div>
+                    <span v-if="switchOnLabel" :class="[modelValue ? 'text-gray-900' : 'text-gray-500']">
+                        {{ switchOnLabel }}
+                    </span>
                 </div>
             </template>
 
-            <!-- Standard checkbox -->
             <template v-else>
                 <input type="checkbox" class="peer hidden" :checked="modelValue" :disabled="disabled"
                     :indeterminate="indeterminate" @change="handleChange">
@@ -52,13 +61,17 @@ interface Props {
     disabled?: boolean;
     indeterminate?: boolean;
     variant?: 'standard' | 'switch';
+    switchOnLabel?: string;
+    switchOffLabel?: string;
+    size?: 'sm' | 'md' | 'lg';
 }
 
 const props = withDefaults(defineProps<Props>(), {
     modelValue: false,
     disabled: false,
     indeterminate: false,
-    variant: 'standard'
+    variant: 'standard',
+    size: 'md'
 });
 
 const emit = defineEmits<{
