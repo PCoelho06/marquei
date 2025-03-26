@@ -5,7 +5,7 @@
     'text-base': size === 'base',
     'text-lg': size === 'lg',
     'text-primary': color === 'primary',
-    'text-stroke': color === 'secondary',
+    'text-gray-500': color === 'secondary',
     'text-green-500': color === 'success',
     'text-yellow-500': color === 'warning',
     'text-red-500': color === 'danger',

@@ -1,40 +1,30 @@
 <template>
     <form @submit.prevent="handleSalon">
         <div class=" m-8 grid grid-cols-1 gap-8 mt-6 sm:grid-cols-2">
-            <InputGroup id="name" autocomplete="organization" label="Nome do salão" type="text"
-                placeholder="Entre o nome do salão" v-model="salon.name" :required=true
-                @input="() => validationErrors.name = ''">
-                <IDCardIcon class="fill-current" />
-            </InputGroup>
-            <InputGroup id="phone" autocomplete="tel-local" label="Numero de telefone" type="tel"
-                placeholder="Entre o numero de telephone do salão" v-model="salon.phone" :error="validationErrors.phone"
-                :required=true @input="handlePhoneChange">
-                <PhoneIcon class="fill-current" />
-            </InputGroup>
-            <InputGroup id="address" autocomplete="address-level1" label="Adresso postal" type="text"
-                placeholder="Entre o adresso do salão" v-model="salon.address" :error="validationErrors.address"
-                :required=true @input="() => validationErrors.address = ''">
-                <PostalAddressIcon class="fill-current" />
-            </InputGroup>
-            <InputGroup id="postalCode" autocomplete="postal-code" label="Codigo Postal" type="text"
-                placeholder="Entre o codigo postal" v-model="salon.postalCode" :error="validationErrors.postalCode"
-                :required=true @input="handlePostalCodeChange">
-                <MailboxIcon class="fill-current" />
-            </InputGroup>
-            <InputGroup id="city" autocomplete="address-level2" label="Cidade" type="text"
-                placeholder="Entre o nome da cidade" v-model="salon.city" :error="validationErrors.city" :required=true
-                @input="() => validationErrors.city = ''">
-                <CityIcon class="fill-current" />
-            </InputGroup>
-            <InputGroup id="country" autocomplete="country-name" label="Pais" type="text"
-                placeholder="Entre o nome do pais" v-model="salon.country" :error="validationErrors.country"
-                :required=true :disabled=true>
-                <FlagIcon class="fill-current" />
-            </InputGroup>
+            <CoelhoInput :leftIcon="ChatBubbleLeftEllipsisIcon" type="text" label="Nome do salão"
+                :error="validationErrors.name" placeholder="Nome do salão" v-model="salon.name"
+                autocomplete="organization" :required=true />
+            <CoelhoInput :leftIcon="PhoneIcon" type="text" label="Numero de telefone" :error="validationErrors.phone"
+                placeholder="Entre o numero de telephone do salão" v-model="salon.phone" autocomplete="tel-local"
+                :required=true @input="handlePhoneChange" />
+            <CoelhoInput :leftIcon="MapPinIcon" type="text" label="Adresso postal" :error="validationErrors.address"
+                placeholder="Entre o adresso do salão" v-model="salon.address" autocomplete="address-level1"
+                :required=true />
+            <CoelhoInput :leftIcon="InboxIcon" type="text" label="Codigo Postal" :error="validationErrors.postalCode"
+                placeholder="Entre o codigo postal" v-model="salon.postalCode" autocomplete="postal-code" :required=true
+                @input="handlePostalCodeChange" />
+            <CoelhoInput :leftIcon="BuildingOffice2Icon" type="text" label="Cidade" :error="validationErrors.city"
+                placeholder="Entre o nome da cidade" v-model="salon.city" autocomplete="address-level2"
+                :required=true />
+            <CoelhoInput :leftIcon="FlagIcon" type="text" label="Pais" :error="validationErrors.country"
+                placeholder="Entre o nome do pais" v-model="salon.country" autocomplete="country-name" :required=true
+                :disabled=true />
         </div>
-        <CoelhoButton type="submit" :icon="BookmarkSquareIcon">
-            {{ isEdit ? 'Atualizar o salão' : 'Registar o salão' }}
-        </CoelhoButton>
+        <div class="flex justify-end">
+            <CoelhoButton type="submit" :icon="BookmarkSquareIcon">
+                {{ isEdit ? 'Atualizar o salão' : 'Registar o salão' }}
+            </CoelhoButton>
+        </div>
     </form>
 </template>
 
@@ -49,15 +39,8 @@ import { useSalonsStore } from '@/stores/salons';
 import type { SalonCreatePayload } from '@/types/salons';
 import type { SalonGeneralInformationValidation } from '@/types/validators';
 
-import InputGroup from '@/components/Forms/InputGroup.vue';
-import IDCardIcon from '@/components/Icons/IDCardIcon.vue';
-import PhoneIcon from '@/components/Icons/PhoneIcon.vue';
-import PostalAddressIcon from '@/components/Icons/PostalAddressIcon.vue';
-import CityIcon from '@/components/Icons/CityIcon.vue';
-import FlagIcon from '@/components/Icons/FlagIcon.vue';
-import MailboxIcon from '@/components/Icons/MailboxIcon.vue';
-import { CoelhoButton } from '@/components';
-import { BookmarkSquareIcon } from '@heroicons/vue/24/solid';
+import { CoelhoButton, CoelhoInput } from '@/components';
+import { BookmarkSquareIcon, BuildingOffice2Icon, ChatBubbleLeftEllipsisIcon, InboxIcon, MapPinIcon, PhoneIcon, FlagIcon } from '@heroicons/vue/24/solid';
 
 const route = useRoute();
 const router = useRouter();

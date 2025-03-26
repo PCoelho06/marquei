@@ -8,7 +8,7 @@
     'text-lg': props.level === 5,
     'text-base': props.level === 6,
     'text-primary': props.color === 'primary',
-    'text-stroke': props.color === 'secondary',
+    'text-gray-500': props.color === 'secondary',
     'text-green-500': props.color === 'success',
     'text-yellow-500': props.color === 'warning',
     'text-red-500': props.color === 'danger',

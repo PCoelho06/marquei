@@ -33,16 +33,16 @@
             </button>
             <CoelhoIcon v-if="rightIcon && type !== 'password'" :icon="rightIcon" size="xl" color="secondary"
                 class="absolute right-2 top-1/2 transform -translate-y-1/2" />
-            <CoelhoText v-if="suffix" size="sm" color="text-gray-500"
+            <CoelhoText v-if="suffix" size="sm" color="secondary"
                 class="absolute right-2 top-1/2 transform -translate-y-1/2">
                 {{ suffix }}
             </CoelhoText>
         </div>
 
-        <CoelhoText v-if="error" size="sm" color="text-red-500" class="mt-1">
+        <CoelhoText v-if="error" size="sm" color="danger" class="mt-1">
             {{ error }}
         </CoelhoText>
-        <CoelhoText v-else-if="helper" size="sm" color="text-gray-500" class="mt-1">
+        <CoelhoText v-else-if="helper" size="sm" color="secondary" class="mt-1">
             {{ helper }}
         </CoelhoText>
     </div>
@@ -59,7 +59,7 @@ interface Props {
     modelValue: string | number | string[] | number[];
     id?: string;
     size?: 'sm' | 'md' | 'lg';
-    type?: 'text' | 'number' | 'email' | 'password' | 'search';
+    type?: 'text' | 'number' | 'email' | 'tel' | 'password' | 'search';
     label?: string;
     error?: string;
     helper?: string;
