@@ -1,10 +1,21 @@
 <template>
-  <component :is="tag" :class="[
-    'font-bold leading-tight',
-    sizeClasses,
-    colorClass,
-    { 'mb-4': withMargin }
-  ]">
+  <component :is="tag" :class="{
+    'font-bold leading-tight': true,
+    'text-4xl': props.level === 1,
+    'text-3xl': props.level === 2,
+    'text-2xl': props.level === 3,
+    'text-xl': props.level === 4,
+    'text-lg': props.level === 5,
+    'text-base': props.level === 6,
+    'text-primary': props.color === 'primary',
+    'text-stroke': props.color === 'secondary',
+    'text-green-500': props.color === 'success',
+    'text-yellow-500': props.color === 'warning',
+    'text-red-500': props.color === 'danger',
+    'text-black': props.color === 'dark',
+    'text-white': props.color === 'light',
+    'mb-4': withMargin
+  }">
     <slot />
   </component>
 </template>
@@ -15,7 +26,7 @@ import { computed } from 'vue';
 interface Props {
   level?: 1 | 2 | 3 | 4 | 5 | 6;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
-  color?: string;
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'dark' | 'light';
   withMargin?: boolean;
 }
 
@@ -26,26 +37,4 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const tag = computed(() => `h${props.level}`);
-
-const sizeClasses = computed(() => {
-  const defaultSizes = {
-    1: 'text-4xl',
-    2: 'text-3xl',
-    3: 'text-2xl',
-    4: 'text-xl',
-    5: 'text-lg',
-    6: 'text-base',
-  };
-
-  if (props.size) {
-    return `text-${props.size}`;
-  }
-
-  return defaultSizes[props.level];
-});
-
-const colorClass = computed(() => {
-  if (props.color.startsWith('text-')) return props.color;
-  return `text-${props.color}`;
-});
 </script>

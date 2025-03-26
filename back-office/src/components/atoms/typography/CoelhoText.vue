@@ -1,15 +1,25 @@
 <template>
-  <span :class="[
-    sizeClass,
-    colorClass,
-    weightClass,
-    {
-      'italic': italic,
-      'underline': underline,
-      'line-through': lineThrough,
-      'uppercase': uppercase,
-    }
-  ]">
+  <span :class="{
+    'text-xs': size === 'xs',
+    'text-sm': size === 'sm',
+    'text-base': size === 'base',
+    'text-lg': size === 'lg',
+    'text-primary': color === 'primary',
+    'text-stroke': color === 'secondary',
+    'text-green-500': color === 'success',
+    'text-yellow-500': color === 'warning',
+    'text-red-500': color === 'danger',
+    'text-black': color === 'dark',
+    'text-white': color === 'light',
+    'font-normal': weight === 'normal',
+    'font-medium': weight === 'medium',
+    'font-semibold': weight === 'semibold',
+    'font-bold': weight === 'bold',
+    'italic': italic,
+    'underline': underline,
+    'line-through': lineThrough,
+    'uppercase': uppercase,
+  }">
     <slot />
   </span>
 </template>
@@ -19,7 +29,7 @@ import { computed } from 'vue';
 
 interface Props {
   size?: 'xs' | 'sm' | 'base' | 'lg';
-  color?: string;
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'dark' | 'light';
   weight?: 'normal' | 'medium' | 'semibold' | 'bold';
   italic?: boolean;
   underline?: boolean;
@@ -35,17 +45,5 @@ const props = withDefaults(defineProps<Props>(), {
   underline: false,
   lineThrough: false,
   uppercase: false,
-});
-
-const sizeClass = computed(() => `text-${props.size}`);
-const colorClass = computed(() => props.color.startsWith('text-') ? props.color : `text-${props.color}`);
-const weightClass = computed(() => {
-  const weights = {
-    normal: 'font-normal',
-    medium: 'font-medium',
-    semibold: 'font-semibold',
-    bold: 'font-bold',
-  };
-  return weights[props.weight];
 });
 </script>

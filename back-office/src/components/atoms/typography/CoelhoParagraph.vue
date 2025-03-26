@@ -1,11 +1,26 @@
 <template>
-  <p :class="[
-    sizeClass,
-    colorClass,
-    alignClass,
-    weightClass,
-    { 'mb-4': withMargin }
-  ]">
+  <p :class="{
+    'text-xs': size === 'xs',
+    'text-sm': size === 'sm',
+    'text-base': size === 'base',
+    'text-lg': size === 'lg',
+    'text-primary': color === 'primary',
+    'text-stroke': color === 'secondary',
+    'text-green-500': color === 'success',
+    'text-yellow-500': color === 'warning',
+    'text-red-500': color === 'danger',
+    'text-black': color === 'dark',
+    'text-white': color === 'light',
+    'font-normal': weight === 'normal',
+    'font-medium': weight === 'medium',
+    'font-semibold': weight === 'semibold',
+    'font-bold': weight === 'bold',
+    'text-left': align === 'left',
+    'text-center': align === 'center',
+    'text-right': align === 'right',
+    'text-justify': align === 'justify',
+    'mb-4': withMargin
+  }">
     <slot />
   </p>
 </template>
@@ -15,7 +30,7 @@ import { computed } from 'vue';
 
 interface Props {
   size?: 'xs' | 'sm' | 'base' | 'lg';
-  color?: string;
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'dark' | 'light';
   align?: 'left' | 'center' | 'right' | 'justify';
   weight?: 'normal' | 'medium' | 'semibold' | 'bold';
   withMargin?: boolean;
