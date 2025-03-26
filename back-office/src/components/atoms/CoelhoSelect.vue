@@ -1,33 +1,32 @@
 <template>
     <div class="relative">
         <label v-if="label" :for="id" class="block mb-2 text-sm font-medium text-dark">
-            {{ label }}
+            <CoelhoText weight="medium" size="sm">{{ label }}</CoelhoText>
         </label>
 
         <div class="relative">
+            <CoelhoIcon v-if="leftIcon" :icon="leftIcon" size="xl" color="secondary"
+                class="absolute left-2 top-1/2 transform -translate-y-1/2" />
+
             <input v-if="searchable" ref="searchInput" type="text" v-model="displayValue"
                 class="w-full rounded-md border border-stroke bg-white px-3 py-2 pr-10 text-sm focus:border-primary focus:outline-none"
-                :class="{ 'opacity-50 cursor-not-allowed': disabled }" :placeholder="placeholder"
+                :class="{ 'opacity-50 cursor-not-allowed': disabled, 'pl-13': leftIcon }" :placeholder="placeholder"
                 @focus="handleSearchFocus" @input="handleSearchInput" @blur="handleBlur" :disabled="disabled" />
 
             <div v-else ref="selectTrigger"
                 class="w-full rounded-md border border-stroke bg-white px-3 py-2 pr-10 text-sm cursor-pointer focus:border-primary"
-                :class="{ 'opacity-50 cursor-not-allowed': disabled }" @click="!disabled && toggleDropdown()"
-                tabindex="0" @keydown.space.prevent="!disabled && toggleDropdown()"
+                :class="{ 'opacity-50 cursor-not-allowed': disabled, 'pl-13': leftIcon }"
+                @click="!disabled && toggleDropdown()" tabindex="0"
+                @keydown.space.prevent="!disabled && toggleDropdown()"
                 @keydown.enter.prevent="!disabled && toggleDropdown()" @blur="handleBlur">
                 <span v-if="multiple && Array.isArray(selectedValues)">
-                    <span v-if="selectedValues.length === 0">{{ placeholder }}</span>
+                    <CoelhoText v-if="selectedValues.length === 0" size="sm" class="text-gray-500">{{ placeholder }}
+                    </CoelhoText>
                     <div v-else class="flex flex-wrap gap-1">
-                        <span v-for="value in selectedValues" :key="value"
-                            class="inline-flex items-center bg-primary/10 px-2 py-0.5 rounded">
+                        <CoelhoBadge v-for="value in selectedValues" :key="value" size="sm" :closeable="true"
+                            @close="removeValue(value)">
                             {{ getOptionLabel(value) }}
-                            <button @click.stop="removeValue(value)" class="ml-1 text-primary hover:text-primary/80">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </span>
+                        </CoelhoBadge>
                     </div>
                 </span>
                 <span v-else>
@@ -35,15 +34,11 @@
                 </span>
             </div>
 
-            <!-- Dropdown Arrow -->
-            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                <svg class="w-4 h-4 text-gray-400" :class="{ 'transform rotate-180': isOpen }" fill="none"
-                    stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
+            <div class="absolute right-3 top-1/2 -translate-y-1/3 pointer-events-none">
+                <CoelhoIcon v-if="isOpen" :icon="ChevronUpIcon" color="secondary" />
+                <CoelhoIcon v-else :icon="ChevronDownIcon" color="secondary" />
             </div>
 
-            <!-- Options Dropdown -->
             <div v-show="isOpen" ref="dropdown"
                 class="absolute z-50 w-full mt-1 bg-white border border-stroke rounded-md shadow-lg max-h-60 overflow-auto">
                 <template v-if="filteredOptions.length">
@@ -61,7 +56,7 @@
                     </div>
                 </template>
                 <div v-else class="px-3 py-2 text-gray-500">
-                    Nenhum resultado encontrado
+                    <CoelhoText size="sm">Sem resultados</CoelhoText>
                 </div>
             </div>
         </div>
@@ -70,7 +65,12 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+
+import type { Component } from 'vue';
 import type { SelectOption } from '../types/tables';
+
+import { CoelhoBadge, CoelhoIcon, CoelhoText } from '@/components';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/vue/24/solid';
 
 interface Props {
     modelValue: number | number[] | string | string[];
@@ -81,6 +81,7 @@ interface Props {
     multiple?: boolean;
     searchable?: boolean;
     id?: string;
+    leftIcon?: Component;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -95,7 +96,6 @@ const emit = defineEmits<{
     (e: 'update:modelValue', value: number | string | (number | string)[]): void;
 }>();
 
-// State
 const isOpen = ref(false);
 const searchQuery = ref('');
 const selectTrigger = ref<HTMLElement | null>(null);
@@ -103,7 +103,6 @@ const searchInput = ref<HTMLElement | null>(null);
 const dropdown = ref<HTMLElement | null>(null);
 const displayValue = ref('');
 
-// Computed
 const filteredOptions = computed(() => {
     if (!searchQuery.value) return props.options;
     const query = searchQuery.value.toLowerCase();
@@ -125,7 +124,6 @@ const selectedLabel = computed(() => {
     return option ? option.label : '';
 });
 
-// Methods
 const toggleDropdown = () => {
     isOpen.value = !isOpen.value;
     if (isOpen.value && props.searchable) {
@@ -140,7 +138,6 @@ const handleFocus = () => {
 };
 
 const handleBlur = (event: FocusEvent) => {
-    // Vérifie si le focus est passé à un élément du dropdown
     if (dropdown.value?.contains(event.relatedTarget as Node)) {
         return;
     }
@@ -199,7 +196,6 @@ const isSelected = (value: string | number) => {
     return props.modelValue === value;
 };
 
-// Click outside handler
 const handleClickOutside = (event: MouseEvent) => {
     if (
         !selectTrigger.value?.contains(event.target as Node) &&
@@ -211,7 +207,6 @@ const handleClickOutside = (event: MouseEvent) => {
     }
 };
 
-// Lifecycle
 onMounted(() => {
     document.addEventListener('click', handleClickOutside);
 });
@@ -220,17 +215,15 @@ onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside);
 });
 
-// Reset search query when dropdown closes
 watch(isOpen, (newValue) => {
     if (!newValue) {
         searchQuery.value = '';
     }
 });
 
-// Ajout d'un watch pour mettre à jour displayValue
 watch(() => props.modelValue, (newValue) => {
     if (props.searchable && !props.multiple && newValue) {
-        const option = props.options.find(opt => opt.value === newValue);
+        const option = props.options.find(opt => opt.value == newValue);
         displayValue.value = option ? option.label : '';
     }
 }, { immediate: true });

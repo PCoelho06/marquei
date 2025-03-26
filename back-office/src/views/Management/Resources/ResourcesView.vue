@@ -38,7 +38,7 @@
                 </DefaultCard>
             </div>
         </div>
-        <CoelhoModal v-model="showModal" :title="modal?.title">
+        <CoelhoModal v-model="showModal" :title="modal?.title" size="xl">
             <ResourceForm v-if="modal?.content === 'ResourceForm'" :resource="modal.props" ref="resourceFormRef"
                 @submit="handleResourceSubmit" />
             <CoelhoText v-else>{{ modal?.content }}</CoelhoText>

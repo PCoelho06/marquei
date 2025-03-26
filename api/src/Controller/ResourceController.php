@@ -8,6 +8,8 @@ use App\Entity\Resource;
 use App\DTO\Filters\ResourceFilterDTO;
 use App\Service\FilterService;
 use App\Service\ResourceService;
+use App\Service\SalonService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,7 +21,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/api/resources', name: 'resources_')]
 class ResourceController extends AbstractController
 {
-    public function __construct(private ResourceService $resourceService, private FilterService $filterService) {}
+    public function __construct(
+        private ResourceService $resourceService,
+        private FilterService $filterService,
+        private SalonService $salonService,
+        private LoggerInterface $logger
+    ) {}
 
     #[Route('/', name: 'create', methods: ['POST'])]
     public function add(#[MapRequestPayload()] ResourceDTO $resourceDTO): JsonResponse

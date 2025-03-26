@@ -15,8 +15,17 @@
   }">
     <CoelhoIcon v-if="icon" :icon="icon" :size="size === 'sm' ? 'xs' : size === 'md' ? 'sm' : 'md'" class="mr-1" />
 
-    <span v-if="hasContent" :class="{ 'ml-1': icon }">
+    <span v-if="hasContent" :class="{ 'ml-1': icon, 'flex items-center': true }">
       <slot>{{ content }}</slot>
+      <button v-if="closeable" @click.stop="$emit('close')" :class="{
+        'ml-2': true,
+        'text-stroke': variant !== 'secondary' && type !== 'dot',
+        'text-strokedark ': variant === 'secondary' && type !== 'dot',
+      }">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </span>
 
     <div v-if="type === 'dot'" class="h-2 w-2 rounded-full" :class="{
@@ -54,6 +63,7 @@ interface Props {
   max?: number;
   pulse?: boolean;
   rounded?: boolean;
+  closeable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -63,6 +73,7 @@ const props = withDefaults(defineProps<Props>(), {
   max: 99,
   pulse: false,
   rounded: false,
+  closeable: false,
 });
 
 const hasContent = computed(() => {

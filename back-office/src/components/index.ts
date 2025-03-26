@@ -11,7 +11,6 @@ export { default as CoelhoParagraph } from './atoms/typography/CoelhoParagraph.v
 export { default as CoelhoText } from './atoms/typography/CoelhoText.vue'
 export { default as CoelhoLink } from './atoms/typography/CoelhoLink.vue'
 export { default as CoelhoTooltip } from './atoms/CoelhoTooltip.vue'
-export { default as CoelhoInputGroup } from './molecules/CoelhoInputGroup.vue'
 export { default as CoelhoPagination } from './molecules/CoelhoPagination.vue'
 export { default as CoelhoBreadcrumbs } from './molecules/CoelhoBreadcrumbs.vue'
 export { default as CoelhoRating } from './molecules/CoelhoRating.vue'

@@ -19,6 +19,7 @@ class ResourceFilterDTO extends BaseFilterDTO
     public function __construct(array $queryParams)
     {
         parent::__construct($queryParams);
+
         $this->types = isset($queryParams['type']) ? $this->parseArray($queryParams['type']) : [];
         $this->salons = isset($queryParams['salon']) ? $this->parseArray($queryParams['salon']) : [];
         $this->name = $queryParams['name'] ?? '';

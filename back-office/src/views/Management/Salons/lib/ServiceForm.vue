@@ -1,16 +1,14 @@
 <template>
     <div class="grid grid-cols-1 gap-8 m-6 sm:grid-cols-2">
-        <CoelhoInput :icon="ChatBubbleLeftEllipsisIcon" type="text" size="sm" label="Nome do serviço"
+        <CoelhoInput :leftIcon="ChatBubbleLeftEllipsisIcon" type="text" label="Nome do serviço"
             :error="validationErrors.name" placeholder="Nome do serviço" v-model="localService.name" :required=true />
-        <CoelhoInput :icon="DocumentTextIcon" type="text" size="sm" label="Descrição do serviço"
+        <CoelhoInput :leftIcon="DocumentTextIcon" type="text" label="Descrição do serviço"
             :error="validationErrors.description" placeholder="Descrição do serviço"
             v-model="localService.description" />
-        <CoelhoInput :icon="ClockIcon" type="number" size="sm" label="Duração do serviço"
-            :error="validationErrors.duration" placeholder="Duração do serviço" v-model="localService.duration"
-            :required=true />
-        <CoelhoInput :icon="BanknotesIcon" type="number" size="sm" label="Preço do serviço"
-            :error="validationErrors.price" placeholder="Preço do serviço" v-model="localService.price"
-            :required=true />
+        <CoelhoInput :leftIcon="ClockIcon" type="number" label="Duração do serviço" :error="validationErrors.duration"
+            placeholder="Duração do serviço" v-model="localService.duration" suffix="min" :required=true />
+        <CoelhoInput :leftIcon="BanknotesIcon" type="number" label="Preço do serviço" :error="validationErrors.price"
+            placeholder="Preço do serviço" v-model="localService.price" suffix="€" :required=true />
     </div>
 </template>
 

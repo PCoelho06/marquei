@@ -3,11 +3,13 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Entity\Salon;
 use App\DTO\ResourceDTO;
 use App\Entity\Resource;
 use App\Entity\UserSalon;
-use App\DTO\Filters\ResourceFilterDTO;
+use Psr\Log\LoggerInterface;
 use App\Model\ResourceTypeEnum;
+use App\DTO\Filters\ResourceFilterDTO;
 use App\Repository\ResourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,12 +23,14 @@ final class ResourceService
         private UserSalonService $userSalonService,
         private EntityHydratorService $hydrator,
         private Security $security,
+        private LoggerInterface $logger
     ) {}
 
     public function searchResources(User $user, ResourceFilterDTO $filters): array
     {
         $userSalons = $user->getSalons()->map(fn(UserSalon $userSalon) => $userSalon->getSalon());
-        return $this->resourceRepository->findByFilters($filters, $userSalons);
+        $researchedSalons = $userSalons->filter(fn(Salon $salon) => count($filters->salons) === 0 || in_array($salon->getId(), $filters->salons));
+        return $this->resourceRepository->findByFilters($filters, $researchedSalons);
     }
 
     public function getResource(int $id): ?Resource

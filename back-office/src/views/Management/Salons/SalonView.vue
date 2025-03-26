@@ -41,7 +41,7 @@
                 </CoelhoCard>
             </div>
         </div>
-        <CoelhoModal v-model="showModal" :title="modal?.title">
+        <CoelhoModal v-model="showModal" :title="modal?.title" size="xl">
             <ServiceForm v-if="modal?.content === 'ServiceForm'" :service="modal.props" ref="serviceFormRef"
                 @submit="handleServiceSubmit" />
             <CoelhoText v-else>{{ modal?.content }}</CoelhoText>

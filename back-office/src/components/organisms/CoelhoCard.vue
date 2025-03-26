@@ -62,7 +62,7 @@ const emit = defineEmits<{
 
 // Classes dynamiques pour la variante et la taille
 const cardClasses = computed(() => [
-  'border border-stroke rounded-sm shadow-md overflow-hidden',
+  'border border-stroke rounded-sm shadow-md',
   {
     // Variantes (vertical/horizontal)
     'flex flex-row': props.variant === 'horizontal',
