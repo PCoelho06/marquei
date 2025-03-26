@@ -210,7 +210,6 @@ const saveSchedules = async () => {
     try {
         await api().businessHours.create({ id: Array.isArray(route.params.id) ? route.params.id[0] : route.params.id, businessHoursRanges: schedules.value });
         router.push({ name: 'GetSalon', params: { id: route.params.id } })
-        // router.push({ name: 'HandleForfait', params: { id: route.params.id } })
     } catch (error) {
         console.error('Erreur lors de la sauvegarde:', error)
     }
@@ -218,13 +217,10 @@ const saveSchedules = async () => {
 
 onMounted(async () => {
     await salonsStore.getSalon({ id: Array.isArray(route.params.id) ? Number(route.params.id[0]) : Number(route.params.id) });
-    console.log("🚀 ~ onMounted ~ getterSalon:", getterSalon.value?.name)
-    await salonsStore.getBusinessHours({ id: Array.isArray(route.params.id) ? Number(route.params.id[0]) : Number(route.params.id) });
-    salonsStore.getterBusinessHours?.forEach((businessHour) => {
+    getterSalon.value?.businessHours?.forEach((businessHour) => {
         addTimeRange(Number(businessHour.dayOfWeek), businessHour.startTime, businessHour.endTime)
     })
-    isEdit.value = salonsStore.getterBusinessHours?.length ? true : false
-    console.log("🚀 ~ onMounted ~ isEdit:", isEdit.value)
+    isEdit.value = getterSalon.value?.businessHours?.length ? true : false
     isReady.value = true
 })
 </script>

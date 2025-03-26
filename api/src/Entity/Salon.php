@@ -222,6 +222,7 @@ class Salon
             'city' => $this->city,
             'country' => $this->country,
             'phone' => $this->phone,
+            'businessHours' => array_map(fn(BusinessHoursRanges $businessHoursRanges) => $businessHoursRanges->toArray(), $this->businessHoursRanges->toArray()),
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
         ];

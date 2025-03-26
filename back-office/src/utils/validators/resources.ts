@@ -1,6 +1,6 @@
-import type { CreateResourcePayload, UpdateResourcePayload, ResourceType } from '@/types/resources'
+import type { ResourceCreatePayload } from '@/types/resources'
 
-const validateResourceData = (data: CreateResourcePayload) => {
+const validateResourceData = (data: ResourceCreatePayload) => {
   const errors = {
     name: '',
     type: '',

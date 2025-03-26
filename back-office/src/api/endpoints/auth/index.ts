@@ -19,6 +19,7 @@ const auth = {
       payload,
     })
   },
+  fetchUser: async () => await builder({ url: '/api/auth/', method: 'GET', payload: {} }),
 }
 
 export default { ...auth }

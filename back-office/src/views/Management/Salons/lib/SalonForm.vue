@@ -43,7 +43,7 @@ import { onMounted, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
-import { validators } from '@/utils';
+import { validators, formatters } from '@/utils';
 import { useSalonsStore } from '@/stores/salons';
 
 import type { SalonCreatePayload } from '@/types/salons';
@@ -105,28 +105,16 @@ const handleSalon = async () => {
     }
 };
 
-const formatPhone = (phone: string) => {
-    const cleanedPhone = phone.replace('+351', '').trim();
-    const formattedPhone = cleanedPhone.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
-    return ((formattedPhone.length > 0 ? '+351 ' : '') + formattedPhone).trim();
-};
-
-const formatPostalCode = (postalCode: string) => {
-    const cleanedPostalCode = postalCode.replace('-', '').trim();
-    const formattedPostalCode = cleanedPostalCode.replace(/(\d{4})(\d{3})/, '$1-$2');
-    return formattedPostalCode;
-};
-
 const handlePhoneChange = () => {
     validationErrors.value.phone = '';
 
-    salon.value.phone = formatPhone(salon.value.phone);
+    salon.value.phone = formatters.formatPhone(salon.value.phone);
 };
 
 const handlePostalCodeChange = () => {
     validationErrors.value.postalCode = '';
 
-    salon.value.postalCode = formatPostalCode(salon.value.postalCode);
+    salon.value.postalCode = formatters.formatPostalCode(salon.value.postalCode);
 };
 
 onMounted(() => {
@@ -139,9 +127,9 @@ onMounted(() => {
 watchEffect(() => {
     if (isEdit && getterSalon.value) {
         salon.value.name = getterSalon.value.name ?? '';
-        salon.value.phone = formatPhone(getterSalon.value.phone ?? '');
+        salon.value.phone = formatters.formatPhone(getterSalon.value.phone ?? '');
         salon.value.address = getterSalon.value.address ?? '';
-        salon.value.postalCode = formatPostalCode(getterSalon.value.postalCode ?? '');
+        salon.value.postalCode = formatters.formatPostalCode(getterSalon.value.postalCode ?? '');
         salon.value.city = getterSalon.value.city ?? '';
         salon.value.country = getterSalon.value.country ?? '';
     }

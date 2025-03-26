@@ -5,7 +5,7 @@
         <slot name="actions" />
       </div>
 
-      <CoelhoSelect v-model="limit" label="Limite" :options="limits" class="w-36">
+      <CoelhoSelect v-if="totalElements > 10" v-model="limit" label="Limite" :options="limits" class="w-36">
         <template #default="{ item }">
           <span>{{ item.name }}</span>
         </template>
@@ -13,12 +13,15 @@
     </div>
 
     <div class="text-sm text-gray-500">
-      <span class="font-medium">{{ first }}</span>
-      <span> a </span>
-      <span class="font-medium">{{ last }}</span>
-      <span> sobre </span>
+      <template v-if="totalPages > 1">
+        <span class="font-medium">{{ first }}</span>
+        <span> a </span>
+        <span class="font-medium">{{ last }}</span>
+        <span> de </span>
+      </template>
       <span class="font-medium">{{ totalElements }}</span>
-      <span> resultados</span>
+      <span v-if="totalElements > 1"> resultados</span>
+      <span v-else> resultado</span>
     </div>
     <div class="overflow-x-auto border border-stroke rounded-lg">
       <table class="min-w-full divide-y divide-stroke">
@@ -83,7 +86,7 @@
     </div>
 
     <!-- Pagination -->
-    <div v-if="paginated" class="flex justify-center items-center">
+    <div v-if="paginated && totalPages > 1" class="flex justify-center items-center">
       <CoelhoPagination v-model:currentPage="currentPage" :total-pages="props.totalPages" :total-items="items.length"
         :items-per-page="limit" />
     </div>
@@ -102,6 +105,7 @@ import CoelhoCheckbox from '../atoms/CoelhoCheckbox.vue';
 import CoelhoPagination from '../molecules/CoelhoPagination.vue';
 import CoelhoSelect from '../atoms/CoelhoSelect.vue';
 import type { SelectOption } from '../types/tables';
+import type { Item } from '@/types';
 
 interface Column {
   key: string;
@@ -109,10 +113,6 @@ interface Column {
   sortable?: boolean;
   width?: string;
   format?: (value: string | number) => string;
-}
-
-interface Item {
-  [key: string]: string | number;
 }
 
 interface Props {

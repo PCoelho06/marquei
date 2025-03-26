@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\DTO\UserDTO;
+use App\Entity\User;
 use App\Model\LoginModesEnum;
 use App\Service\AuthenticationService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -19,6 +21,15 @@ final class AuthenticationController extends AbstractController
         private AuthenticationService $authenticationService,
         private JWTTokenManagerInterface $JWTManager
     ) {}
+
+    #[Route('/', name: 'fetch_user', methods: ['GET'])]
+    public function fetchUser(#[CurrentUser()] User $user): JsonResponse
+    {
+        return $this->json([
+            'status' => 'success',
+            'data' => $user->toArray(),
+        ]);
+    }
 
     #[Route('/register', name: 'register', methods: ['POST'])]
     public function registerUser(#[MapRequestPayload(validationGroups: ['registration'])] UserDTO $userDTO): JsonResponse

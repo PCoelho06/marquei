@@ -1,4 +1,5 @@
 import type { Salon } from '../salons'
+import type { BaseQuery } from '..'
 
 export type ResourceType = 'employee' | 'machine'
 
@@ -11,14 +12,10 @@ export interface Resource {
   updatedAt: string
 }
 
-export interface ResourceQuery {
+export interface ResourceQuery extends BaseQuery {
   salon?: number
   type?: ResourceType
   name?: string
-}
-
-export interface ResourceGetPayload {
-  id: number
 }
 
 export interface ResourceCreatePayload {
@@ -28,10 +25,6 @@ export interface ResourceCreatePayload {
 }
 
 export interface ResourceUpdatePayload extends ResourceCreatePayload {
-  id: number
-}
-
-export interface ResourceDeletePayload {
   id: number
 }
 

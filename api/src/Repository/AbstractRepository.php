@@ -7,10 +7,10 @@ use Doctrine\ORM\QueryBuilder;
 
 abstract class AbstractRepository extends ServiceEntityRepository
 {
-    protected function paginate(QueryBuilder $queryBuilder, int $page, int $limit, ?string $sort): array
+    protected function paginate(QueryBuilder $queryBuilder, string $alias, int $page, int $limit, ?string $sort): array
     {
         $totalQueryBuilder = clone $queryBuilder;
-        $total = (int) $totalQueryBuilder->select('COUNT(r.id)')->getQuery()->getSingleScalarResult();
+        $total = (int) $totalQueryBuilder->select('COUNT(' . $alias . '.id)')->getQuery()->getSingleScalarResult();
 
         $totalPages = (int) ceil($total / $limit);
         $hasPrevious = $page > 1;
@@ -23,7 +23,7 @@ abstract class AbstractRepository extends ServiceEntityRepository
 
         if ($sort) {
             $sort = explode(',', $sort);
-            $queryBuilder->orderBy('r.' . $sort[0], $sort[1]);
+            $queryBuilder->orderBy($alias . '.' . $sort[0], $sort[1]);
         }
 
         $data = $queryBuilder->getQuery()->getResult();

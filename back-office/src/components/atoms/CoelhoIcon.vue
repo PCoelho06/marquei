@@ -1,8 +1,20 @@
 <template>
-    <div class="inline-flex" :class="[sizeClasses, colorClass]" :style="rotationStyle">
+    <div class="inline-flex" :class="{
+        'w-3 h-3': size === 'xs',
+        'w-4 h-4': size === 'sm',
+        'w-5 h-5': size === 'md',
+        'w-6 h-6': size === 'lg',
+        'w-8 h-8': size === 'xl',
+        'text-primary': color === 'primary',
+        'text-gray-500': color === 'secondary',
+        'text-red-500': color === 'danger',
+        'text-green-500': color === 'success',
+        'text-yellow-500': color === 'warning',
+        'text-current': color === 'currentColor',
+    }" :style="rotationStyle">
         <component :is="icon" v-bind="$attrs" :class="[
             'transition-transform',
-            { 'animate-spin': spin }
+            animate ? { 'animate-pulse': animate === 'pulse', 'animate-bounce': animate === 'bounce', 'animate-ping': animate === 'ping' } : '',
         ]" />
     </div>
 </template>
@@ -13,47 +25,18 @@ import type { Component } from 'vue';
 
 interface Props {
     icon: Component;
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
-    color?: string;
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    color?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'currentColor';
     rotation?: number;
-    spin?: boolean;
+    animate?: 'pulse' | 'bounce' | 'ping';
 }
 
 const props = withDefaults(defineProps<Props>(), {
     size: 'md',
     color: 'currentColor',
     rotation: 0,
-    spin: false,
 });
 
-// Classes de taille prédéfinies
-const sizeClasses = computed(() => {
-    if (typeof props.size === 'number') {
-        return `w-[${props.size}px] h-[${props.size}px]`;
-    }
-
-    const sizes = {
-        xs: 'w-3 h-3',
-        sm: 'w-4 h-4',
-        md: 'w-5 h-5',
-        lg: 'w-6 h-6',
-        xl: 'w-8 h-8',
-    };
-
-    return sizes[props.size];
-});
-
-// Classe de couleur
-const colorClass = computed(() => {
-    // Si c'est une couleur Tailwind
-    if (props.color.startsWith('text-')) {
-        return props.color;
-    }
-    // Sinon, on applique la couleur directement
-    return `text-[${props.color}]`;
-});
-
-// Style de rotation
 const rotationStyle = computed(() => ({
     transform: props.rotation ? `rotate(${props.rotation}deg)` : undefined,
 }));

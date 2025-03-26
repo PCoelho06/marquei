@@ -1,11 +1,8 @@
 <template>
-  <div :class="cardClasses" @click="clickable ? emit('click') : null" role="article">
-    <!-- Image -->
+  <div :class="cardClasses" class="bg-white" @click="clickable ? emit('click') : null" role="article">
     <img v-if="image" :src="image" :alt="imageAlt || 'Card image'" :class="imageClasses" />
 
-    <!-- Contenu -->
     <div :class="contentClasses">
-      <!-- Header (Titre) -->
       <slot name="header">
         <div v-if="title || description">
           <h3 v-if="title" class="text-xl font-semibold text-gray-800 mb-2">
@@ -17,18 +14,18 @@
         </div>
       </slot>
 
-      <!-- Body -->
-      <slot>
-        <p v-if="!$slots.default" class="text-gray-500 text-sm">
-          No content provided
-        </p>
-      </slot>
+      <div class="my-2 flex flex-col">
+        <slot>
+          <p v-if="!$slots.default" class="text-gray-500 text-sm">
+            No content provided
+          </p>
+        </slot>
+      </div>
 
     </div>
-    <!-- Footer -->
-    <div v-if="slots.footer" class="p-2 border-t bg-whitten border-t-stroke">
+    <div v-if="slots.footer"
+      class="mt-auto p-2 border-t bg-whitten border-t-stroke flex flex-col xl:flex-row gap-2 justify-end">
       <slot name="footer">
-        <!-- Footer optionnel -->
       </slot>
     </div>
   </div>

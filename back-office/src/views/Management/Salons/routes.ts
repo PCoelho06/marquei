@@ -1,5 +1,5 @@
 import RouterSalons from '@/views/management/salons/RouterSalons.vue'
-import SalonsView from '@/views/management/salons/SalonsView.vue'
+import SalonsListView from '@/views/management/salons/SalonsListView.vue'
 import SalonView from '@/views/management/salons/SalonView.vue'
 import HandleSalonView from '@/views/management/salons/HandleSalonView.vue'
 import HandleBusinessHoursView from '@/views/management/salons/HandleBusinessHoursView.vue'
@@ -17,7 +17,7 @@ export default [
       {
         path: '',
         name: 'ListSalons',
-        component: SalonsView,
+        component: SalonsListView,
         meta: { sidebar: { title: 'Salões' } },
       },
       {

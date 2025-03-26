@@ -1,4 +1,4 @@
-import type { ResourceType } from './resources'
+import type { Component } from 'vue'
 
 export interface Payload {
   token: string
@@ -8,12 +8,6 @@ export interface BaseQuery {
   sort?: Array<string>
   page?: number
   limit?: number
-}
-
-export interface ResourceQuery extends BaseQuery {
-  salon?: number
-  type?: ResourceType
-  name?: string
 }
 
 export type SidebarCategories = 'Painel' | 'Relatórios' | 'Financeiro'
@@ -93,9 +87,11 @@ export interface SidebarMenuCategory extends SidebarMenuItem {
 
 export interface ModalContent {
   title: string
-  content: string
+  content: string | Component
   dismiss: string
   validate?: string
+  validateVariant?: 'primary' | 'danger' | 'success'
+  validateIcon?: Component
   action?: () => void
 }
 
@@ -118,4 +114,16 @@ export interface ObjectKeysLibraries {
 export interface QueryTag {
   label: string | null
   key: string | null
+}
+
+export interface BaseGetPayload {
+  id: number
+}
+
+export interface BaseDeletePayload {
+  id: number
+}
+
+export interface Item {
+  [key: string]: string | number
 }

@@ -106,6 +106,11 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  const fetchUser = async () => {
+    const response = await api().auth.fetchUser()
+    mutationUser(response.data)
+  }
+
   const resetUser = () => {
     mutationUser(undefined)
   }
@@ -155,6 +160,7 @@ export const useAuthStore = defineStore('auth', () => {
     actionRefresh,
     actionSelectMode,
     initialize,
+    fetchUser,
     resetUser,
     resetMode,
     resetAccessToken,

@@ -3,8 +3,8 @@
 namespace App\Service;
 
 use App\DTO\ServiceDTO;
+use App\DTO\Filters\ServiceFilterDTO;
 use App\Entity\Service;
-use App\Repository\SalonRepository;
 use App\Repository\ServiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -15,12 +15,13 @@ final class ServiceService
         private EntityManagerInterface $entityManager,
         private EntityHydratorService $hydrator,
         private SalonService $salonService,
+        private UserSalonService $userSalonService,
     ) {}
 
-    public function getServices(): array
+    public function searchServices(ServiceFilterDTO $filters): array
     {
-        $services = $this->serviceRepository->findAll();
-        return array_map(fn(Service $service) => $service->toArray(), $services);
+        $salon = $this->salonService->getSalon($filters->salonId);
+        return $this->serviceRepository->findByFilters($filters, $salon);
     }
 
     public function getService(int $id): ?Service
@@ -51,7 +52,7 @@ final class ServiceService
     {
         $service = $this->getService($id);
 
-        $this->salonService->checkUserIsSalonOwner($service->getSalon());
+        $this->userSalonService->checkUserIsSalonOwner($service->getSalon());
 
         $service = $this->hydrator->hydrate($service, $serviceDTO);
 
@@ -63,7 +64,7 @@ final class ServiceService
     public function deleteService(int $id): void
     {
         $service = $this->getService($id);
-        $this->salonService->checkUserIsSalonOwner($service->getSalon());
+        $this->userSalonService->checkUserIsSalonOwner($service->getSalon());
 
         $this->entityManager->remove($service);
         $this->entityManager->flush();

@@ -3,3 +3,16 @@ export const columnsResources = [
   { key: 'type', label: 'Tipo', sortable: true },
   { key: 'salon', label: 'Salão', sortable: true },
 ]
+
+export const columnsServices = [
+  { key: 'name', label: 'Nome', sortable: true },
+  { key: 'duration', label: 'Duração', sortable: true },
+  { key: 'price', label: 'Preço', sortable: true },
+]
+
+export const columnsSalons = [
+  { key: 'name', label: 'Nome', sortable: true },
+  { key: 'address', label: 'Endereço' },
+  { key: 'phone', label: 'Telefone' },
+  { key: 'subscription', label: 'Assinatura', sortable: true },
+]

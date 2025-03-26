@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Salon;
 use App\Entity\Resource;
-use App\DTO\ResourceFilterDTO;
+use App\DTO\Filters\ResourceFilterDTO;
 use App\Model\ResourceTypeEnum;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Common\Collections\Collection;
@@ -15,40 +15,16 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class ResourceRepository extends AbstractRepository
 {
+    private const ALIAS = 'r';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Resource::class);
     }
 
-    public function findEmployeeBySalonPaginated(Salon $salon, int $page, int $limit): array
-    {
-        return $this->createQueryBuilder('r')
-            ->where('r.salon = :salon')
-            ->setParameter('salon', $salon)
-            ->andWhere('r.type = :type')
-            ->setParameter('type', ResourceTypeEnum::EMPLOYEE)
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findMachineBySalonPaginated(Salon $salon, int $page, int $limit): array
-    {
-        return $this->createQueryBuilder('r')
-            ->where('r.salon = :salon')
-            ->setParameter('salon', $salon)
-            ->andWhere('r.type = :type')
-            ->setParameter('type', ResourceTypeEnum::MACHINE)
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
-
     public function findByFilters(ResourceFilterDto $filters, Collection $salons): array
     {
-        $queryBuilder = $this->createQueryBuilder('r')
+        $queryBuilder = $this->createQueryBuilder(self::ALIAS)
             ->where('r.salon IN (:salons)')
             ->setParameter('salons', $salons);
 
@@ -62,7 +38,7 @@ class ResourceRepository extends AbstractRepository
                 ->setParameter('name', "%{$filters->name}%");
         }
 
-        return $this->paginate($queryBuilder, $filters->page, $filters->limit, $filters->sort);
+        return $this->paginate($queryBuilder, self::ALIAS, $filters->page, $filters->limit, $filters->sort);
     }
 
 

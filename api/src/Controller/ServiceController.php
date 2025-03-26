@@ -3,26 +3,43 @@
 namespace App\Controller;
 
 use App\DTO\ServiceDTO;
+use App\Entity\Service;
+use App\DTO\Filters\ServiceFilterDTO;
+use App\Service\FilterService;
 use App\Service\ServiceService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/api/services', name: 'services_')]
 class ServiceController extends AbstractController
 {
-    public function __construct(private ServiceService $serviceService) {}
+    public function __construct(private ServiceService $serviceService, private FilterService $filterService) {}
 
-    #[Route('/', name: 'list', methods: ['GET'])]
-    public function index(): JsonResponse
+    #[Route('/', name: 'search', methods: ['GET'])]
+    public function search(Request $request): JsonResponse
     {
-        $services = $this->serviceService->getServices();
+        try {
+            $filters = $this->filterService->createDtoFromRequest(ServiceFilterDTO::class, $request->query->all());
+            $data = $this->serviceService->searchServices($filters);
+        } catch (\InvalidArgumentException $e) {
+            return $this->json([
+                'status' => 'error',
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], JsonResponse::HTTP_BAD_REQUEST);
+        }
 
         return $this->json([
             'status' => 'success',
-            'data' => $services,
+            'data' => [
+                'services' => array_map(fn(Service $service) => $service->toArray(), $data['data']),
+                'settings' => $data['settings'],
+            ],
         ], Response::HTTP_OK);
     }
 

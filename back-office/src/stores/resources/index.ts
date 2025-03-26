@@ -6,12 +6,10 @@ import { api } from '@/api'
 import type {
   Resource,
   ResourceQuery,
-  ResourceGetPayload,
   ResourceCreatePayload,
   ResourceUpdatePayload,
-  ResourceDeletePayload,
 } from '@/types/resources'
-import type { ListSettings } from '@/types'
+import type { BaseDeletePayload, BaseGetPayload, ListSettings } from '@/types'
 
 export const useResourcesStore = defineStore('resources', () => {
   /**
@@ -55,7 +53,7 @@ export const useResourcesStore = defineStore('resources', () => {
     query.value = value
   }
 
-  const getResource = async (payload: ResourceGetPayload) => {
+  const getResource = async (payload: BaseGetPayload) => {
     const response = await api().resources.get({ payload })
     mutationResource(response.data)
   }
@@ -72,7 +70,7 @@ export const useResourcesStore = defineStore('resources', () => {
     const response = await api().resources.update(payload)
     mutationResource(response.data)
   }
-  const deleteResource = async (payload: ResourceDeletePayload) => {
+  const deleteResource = async (payload: BaseDeletePayload) => {
     await api().resources.delete(payload)
     searchResources(payload)
     resetResource()

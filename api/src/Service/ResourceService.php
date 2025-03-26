@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\DTO\ResourceDTO;
 use App\Entity\Resource;
 use App\Entity\UserSalon;
-use App\DTO\ResourceFilterDTO;
+use App\DTO\Filters\ResourceFilterDTO;
 use App\Model\ResourceTypeEnum;
 use App\Repository\ResourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +18,7 @@ final class ResourceService
         private EntityManagerInterface $entityManager,
         private ResourceRepository $resourceRepository,
         private SalonService $salonService,
+        private UserSalonService $userSalonService,
         private EntityHydratorService $hydrator,
         private Security $security,
     ) {}
@@ -36,7 +37,7 @@ final class ResourceService
             throw new \InvalidArgumentException('Recurso não encontrado');
         }
 
-        $this->salonService->checkUserIsSalonOwner($resource->getSalon());
+        $this->userSalonService->checkUserIsSalonOwner($resource->getSalon());
 
         return $resource;
     }
@@ -58,7 +59,7 @@ final class ResourceService
     {
         $resource = $this->getResource($id);
 
-        $this->salonService->checkUserIsSalonOwner($resource->getSalon());
+        $this->userSalonService->checkUserIsSalonOwner($resource->getSalon());
 
         $this->hydrator->hydrate($resource, $resourceDTO);
 
@@ -70,7 +71,7 @@ final class ResourceService
     public function deleteResource(int $id): void
     {
         $resource = $this->getResource($id);
-        $this->salonService->checkUserIsSalonOwner($resource->getSalon());
+        $this->userSalonService->checkUserIsSalonOwner($resource->getSalon());
 
         $this->entityManager->remove($resource);
         $this->entityManager->flush();

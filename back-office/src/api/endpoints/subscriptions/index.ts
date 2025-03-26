@@ -9,7 +9,7 @@ const subscriptions = {
   create: async (payload: SubscriptionCreatePayload) =>
     await builder({ url: '/api/subscriptions/', method: 'POST', payload }),
   get: async (payload: { id: number }) =>
-    await builder({ url: `/api/salons/${payload.id}/subscription`, method: 'GET', payload }),
+    await builder({ url: `/api/admin/salons/${payload.id}/subscription`, method: 'GET', payload }),
   switch: async (payload: SubscriptionSwitchPayload) =>
     await builder({ url: '/api/subscriptions/switch', method: 'PUT', payload }),
   cancel: async (payload: SubscriptionCancelPayload) =>

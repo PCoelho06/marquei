@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Filters;
 
 use App\Utils\QueryStringParserTrait;
 use Symfony\Component\Validator\Constraints as Assert;

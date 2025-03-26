@@ -9,6 +9,7 @@ export interface SalonCreatePayload {
 
 export interface Salon extends SalonCreatePayload {
   id: number
+  businessHours?: BusinessHours[]
   createdAt: string
   updatedAt: string
 }
@@ -30,7 +31,7 @@ export interface Service {
   description: string
   duration: number
   price: number
-  isEditing?: boolean
+  salonId: number
 }
 
 export interface Subscription {

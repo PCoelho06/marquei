@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\DTO\ResourceDTO;
 use App\Entity\Resource;
-use App\DTO\ResourceFilterDTO;
+use App\DTO\Filters\ResourceFilterDTO;
 use App\Service\FilterService;
 use App\Service\ResourceService;
 use Symfony\Component\HttpFoundation\Request;

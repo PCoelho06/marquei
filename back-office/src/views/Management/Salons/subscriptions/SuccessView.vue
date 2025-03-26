@@ -8,7 +8,7 @@
             <h2 class="text-3xl font-bold text-gray-900 mt-8">Assinatura realizada com sucesso!</h2>
             <p class="text-lg text-gray-600 mt-4 text-center">Agora você pode gerenciar seu salão com a Marquei.</p>
             <CoelhoButton :icon="ArrowRightCircleIcon" :to="router.resolve({ name: 'ManagementDashboard' }).href"
-                size="lg">
+                size="lg" class="mt-4">
                 Começar a gerenciar
             </CoelhoButton>
         </div>

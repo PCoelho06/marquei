@@ -7,7 +7,8 @@
           :options="salonOptions" />
         <CoelhoInputGroup v-model="httpQuery.type" label="Tipo" component="select" :multiple=true
           :options="resourceTypesOptions" />
-        <CoelhoInputGroup v-model="httpQuery.name" label="Nome" placeholder="Nome do recurso" />
+        <CoelhoInput v-model="httpQuery.name" label="Nome" placeholder="Nome do recurso"
+          :leftIcon="ChatBubbleLeftEllipsisIcon" />
       </div>
       <div class="mt-4 flex gap-4 justify-end">
         <CoelhoButton v-if="hasFilters" variant="danger" :icon="XCircleIcon" @click="clearFilters">
@@ -25,7 +26,7 @@
 import { ref, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 
-import { CoelhoInputGroup, CoelhoButton, CoelhoCard } from "@/components";
+import { CoelhoInputGroup, CoelhoButton, CoelhoCard, CoelhoInput } from "@/components";
 
 import { mappers } from "@/utils";
 import { engineQueries } from "@/composables/engineQueries";
@@ -37,7 +38,7 @@ import { useSalonsStore } from "@/stores/salons";
 
 import type { ResourceFilters } from "@/types/resources";
 import type { SelectOption } from "@/types";
-import { MagnifyingGlassIcon, XCircleIcon } from "@heroicons/vue/24/solid";
+import { ChatBubbleLeftEllipsisIcon, MagnifyingGlassIcon, XCircleIcon } from "@heroicons/vue/24/solid";
 
 const { formatForRouter, formatFromRouter } = engineQueries();
 
@@ -58,8 +59,7 @@ const salonOptions = ref<SelectOption[]>();
 const hasFilters = ref(false);
 
 const submit = () => {
-  const query = formatForRouter({ ...httpQuery.value, page: 1 });
-  emits("submit", query);
+  emits("submit", formatForRouter({ ...httpQuery.value, page: 1 }));
 };
 
 const setQueries = () => {
@@ -72,9 +72,9 @@ const setQueries = () => {
 };
 
 onMounted(async () => {
-  await salonsStore.listSalons();
-  if (salonsStore.getterSalons && salonsStore.getterSalons.length > 0) {
-    salonOptions.value = mappers.mapSalonsToOptions(salonsStore.getterSalons);
+  await salonsStore.searchSalons({ httpQuery: {} });
+  if (salonsStore.getterSalonList && salonsStore.getterSalonList.length > 0) {
+    salonOptions.value = mappers.mapSalonsToOptions(salonsStore.getterSalonList);
   }
   setQueries();
 })

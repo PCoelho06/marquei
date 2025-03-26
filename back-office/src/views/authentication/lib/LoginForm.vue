@@ -1,19 +1,34 @@
 <template>
     <AlertToast v-if="alert.show" :message="alert.message" :type="alert.type" :title="alert.title" />
-    <form @submit.prevent="submitForm">
-        <InputGroup label="Email" type="email" placeholder="Entre seu email" v-model="user.email" id="email"
-            autocomplete="email" :error="validationErrors.email">
-            <MailIcon class="fill-current" />
-        </InputGroup>
-
-        <InputGroup label="Palavra-passe" type="password" placeholder="Entre sua palavra-passe" id="password"
-            autocomplete="password" v-model="user.password" :error="validationErrors.password">
-            <LockIcon class="fill-current" />
-        </InputGroup>
-
-        <CoelhoButton type="submit" :icon="ArrowRightEndOnRectangleIcon" size="lg" class="w-full my-4">
-            Entrar
-        </CoelhoButton>
+    <form @submit.prevent="submitForm" class="flex flex-col gap-4">
+        <CoelhoInput label="Email" type="email" placeholder="Entre seu email" v-model="user.email" id="email"
+            autocomplete="email" :error="validationErrors.email" :leftIcon="EnvelopeIcon" />
+        <CoelhoInput label="Palavra-passe" type="password" placeholder="Entre sua palavra-passe" id="password"
+            autocomplete="current-password" v-model="user.password" :error="validationErrors.password"
+            :leftIcon="LockClosedIcon" />
+        <div class="my-4">
+            <CoelhoText size="sm" color="text-gray-500">
+                Ao clicar em "Entrar", você concorda com os nossos
+                <CoelhoLink :to="router.resolve({ name: 'Terms' }).href" size="sm" class="text-primary">
+                    Termos de Serviço
+                </CoelhoLink>
+                e
+                <CoelhoLink :to="router.resolve({ name: 'Privacy' }).href" size="sm" class="text-primary">
+                    Política de Privacidade
+                </CoelhoLink>.
+            </CoelhoText>
+            <CoelhoButton type="submit" :icon="ArrowRightEndOnRectangleIcon" size="lg" class="w-full mt-1">
+                Entrar
+            </CoelhoButton>
+        </div>
+        <div class="mt-6 text-center">
+            <CoelhoText size="sm">
+                Não tem conta ?
+                <CoelhoLink :to="router.resolve({ name: 'Registration' }).href" size="sm" class="text-primary">
+                    Registe-se
+                </CoelhoLink>
+            </CoelhoText>
+        </div>
     </form>
 </template>
 
@@ -28,13 +43,9 @@ import { useAuthStore } from '@/stores/auth'
 
 import AlertToast from '@/components/Alerts/AlertToast.vue';
 
-import InputGroup from '@/components/Forms/InputGroup.vue'
-import MailIcon from '@/components/Icons/MailIcon.vue';
-import LockIcon from '@/components/Icons/LockIcon.vue';
-
 import type { UserLoginForm } from '@/types/user'
-import { CoelhoButton } from '@/components'
-import { ArrowRightEndOnRectangleIcon } from '@heroicons/vue/24/solid'
+import { CoelhoButton, CoelhoInput, CoelhoText, CoelhoLink } from '@/components'
+import { ArrowRightEndOnRectangleIcon, EnvelopeIcon, LockClosedIcon } from '@heroicons/vue/24/solid'
 
 const router = useRouter()
 

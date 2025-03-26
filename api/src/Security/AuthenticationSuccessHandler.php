@@ -3,9 +3,11 @@
 namespace App\Security;
 
 use App\Service\SalonService;
+use App\DTO\Filters\SalonFilterDTO;
 use App\Service\AuthenticationService;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\RefreshTokenRepository;
+use App\Service\UserSalonService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -15,7 +17,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
 {
     public function __construct(
         private AuthenticationService $authenticationService,
-        private SalonService $salonService,
+        private UserSalonService $userSalonService,
         private EntityManagerInterface $entityManager,
         private RefreshTokenRepository $refreshTokenRepository,
     ) {}
@@ -24,14 +26,12 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
     {
         $user = $token->getUser();
 
-        $salons = $this->salonService->listUserSalons($user);
-
         return new JsonResponse([
             'status' => 'success',
             'data' => [
                 'access_token' => $this->authenticationService->generateJWT($user),
                 'user' => $user->toArray(),
-                'hasSalons' => !!count($salons),
+                'hasSalons' => $this->userSalonService->hasSalons($user),
             ],
         ]);
     }
