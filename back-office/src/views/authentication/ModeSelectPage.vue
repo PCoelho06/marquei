@@ -1,12 +1,13 @@
 <template>
     <CenteredLayout>
         <div class="h-screen w-screen flex flex-col justify-around items-center">
-            <DefaultLogo size="lg" :is-title="true" />
+            <CoelhoLogo size="lg" :titleLevel="1" contrast="dark" :href="router.resolve({ name: 'Home' }).href"
+                class="m-auto" />
             <DoubleCardLayout class="w-8/10 m-auto" :clickLeft="() => handleClick('management')"
                 :clickRight="() => handleClick('store')">
                 <template #leftCard>
                     <div class="py-8 px-12 xl:py-17.5 xl:px-26 text-center">
-                        <CoelhoHeading size="2xl">
+                        <CoelhoHeading size="lg">
                             Gestão
                         </CoelhoHeading>
                         <img src="@/assets/images/illustrations/management-mode.svg" alt="illustration" />
@@ -17,7 +18,7 @@
                 </template>
                 <template #rightCard>
                     <div class="py-8 px-12 xl:py-17.5 xl:px-26 text-center">
-                        <CoelhoHeading size="2xl">
+                        <CoelhoHeading size="lg">
                             Salão
                         </CoelhoHeading>
                         <img src="@/assets/images/illustrations/store-mode.svg" alt="illustration" />
@@ -49,9 +50,8 @@ import { useRouter } from 'vue-router';
 import { useSalonsStore } from '@/stores/salons';
 import { useAuthStore } from '@/stores/auth';
 
-import DefaultLogo from '@/components/Logos/DefaultLogo.vue';
 import { DoubleCardLayout, CenteredLayout } from '@/layouts';
-import { CoelhoHeading, CoelhoModal, CoelhoText } from '@/components';
+import { CoelhoHeading, CoelhoModal, CoelhoText, CoelhoLogo } from '@/components';
 
 const router = useRouter();
 

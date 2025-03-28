@@ -5,7 +5,7 @@
       <div class="flex flex-col justify-center items-center bg-linear-to-br px-4 py-20 to-primary from-blue-500"
         ref="heroSection">
         <div class="max-w-4xl mx-auto text-center heroSection">
-          <DefaultLogo size="lg" contrast="light" :isTitle=true class="mb-8" />
+          <CoelhoLogo size="lg" contrast="light" class="mb-8" />
           <h2 class="text-3xl font-bold text-whitten mb-6">
             Gerencie seu salão de beleza com simplicidade
           </h2>
@@ -190,9 +190,8 @@ import { ref, useTemplateRef, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { useElementBounding } from '@vueuse/core'
 
-import { CoelhoButton, CoelhoCarousel } from '@/components'
+import { CoelhoButton, CoelhoCarousel, CoelhoLogo } from '@/components'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import DefaultLogo from '@/components/Logos/DefaultLogo.vue'
 import AnimatedSection from '@/components/Sections/AnimatedSection.vue'
 
 interface Testimonial {

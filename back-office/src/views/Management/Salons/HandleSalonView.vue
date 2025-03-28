@@ -6,7 +6,7 @@
                     <CoelhoIcon :icon="ArrowLeftIcon" />
                     Voltar
                 </CoelhoLink>
-                <DefaultLogo />
+                <CoelhoLogo size="md" :titleLevel="1" contrast="dark" :href="router.resolve({ name: 'Home' }).href" />
             </div>
             <CoelhoCard size="full" :title="isEdit ? 'Atualizar o salão' : 'Registar um salão'">
                 <SalonForm :isEdit :salonId="Array.isArray(route.params.id) ? route.params.id[0] : route.params.id" />
@@ -23,11 +23,10 @@ import { storeToRefs } from 'pinia';
 import { useSalonsStore } from '@/stores/salons';
 import { useAuthStore } from '@/stores/auth';
 
-import { CoelhoLink, CoelhoIcon, CoelhoCard } from '@/components';
+import { CoelhoLink, CoelhoIcon, CoelhoCard, CoelhoLogo } from '@/components';
 import { ArrowLeftIcon } from '@heroicons/vue/24/solid';
 import { CenteredLayout } from '@/layouts';
 import SalonForm from './lib/SalonForm.vue';
-import DefaultLogo from '@/components/Logos/DefaultLogo.vue';
 
 const route = useRoute();
 const router = useRouter();

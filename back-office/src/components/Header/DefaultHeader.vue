@@ -2,7 +2,7 @@
     <header class="fixed top-0 z-999 flex w-full">
         <div class="flex flex-grow items-center justify-between py-4 px-4 md:px-6 2xl:px-11">
             <h1 class="text-2xl font-bold" :class="[isBackgroundDark ? 'text-white' : 'text-primary']">
-                <DefaultLogo size="sm" :contrast="isBackgroundDark ? 'light' : 'dark'" :is-link=true
+                <CoelhoLogo size="sm" :contrast="isBackgroundDark ? 'light' : 'dark'"
                     :href="router.resolve({ name: 'Home' }).href" />
             </h1>
             <nav class="flex justify-between items-center">
@@ -23,9 +23,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
-import { CoelhoButton } from '@/components';
-
-import DefaultLogo from '../Logos/DefaultLogo.vue';
+import { CoelhoButton, CoelhoLogo } from '@/components';
 
 const router = useRouter();
 

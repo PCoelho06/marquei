@@ -1,7 +1,7 @@
 <template>
     <CenteredLayout>
         <div class="flex flex-col w-8/10 h-9/10 justify-center items-center">
-            <DefaultLogo />
+            <CoelhoLogo size="md" :titleLevel="1" contrast="dark" :href="router.resolve({ name: 'Home' }).href" />
             <div class="w-1/2 lg:w-2/5">
                 <img src="@/assets/images/illustrations/success.svg" alt="illustration" />
             </div>
@@ -18,9 +18,8 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
-import DefaultLogo from '@/components/Logos/DefaultLogo.vue';
 import { CenteredLayout } from '@/layouts';
-import { CoelhoButton } from '@/components';
+import { CoelhoButton, CoelhoLogo } from '@/components';
 import { ArrowRightCircleIcon } from '@heroicons/vue/24/solid';
 
 const router = useRouter();

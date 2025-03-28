@@ -3,7 +3,8 @@
         <DoubleCardLayout class="w-8/10 m-auto" :responsiveHideLeft=true>
             <template #leftCard>
                 <div class="py-17.5 px-26 text-center">
-                    <DefaultLogo size="md" :is-link=true :href="router.resolve({ name: 'Home' }).href" />
+                    <CoelhoLogo size="md" :titleLevel="1" contrast="dark"
+                        :href="router.resolve({ name: 'Home' }).href" />
 
                     <p class="font-medium 2xl:px-20">
                         Não espere mais para registrar seu salão e aproveitar nossos serviços.
@@ -30,8 +31,8 @@ import { useRouter } from 'vue-router';
 
 import RegistrationForm from './lib/RegistrationForm.vue'
 
-import DefaultLogo from '@/components/Logos/DefaultLogo.vue'
 import { CenteredLayout, DoubleCardLayout } from '@/layouts'
+import { CoelhoLogo } from '@/components';
 
 const router = useRouter();
 </script>

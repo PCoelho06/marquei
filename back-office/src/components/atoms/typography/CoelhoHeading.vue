@@ -1,19 +1,19 @@
 <template>
   <component :is="tag" :class="{
     'font-bold leading-tight': true,
-    'text-4xl': props.level === 1,
-    'text-3xl': props.level === 2,
-    'text-2xl': props.level === 3,
-    'text-xl': props.level === 4,
-    'text-lg': props.level === 5,
-    'text-base': props.level === 6,
-    'text-primary': props.color === 'primary',
-    'text-gray-500': props.color === 'secondary',
-    'text-green-500': props.color === 'success',
-    'text-yellow-500': props.color === 'warning',
-    'text-red-500': props.color === 'danger',
-    'text-black': props.color === 'dark',
-    'text-white': props.color === 'light',
+    'font-brand tracking-tighter': logo,
+    'text-7xl': size === 'xl',
+    'text-5xl': size === 'lg',
+    'text-3xl': size === 'md',
+    'text-2xl': size === 'sm',
+    'text-xl': size === 'xs',
+    'text-primary': color === 'primary',
+    'text-gray-500': color === 'secondary',
+    'text-green-500': color === 'success',
+    'text-yellow-500': color === 'warning',
+    'text-red-500': color === 'danger',
+    'text-black': color === 'dark',
+    'text-white': color === 'light',
     'mb-4': withMargin
   }">
     <slot />
@@ -25,8 +25,9 @@ import { computed } from 'vue';
 
 interface Props {
   level?: 1 | 2 | 3 | 4 | 5 | 6;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'dark' | 'light';
+  logo?: boolean;
   withMargin?: boolean;
 }
 
@@ -34,6 +35,7 @@ const props = withDefaults(defineProps<Props>(), {
   level: 1,
   color: 'dark',
   withMargin: true,
+  logo: false,
 });
 
 const tag = computed(() => `h${props.level}`);

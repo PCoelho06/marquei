@@ -7,7 +7,7 @@
     }" ref="target">
 
     <div class="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-      <DefaultLogo size="sm" contrast="light" :isLink=true :href="router.resolve({ name: 'Home' }).href"
+      <CoelhoLogo size="sm" contrast="light" :isLink=true :href="router.resolve({ name: 'Home' }).href"
         class="mx-auto" />
 
       <button class="block lg:hidden" @click="sidebarStore.isSidebarOpen = false">
@@ -45,7 +45,7 @@ import { onClickOutside } from '@vueuse/core'
 import { useSidebarStore } from '@/stores/sidebar'
 
 import SidebarItem from './SidebarItem.vue'
-import DefaultLogo from '@/components/Logos/DefaultLogo.vue'
+import { CoelhoLogo } from '@/components'
 
 const router = useRouter()
 
