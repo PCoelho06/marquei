@@ -57,7 +57,7 @@
     </div>
     <div v-else>
         <div class="flex justify-center items-center h-screen">
-            <SpinLoader />
+            <CoelhoSpinner />
         </div>
     </div>
 </template>
@@ -74,9 +74,8 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import ptLocale from '@fullcalendar/core/locales/pt'
 import type { CalendarOptions } from '@fullcalendar/core/index.js'
-import SpinLoader from '@/components/Loaders/SpinLoader.vue';
 import { storeToRefs } from 'pinia';
-import { CoelhoButton, CoelhoCheckbox } from '@/components';
+import { CoelhoButton, CoelhoCheckbox, CoelhoSpinner } from '@/components';
 import { TrashIcon, BookmarkSquareIcon } from '@heroicons/vue/24/solid'
 
 interface TimeRange {
