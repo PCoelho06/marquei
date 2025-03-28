@@ -1,9 +1,7 @@
 <template>
     <div class="min-h-screen flex justify-center items-center bg-stroke py-12 px-4 sm:px-6 lg:px-8">
         <div v-if="isReady" class="max-w-7xl mx-auto">
-            <CoelhoLink v-if="getterSubscription"
-                :to="router.resolve({ name: 'GetSalon', params: { id: route.params.id } }).href"
-                class="flex items-center gap-2">
+            <CoelhoLink v-if="getterSubscription" @click="router.back()" class="flex items-center gap-2">
                 <CoelhoIcon :icon="ArrowLeftIcon" />
                 Voltar
             </CoelhoLink>
@@ -70,7 +68,7 @@
                                     plan.pricing.monthly) }}
                             </span>
                             <span class="text-base font-medium text-gray-500 ms-2">/{{ isYearly ? 'ano' : 'mês'
-                                }}</span>
+                            }}</span>
                         </p>
                     </div>
 

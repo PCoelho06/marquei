@@ -17,6 +17,7 @@
     'font-medium': weight === 'medium',
     'font-semibold': weight === 'semibold',
     'font-bold': weight === 'bold',
+    'cursor-pointer': !disabled,
     'cursor-not-allowed opacity-50': disabled
   }">
     <slot />

@@ -25,7 +25,7 @@
                 </template>
             </CoelhoDataTable>
             <div v-else class="grid grid-cols-1 gap-4 my-8">
-                <DefaultCard>
+                <CoelhoCard size="full">
                     <template #default>
                         <div class="flex flex-col justify-center items-center gap-4">
                             <p>Nenhum recurso disponivel</p>
@@ -35,7 +35,7 @@
                             </CoelhoButton>
                         </div>
                     </template>
-                </DefaultCard>
+                </CoelhoCard>
             </div>
         </div>
         <CoelhoModal v-model="showModal" :title="modal?.title" size="xl">
@@ -67,10 +67,9 @@ import { useResourcesStore } from '@/stores/resources'
 
 import { columnsResources } from '@/views/commons/composables/columnsResources'
 
-import DefaultCard from '@/components/Cards/DefaultCard.vue'
 import ManagementLayout from '@/layouts/ManagementLayout.vue'
 import ResourceForm from './lib/ResourceForm.vue'
-import { CoelhoDataTable, CoelhoButton, CoelhoModal, CoelhoText } from '@/components'
+import { CoelhoDataTable, CoelhoButton, CoelhoModal, CoelhoText, CoelhoCard } from '@/components'
 import { PencilIcon, TrashIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/vue/24/solid'
 import ResourcesFilters from './$filters/ResourcesFilters.vue'
 import type { Resource, ResourceCreatePayload, ResourceQuery, ResourceUpdatePayload } from '@/types/resources'

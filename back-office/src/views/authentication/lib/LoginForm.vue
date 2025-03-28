@@ -7,7 +7,7 @@
             autocomplete="current-password" v-model="user.password" :error="validationErrors.password"
             :leftIcon="LockClosedIcon" />
         <div class="my-4">
-            <CoelhoText size="sm" color="text-gray-500">
+            <CoelhoText size="sm" color="secondary">
                 Ao clicar em "Entrar", você concorda com os nossos
                 <CoelhoLink :to="router.resolve({ name: 'Terms' }).href" size="sm" class="text-primary">
                     Termos de Serviço
@@ -56,7 +56,10 @@ const user = ref<UserLoginForm>({
     email: '',
     password: '',
 })
-
+const validationErrors = ref({
+    email: '',
+    password: '',
+})
 const alert = ref<{ show: boolean, message: string, title: string, type: 'error' | 'success' | 'warning' | 'info' }>({
     show: false,
     message: '',
@@ -96,9 +99,4 @@ const submitForm = () => {
         alert.value.message = error.data ? error.data.message : error.message;
     });
 }
-
-const validationErrors = ref({
-    email: '',
-    password: '',
-})
 </script>

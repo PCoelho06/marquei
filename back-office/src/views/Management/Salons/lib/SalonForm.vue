@@ -29,8 +29,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watchEffect } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
 import { validators, formatters } from '@/utils';
@@ -42,13 +42,15 @@ import type { SalonGeneralInformationValidation } from '@/types/validators';
 import { CoelhoButton, CoelhoInput } from '@/components';
 import { BookmarkSquareIcon, BuildingOffice2Icon, ChatBubbleLeftEllipsisIcon, InboxIcon, MapPinIcon, PhoneIcon, FlagIcon } from '@heroicons/vue/24/solid';
 
-const route = useRoute();
 const router = useRouter();
 
 const salonsStore = useSalonsStore();
 const { getterSalon } = storeToRefs(salonsStore);
 
-const isEdit = route.params.id ? true : false;
+const props = defineProps<{
+    isEdit: boolean;
+    salonId?: string;
+}>();
 
 const salon = ref<SalonCreatePayload>({
     name: '',
@@ -76,9 +78,9 @@ const handleSalon = async () => {
     }
 
     try {
-        if (isEdit) {
-            await salonsStore.updateSalon({ id: Number(route.params.id), ...salon.value });
-            router.push({ name: 'GetSalon', params: { id: route.params.id } });
+        if (props.isEdit) {
+            await salonsStore.updateSalon({ id: Number(props.salonId), ...salon.value });
+            router.push({ name: 'GetSalon', params: { id: props.salonId } });
         } else {
             await salonsStore.createSalon(salon.value);
             router.push({ name: 'HandleForfait', params: { id: getterSalon.value?.id.toString() } });
@@ -100,15 +102,8 @@ const handlePostalCodeChange = () => {
     salon.value.postalCode = formatters.formatPostalCode(salon.value.postalCode);
 };
 
-onMounted(() => {
-    if (isEdit) {
-        salonsStore.getSalon({ id: Number(route.params.id) });
-    }
-
-});
-
 watchEffect(() => {
-    if (isEdit && getterSalon.value) {
+    if (props.isEdit && getterSalon.value) {
         salon.value.name = getterSalon.value.name ?? '';
         salon.value.phone = formatters.formatPhone(getterSalon.value.phone ?? '');
         salon.value.address = getterSalon.value.address ?? '';

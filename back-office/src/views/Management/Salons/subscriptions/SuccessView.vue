@@ -19,7 +19,7 @@
 import { useRouter } from 'vue-router';
 
 import DefaultLogo from '@/components/Logos/DefaultLogo.vue';
-import CenteredLayout from '@/layouts/CenteredLayout.vue';
+import { CenteredLayout } from '@/layouts';
 import { CoelhoButton } from '@/components';
 import { ArrowRightCircleIcon } from '@heroicons/vue/24/solid';
 

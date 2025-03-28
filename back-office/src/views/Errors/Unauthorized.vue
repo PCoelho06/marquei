@@ -6,18 +6,24 @@
             <img src="@/assets/images/illustrations/unauthorized.svg" alt="404 illustration" class="h-1/2 mt-8">
             <RouterLink v-if="!isAuthenticated" :to="{ name: 'Login' }"
                 class="mt-4 px-4 py-2 bg-primary text-white rounded-lg">Entrar</RouterLink>
-            <RouterLink v-if="isAuthenticated && getterMode == 'management'" :to="{ name: 'ManagementDashboard' }"
-                class="mt-4 px-4 py-2 bg-primary text-white rounded-lg">Voltar para o Painel</RouterLink>
-            <RouterLink v-if="isAuthenticated && getterMode == 'store'" :to="{ name: 'StoreDashboard' }"
-                class="mt-4 px-4 py-2 bg-primary text-white rounded-lg">Voltar para o Painel</RouterLink>
+
+            <CoelhoLink v-if="isAuthenticated"
+                :to="getterMode == 'management' ? router.resolve({ name: 'ManagementDashboard' }).href : router.resolve({ name: 'ManagementDashboard' }).href"
+                class="mt-4 px-4 py-2 bg-primary text-white rounded-lg">Voltar para o Painel</CoelhoLink>
         </div>
     </CenteredLayout>
 </template>
 
 <script setup lang="ts">
-import CenteredLayout from '@/layouts/CenteredLayout.vue';
+import { useRouter } from 'vue-router';
 
 import { useAuthStore } from '@/stores/auth';
+
+import { CenteredLayout } from '@/layouts';
+
+import { CoelhoLink } from '@/components';
+
+const router = useRouter();
 
 const { isAuthenticated, getterMode } = useAuthStore();
 </script>

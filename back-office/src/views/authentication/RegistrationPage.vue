@@ -1,15 +1,37 @@
 <template>
     <CenteredLayout>
-        <AuthCard subtitle="Comece agora" title="Registar o meu salão na Marquei" class="w-8/10 m-auto">
-            <RegistrationForm />
-        </AuthCard>
+        <DoubleCardLayout class="w-8/10 m-auto" :responsiveHideLeft=true>
+            <template #leftCard>
+                <div class="py-17.5 px-26 text-center">
+                    <DefaultLogo size="md" :is-link=true :href="router.resolve({ name: 'Home' }).href" />
+
+                    <p class="font-medium 2xl:px-20">
+                        Não espere mais para registrar seu salão e aproveitar nossos serviços.
+                    </p>
+
+                    <img src="@/assets/images/illustrations/authentication.svg" alt="illustration" />
+                </div>
+            </template>
+            <template #rightCard>
+                <div class="w-full p-4 sm:p-12.5 xl:p-17.5">
+                    <span class="mb-1.5 block font-medium">Comece agora</span>
+                    <h2 class="mb-9 text-2xl font-bold text-black sm:text-title-xl2">
+                        Registar o meu salão na Marquei
+                    </h2>
+                    <RegistrationForm />
+                </div>
+            </template>
+        </DoubleCardLayout>
     </CenteredLayout>
 </template>
 
 <script setup lang="ts">
-import CenteredLayout from '@/layouts/CenteredLayout.vue'
-
-import AuthCard from '@/components/Cards/AuthCard.vue'
+import { useRouter } from 'vue-router';
 
 import RegistrationForm from './lib/RegistrationForm.vue'
+
+import DefaultLogo from '@/components/Logos/DefaultLogo.vue'
+import { CenteredLayout, DoubleCardLayout } from '@/layouts'
+
+const router = useRouter();
 </script>

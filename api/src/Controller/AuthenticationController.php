@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\DTO\UserDTO;
 use App\Entity\User;
 use App\Model\LoginModesEnum;
+use App\Service\UserSalonService;
 use App\Service\AuthenticationService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,6 +20,7 @@ final class AuthenticationController extends AbstractController
 {
     public function __construct(
         private AuthenticationService $authenticationService,
+        private UserSalonService $userSalonService,
         private JWTTokenManagerInterface $JWTManager
     ) {}
 
@@ -27,7 +29,10 @@ final class AuthenticationController extends AbstractController
     {
         return $this->json([
             'status' => 'success',
-            'data' => $user->toArray(),
+            'data' => [
+                'user' => $user->toArray(),
+                'hasSalons' => $this->userSalonService->hasSalons($user),
+            ],
         ]);
     }
 

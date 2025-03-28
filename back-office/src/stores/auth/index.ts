@@ -108,7 +108,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   const fetchUser = async () => {
     const response = await api().auth.fetchUser()
-    mutationUser(response.data)
+    mutationUser(response.data.user)
+    mutationHasSalons(response.data.hasSalons)
   }
 
   const resetUser = () => {
