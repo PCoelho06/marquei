@@ -3,11 +3,12 @@
         <router-link :to="item.route"
             class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark"
             @click.prevent="handleItemClick">
-            <SidebarIcons :icon="item.icon" />
+            <CoelhoIcon :icon="item.icon" />
 
             {{ item.label }}
 
-            <DropdownArrowIcon v-if="item.children" :dropdownOpen="getterSelectedCategory() === item.label" />
+            <CoelhoIcon v-if="getterSelectedCategory() === item.label" :icon="ChevronUpIcon" />
+            <CoelhoIcon v-else="getterSelectedCategory() === item.label" :icon="ChevronDownIcon" />
         </router-link>
 
         <div class="translate transform overflow-hidden" v-show="getterSelectedCategory() === item.label">
@@ -21,10 +22,11 @@
 import { useSidebarStore } from '@/stores/sidebar'
 import { useRoute } from 'vue-router'
 import SidebarDropdown from './SidebarDropdown.vue'
-import SidebarIcons from '../Icons/SidebarIcons/SidebarIcons.vue'
-import DropdownArrowIcon from '../Icons/DropdownArrowIcon.vue'
 
 import type { SidebarItems } from '@/types'
+
+import { CoelhoIcon } from '@/components'
+import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/24/solid'
 
 interface SidebarCategoryChild {
     label: SidebarItems

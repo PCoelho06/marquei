@@ -18,17 +18,19 @@ import { ref } from 'vue'
 import HeaderArea from '@/components/Header/HeaderArea.vue'
 import SidebarArea from '@/components/Sidebar/SidebarArea.vue'
 
+import { Squares2X2Icon, CalendarDaysIcon } from '@heroicons/vue/24/solid'
+
 const menuGroups = ref([
     {
         name: 'MENU',
         menuItems: [
             {
-                icon: 'dashboard',
+                icon: Squares2X2Icon,
                 label: 'Painel',
                 route: '/salao/painel'
             },
             {
-                icon: 'calendar',
+                icon: CalendarDaysIcon,
                 label: 'Agenda',
                 route: '/salao'
             },

@@ -105,10 +105,10 @@ const iconColorClass = computed(() => {
 
 const textColorClass = computed(() => {
     const colors = {
-        info: 'text-blue-700',
-        success: 'text-green-700',
-        warning: 'text-yellow-700',
-        error: 'text-red-700',
+        info: 'primary',
+        success: 'success',
+        warning: 'warning',
+        error: 'danger',
     };
     return colors[props.variant];
 });

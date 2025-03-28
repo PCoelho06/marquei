@@ -1,5 +1,6 @@
 <template>
-    <AlertToast v-if="alert.show" :message="alert.message" :type="alert.type" :title="alert.title" />
+    <CoelhoAlert v-model="alert.show" variant="error" :message="alert.message" :type="alert.type"
+        :title="alert.title" />
     <form @submit.prevent="submitForm" class="flex flex-col gap-4">
         <CoelhoInput label="Email" type="email" placeholder="Entre seu email" v-model="user.email" id="email"
             autocomplete="email" :error="validationErrors.email" :leftIcon="EnvelopeIcon" />
@@ -41,10 +42,8 @@ import { validators } from '@/utils'
 
 import { useAuthStore } from '@/stores/auth'
 
-import AlertToast from '@/components/Alerts/AlertToast.vue';
-
 import type { UserLoginForm } from '@/types/user'
-import { CoelhoButton, CoelhoInput, CoelhoText, CoelhoLink } from '@/components'
+import { CoelhoButton, CoelhoInput, CoelhoText, CoelhoLink, CoelhoAlert } from '@/components'
 import { ArrowRightEndOnRectangleIcon, EnvelopeIcon, LockClosedIcon } from '@heroicons/vue/24/solid'
 
 const router = useRouter()

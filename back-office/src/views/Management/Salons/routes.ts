@@ -7,12 +7,14 @@ import ForfaitsView from '@/views/management/salons/subscriptions/ForfaitsView.v
 import SuccessView from './subscriptions/SuccessView.vue'
 import ManageSubscription from './subscriptions/ManageSubscription.vue'
 
+import { BuildingStorefrontIcon } from '@heroicons/vue/24/solid'
+
 export default [
   {
     path: '/gestao/saloes',
     name: 'Salons',
     component: RouterSalons,
-    meta: { requiresAuth: true, sidebar: { title: 'Salões', icon: 'shop' } },
+    meta: { requiresAuth: true, sidebar: { title: 'Salões', icon: BuildingStorefrontIcon } },
     children: [
       {
         path: '',

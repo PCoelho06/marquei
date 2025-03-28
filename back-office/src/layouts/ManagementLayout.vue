@@ -18,6 +18,8 @@ import { ref } from 'vue'
 import HeaderArea from '@/components/Header/HeaderArea.vue'
 import SidebarArea from '@/components/Sidebar/SidebarArea.vue'
 
+import { DocumentChartBarIcon, BanknotesIcon } from '@heroicons/vue/24/solid';
+
 import { managementSidebarMenuItems } from '@/composables/routing';
 
 const menuGroups = ref([
@@ -29,12 +31,12 @@ const menuGroups = ref([
         name: 'DATA',
         menuItems: [
             {
-                icon: 'report',
+                icon: DocumentChartBarIcon,
                 label: 'Relatórios',
                 route: '/',
             },
             {
-                icon: 'finance',
+                icon: BanknotesIcon,
                 label: 'Financeiro',
                 route: '/',
             },

@@ -10,7 +10,8 @@
                 <img src="@/assets/images/user/user.png" alt="User" />
             </span>
 
-            <DropdownArrowIcon :dropdownOpen />
+            <CoelhoIcon v-if="dropdownOpen" :icon="ChevronUpIcon" />
+            <CoelhoIcon v-else :icon="ChevronDownIcon" />
         </div>
 
         <div v-show="dropdownOpen"
@@ -19,14 +20,14 @@
                 <li>
                     <router-link to="/profile"
                         class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
-                        <ShopIcon class="fill-current" />
+                        <CoelhoIcon :icon="BuildingStorefrontIcon" />
                         Perfil do salão
                     </router-link>
                 </li>
                 <li>
                     <router-link to="/pages/settings"
                         class="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
-                        <GearIcon class="fill-current" />
+                        <CoelhoIcon :icon="CogIcon" />
                         Configurações
                     </router-link>
                 </li>
@@ -34,7 +35,7 @@
             <button
                 class="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base cursor-pointer"
                 @click="logUserOut()">
-                <LogoutIcon class="fill-current" />
+                <CoelhoIcon :icon="ArrowLeftStartOnRectangleIcon" />
                 Sair
             </button>
         </div>
@@ -48,10 +49,8 @@ import { onClickOutside } from '@vueuse/core'
 
 import { useAuthStore } from '@/stores/auth'
 
-import DropdownArrowIcon from '../Icons/DropdownArrowIcon.vue';
-import GearIcon from '../Icons/GearIcon.vue';
-import LogoutIcon from '../Icons/LogoutIcon.vue';
-import ShopIcon from '../Icons/ShopIcon.vue';
+import { CoelhoIcon } from '@/components'
+import { ArrowLeftStartOnRectangleIcon, BuildingStorefrontIcon, ChevronDownIcon, ChevronUpIcon, CogIcon } from '@heroicons/vue/24/solid'
 
 const router = useRouter()
 

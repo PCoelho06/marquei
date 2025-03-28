@@ -1,12 +1,14 @@
 import RouterResources from '@/views/management/resources/RouterResources.vue'
 import ResourcesView from '@/views/management/resources/ResourcesView.vue'
 
+import { RectangleGroupIcon } from '@heroicons/vue/24/solid'
+
 export default [
   {
     path: '/gestao/recursos',
     name: 'Resources',
     component: RouterResources,
-    meta: { requiresAuth: true, sidebar: { title: 'Recursos', icon: 'resources' } },
+    meta: { requiresAuth: true, sidebar: { title: 'Recursos', icon: RectangleGroupIcon } },
     children: [
       {
         path: '',

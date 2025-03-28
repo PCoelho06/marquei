@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, type Component } from 'vue'
 import { useRouter } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 
@@ -55,7 +55,7 @@ defineProps<{
   menuGroups: {
     name: string
     menuItems: {
-      icon: string
+      icon: Component
       label: string
       route: string
       children?: { label: string; route: string }[]
