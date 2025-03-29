@@ -2,12 +2,14 @@
     <div class="relative" ref="target">
         <div class="flex items-center gap-4" @click.prevent="dropdownOpen = !dropdownOpen">
             <span class="hidden text-right lg:block">
-                <span class="block text-sm font-medium text-black">Salão Maria</span>
+                <span class="block text-sm font-medium text-black">{{ getterMode === 'management' ? getterUser?.email :
+                    getterSalon?.name }}</span>
                 <span class="block text-xs font-medium">Santo Tirso</span>
             </span>
 
-            <span class="h-12 w-12 rounded-full">
-                <img src="@/assets/images/user/user.png" alt="User" />
+            <span class="size-12 rounded-full overflow-hidden">
+                <img v-if="getterMode === 'management'" src="@/assets/images/landing/hero5.jpg" alt="User" />
+                <img v-else src="@/assets/images/user/user.png" alt="User" />
             </span>
 
             <CoelhoIcon v-if="dropdownOpen" :icon="ChevronUpIcon" />
@@ -43,18 +45,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 
 import { useAuthStore } from '@/stores/auth'
+import { useSalonsStore } from '@/stores/salons'
 
 import { CoelhoIcon } from '@/components'
 import { ArrowLeftStartOnRectangleIcon, BuildingStorefrontIcon, ChevronDownIcon, ChevronUpIcon, CogIcon } from '@heroicons/vue/24/solid'
+import { storeToRefs } from 'pinia'
 
 const router = useRouter()
 
-const { actionLogout } = useAuthStore()
+const authStore = useAuthStore()
+const salonsStore = useSalonsStore()
+const { getterUser, getterMode } = storeToRefs(authStore)
+const { getterSalon } = storeToRefs(salonsStore)
 
 const target = ref(null)
 const dropdownOpen = ref(false)
@@ -64,7 +71,7 @@ onClickOutside(target, () => {
 })
 
 const logUserOut = async () => {
-    await actionLogout()
+    await authStore.actionLogout()
     router.push({ name: 'Home' })
 }
 </script>

@@ -97,6 +97,10 @@ export const useAuthStore = defineStore('auth', () => {
     mutationRefreshToken(response.data.refresh_token)
   }
 
+  const confirmPassword = async (payload: { password: string }) => {
+    await api().auth.confirmPassword(payload)
+  }
+
   const initialize = async () => {
     if (getterAccessToken.value) {
       const decoded: JWTPayload = decoders.decodeJWT(getterAccessToken.value)
@@ -160,6 +164,7 @@ export const useAuthStore = defineStore('auth', () => {
     actionRegister,
     actionRefresh,
     actionSelectMode,
+    confirmPassword,
     initialize,
     fetchUser,
     resetUser,

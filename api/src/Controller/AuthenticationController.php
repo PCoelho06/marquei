@@ -14,6 +14,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Psr\Log\LoggerInterface;
 
 #[Route('/api/auth', name: 'auth_')]
 final class AuthenticationController extends AbstractController
@@ -21,7 +22,8 @@ final class AuthenticationController extends AbstractController
     public function __construct(
         private AuthenticationService $authenticationService,
         private UserSalonService $userSalonService,
-        private JWTTokenManagerInterface $JWTManager
+        private JWTTokenManagerInterface $JWTManager,
+        private LoggerInterface $logger,
     ) {}
 
     #[Route('/', name: 'fetch_user', methods: ['GET'])]
@@ -84,6 +86,25 @@ final class AuthenticationController extends AbstractController
                 'access_token' => $newAccessToken,
                 'refresh_token' => $newRefreshToken,
             ],
+        ]);
+    }
+
+    #[Route('/confirm-password', name: 'confirm_password', methods: ['POST'])]
+    public function confirmPassword(#[MapRequestPayload(validationGroups: ['confirmation'])] UserDTO $userDto, #[CurrentUser()] User $user): JsonResponse
+    {
+        $this->logger->info('Confirming password for user: ' . $userDto->password);
+        try {
+            $this->authenticationService->confirmPassword($user, $userDto->password);
+        } catch (\InvalidArgumentException $e) {
+            return $this->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+
+        return $this->json([
+            'status' => 'success',
+            'message' => 'Password confirmed successfully.',
         ]);
     }
 

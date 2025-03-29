@@ -33,4 +33,10 @@ const validateUserRegistrationData = (data: {
   return errors
 }
 
-export default { validateUserLoginData, validateUserRegistrationData }
+const validateConfirmPasswordData = (password: string) => {
+  const passwordError = !password ? 'Uma senha é necessária' : ''
+
+  return passwordError ? { password: passwordError } : {}
+}
+
+export default { validateUserLoginData, validateUserRegistrationData, validateConfirmPasswordData }

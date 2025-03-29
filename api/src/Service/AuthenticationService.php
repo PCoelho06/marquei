@@ -9,6 +9,7 @@ use App\Model\LoginModesEnum;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\RefreshTokenRepository;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
@@ -134,6 +135,19 @@ class AuthenticationService
         $this->entityManager->flush();
 
         return $user;
+    }
+
+    public function confirmPassword(User $user, string $password): bool
+    {
+        if (!$password) {
+            throw new \InvalidArgumentException('Password not provided');
+        }
+
+        if (!$this->passwordHasher->isPasswordValid($user, $password)) {
+            throw new AccessDeniedHttpException('Invalid password');
+        }
+
+        return true;
     }
 
     public function logout(User $user): void

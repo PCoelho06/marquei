@@ -19,6 +19,12 @@ const auth = {
       payload,
     })
   },
+  confirmPassword: async (payload: { password: string }) =>
+    await builder({
+      url: '/api/auth/confirm-password',
+      method: 'POST',
+      payload,
+    }),
   fetchUser: async () => await builder({ url: '/api/auth/', method: 'GET', payload: {} }),
 }
 
