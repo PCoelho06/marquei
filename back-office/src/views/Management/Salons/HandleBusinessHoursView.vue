@@ -119,6 +119,7 @@ const days = [
 
 const isReady = ref(false)
 const isEdit = ref(false)
+const selectionActive = ref(false);
 
 const schedules = ref<DaySchedule[]>(days.map((_, index) => ({
     day: (index + 1) % 7,
@@ -147,8 +148,27 @@ const calendarEvents = computed(() => {
     return events
 })
 
+const handleCalendarSelect = (selectInfo: any) => {
+    if (!selectionActive.value) {
+        const day = new Date(selectInfo.start).getDay()
+        const startTime = selectInfo.start.toLocaleTimeString('pt-PT', {
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+        const endTime = selectInfo.end.toLocaleTimeString('pt-PT', {
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+
+        addTimeRange(day, startTime, endTime)
+        console.log('Nouvelle sélection :', selectInfo);
+        selectionActive.value = true;
+    }
+}
+
 // Configuration du calendrier
 const calendarOptions = computed<CalendarOptions>(() => ({
+    // const calendarOptions: CalendarOptions = {
     plugins: [timeGridPlugin, interactionPlugin],
     initialView: 'timeGridWeek',
     locale: ptLocale,
@@ -159,6 +179,8 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     headerToolbar: false,
     expandRows: true,
     selectable: true,
+    selectOverlap: false,
+    editable: true,
     selectMirror: true,
     events: calendarEvents.value,
     dayHeaderContent: (arg: any) => {
@@ -166,23 +188,17 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     },
     select: handleCalendarSelect,
     height: 'auto',
-    slotEventOverlap: false
+    slotEventOverlap: false,
+    selectAllow: () => {
+        if (selectionActive.value) {
+            selectionActive.value = false
+            return false
+        }
+        return true
+    },
+    eventDrop: editTimeRange,
+    eventResize: editTimeRange,
 }))
-
-// Gestion des sélections dans le calendrier
-const handleCalendarSelect = (selectInfo: any) => {
-    const day = new Date(selectInfo.start).getDay()
-    const startTime = selectInfo.start.toLocaleTimeString('pt-PT', {
-        hour: '2-digit',
-        minute: '2-digit'
-    })
-    const endTime = selectInfo.end.toLocaleTimeString('pt-PT', {
-        hour: '2-digit',
-        minute: '2-digit'
-    })
-
-    addTimeRange(day, startTime, endTime)
-}
 
 // Ajout d'une nouvelle plage horaire
 const addTimeRange = (day: number, start: string, end: string) => {
@@ -192,6 +208,38 @@ const addTimeRange = (day: number, start: string, end: string) => {
         schedule.timeRanges.push({ start, end })
         // Tri des plages horaires par heure de début
         schedule.timeRanges.sort((a, b) => a.start.localeCompare(b.start))
+    }
+}
+
+const editTimeRange = (event: any) => {
+    const day = event.event.start.getDay()
+    console.log("🚀 ~ editTimeRange ~ day:", event)
+    const oldStart = event.oldEvent.start.toLocaleTimeString('pt-PT', {
+        hour: '2-digit',
+        minute: '2-digit'
+    })
+    const start = event.event.start.toLocaleTimeString('pt-PT', {
+        hour: '2-digit',
+        minute: '2-digit'
+    })
+    const oldEnd = event.oldEvent.end.toLocaleTimeString('pt-PT', {
+        hour: '2-digit',
+        minute: '2-digit'
+    })
+    const end = event.event.end.toLocaleTimeString('pt-PT', {
+        hour: '2-digit',
+        minute: '2-digit'
+    })
+
+    const schedule = schedules.value.find(s => s.day === day)
+    console.log("🚀 ~ editTimeRange ~ schedule:", schedule)
+    if (schedule) {
+        const timeRange = schedule.timeRanges.find(tr => tr.start === oldStart && tr.end === oldEnd)
+        console.log("🚀 ~ editTimeRange ~ timeRange:", timeRange)
+        if (timeRange) {
+            timeRange.start = start
+            timeRange.end = end
+        }
     }
 }
 
