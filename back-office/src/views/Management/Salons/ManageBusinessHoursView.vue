@@ -180,6 +180,7 @@ const calendarOptions = computed<CalendarOptions>(() => ({
     expandRows: true,
     selectable: true,
     selectOverlap: false,
+    eventOverlap: false,
     editable: true,
     selectMirror: true,
     events: calendarEvents.value,
@@ -212,8 +213,8 @@ const addTimeRange = (day: number, start: string, end: string) => {
 }
 
 const editTimeRange = (event: any) => {
+    const oldDay = event.oldEvent.start.getDay()
     const day = event.event.start.getDay()
-    console.log("🚀 ~ editTimeRange ~ day:", event)
     const oldStart = event.oldEvent.start.toLocaleTimeString('pt-PT', {
         hour: '2-digit',
         minute: '2-digit'
@@ -231,11 +232,26 @@ const editTimeRange = (event: any) => {
         minute: '2-digit'
     })
 
+    if (oldDay !== day) {
+        const oldSchedule = schedules.value.find(s => s.day === oldDay)
+        if (oldSchedule) {
+            const timeRangeIndex = oldSchedule.timeRanges.findIndex(tr => tr.start === oldStart && tr.end === oldEnd)
+            if (timeRangeIndex !== -1) {
+                oldSchedule.timeRanges.splice(timeRangeIndex, 1)
+
+                if (oldSchedule.timeRanges.length === 0) {
+                    oldSchedule.isOpen = false
+                }
+            }
+        }
+
+        addTimeRange(day, start, end)
+        return
+    }
+
     const schedule = schedules.value.find(s => s.day === day)
-    console.log("🚀 ~ editTimeRange ~ schedule:", schedule)
     if (schedule) {
         const timeRange = schedule.timeRanges.find(tr => tr.start === oldStart && tr.end === oldEnd)
-        console.log("🚀 ~ editTimeRange ~ timeRange:", timeRange)
         if (timeRange) {
             timeRange.start = start
             timeRange.end = end

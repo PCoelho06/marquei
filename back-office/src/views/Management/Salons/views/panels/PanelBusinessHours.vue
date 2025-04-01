@@ -5,7 +5,7 @@
             :content="daySchedule.timeRanges || 'Encerrado'" />
         <template #footer>
             <CoelhoButton :icon="getterSalon?.businessHours?.length ? PencilIcon : PlusCircleIcon"
-                :to="router.resolve({ name: 'HandleBusinessHours', params: { id: getterSalon?.id } }).href">
+                :to="router.resolve({ name: 'ManageBusinessHours', params: { id: getterSalon?.id } }).href">
                 {{ getterSalon?.businessHours?.length ? 'Editar' : 'Adicionar horários' }}
             </CoelhoButton>
         </template>

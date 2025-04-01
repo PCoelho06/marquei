@@ -2,7 +2,7 @@ import RouterSalons from '@/views/management/salons/RouterSalons.vue'
 import SalonsListView from '@/views/management/salons/SalonsListView.vue'
 import SalonView from '@/views/management/salons/SalonView.vue'
 import HandleSalonView from '@/views/management/salons/HandleSalonView.vue'
-import HandleBusinessHoursView from '@/views/management/salons/HandleBusinessHoursView.vue'
+import ManageBusinessHoursView from '@/views/management/salons/ManageBusinessHoursView.vue'
 import ForfaitsView from '@/views/management/salons/subscriptions/ForfaitsView.vue'
 import SuccessView from './subscriptions/SuccessView.vue'
 import ManageSubscription from './subscriptions/ManageSubscription.vue'
@@ -41,9 +41,9 @@ export default [
       },
       {
         path: ':id/horarios-de-funcionamento',
-        name: 'HandleBusinessHours',
+        name: 'ManageBusinessHours',
         meta: { requiresOwnership: true },
-        component: HandleBusinessHoursView,
+        component: ManageBusinessHoursView,
       },
       {
         path: ':id/escolher-pacote',
