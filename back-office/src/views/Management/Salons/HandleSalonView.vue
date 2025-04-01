@@ -1,7 +1,10 @@
 <template>
     <CenteredLayout>
         <div class="container mx-auto w-8/10" v-if="isReady">
-            <div class="grid grid-cols-3 items-center my-4">
+            <div class="items-center my-4" :class="{
+                'grid grid-cols-3': !!getterHasSalons,
+                'flex justify-center': !getterHasSalons
+            }">
                 <CoelhoLink v-if="getterHasSalons" @click="router.back()" class="flex items-center gap-2">
                     <CoelhoIcon :icon="ArrowLeftIcon" />
                     Voltar

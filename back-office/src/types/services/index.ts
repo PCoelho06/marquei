@@ -1,4 +1,5 @@
 import type { BaseQuery } from '..'
+import type { Resource } from '../resources'
 
 export interface ServiceCreatePayload {
   name: string
@@ -6,6 +7,7 @@ export interface ServiceCreatePayload {
   duration: number
   price: number
   salonId: number
+  resourcesIds: number[]
 }
 
 export interface ServiceUpdatePayload extends ServiceCreatePayload {
@@ -19,6 +21,7 @@ export interface Service {
   duration: number
   price: number
   salonId: number
+  resources: Resource[]
 }
 
 export interface ServiceQuery extends BaseQuery {

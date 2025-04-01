@@ -31,6 +31,15 @@
                         </div>
                     </template>
                 </CoelhoDataTable>
+                <CoelhoCard v-else-if="!getterResourceList?.length" size="full">
+                    <div class="flex flex-col justify-center items-center gap-4">
+                        <p>Para poder adicionar serviços, tem de adicionar recursos antes</p>
+                        <CoelhoButton :icon="RectangleGroupIcon" variant="primary"
+                            @click="router.push({ name: 'ListResources' })">
+                            Ver os recursos
+                        </CoelhoButton>
+                    </div>
+                </CoelhoCard>
                 <CoelhoCard v-else size="full">
                     <div class="flex flex-col justify-center items-center gap-4">
                         <p>Nenhum serviço disponivel</p>
@@ -64,6 +73,7 @@ import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
 import { useSalonsStore } from '@/stores/salons';
+import { useResourcesStore } from '@/stores/resources';
 import { useServicesStore } from '@/stores/services';
 
 import { api } from '@/api';
@@ -74,7 +84,7 @@ import ServiceForm from './lib/ServiceForm.vue';
 
 import type { ComponentPublicInstance } from 'vue';
 import type { ModalContent } from '@/types';
-import type { Service } from '@/types/salons';
+import type { Service } from '@/types/services';
 import type { ServiceQuery, ServiceCreatePayload, ServiceUpdatePayload } from '@/types/services';
 
 import ManagementLayout from '@/layouts/ManagementLayout.vue';
@@ -83,7 +93,7 @@ import PanelBusinessHours from './views/panels/PanelBusinessHours.vue';
 import PanelSubscription from './views/panels/PanelSubscription.vue';
 
 import { CoelhoModal, CoelhoButton, CoelhoDataTable, CoelhoCard, CoelhoText } from '@/components';
-import { PencilIcon, PlusCircleIcon, TrashIcon, XMarkIcon } from '@heroicons/vue/24/solid';
+import { PencilIcon, PlusCircleIcon, TrashIcon, XMarkIcon, RectangleGroupIcon } from '@heroicons/vue/24/solid';
 
 interface ManageServiceModalContent extends ModalContent {
     props?: Service;
@@ -95,9 +105,11 @@ const route = useRoute();
 const router = useRouter();
 
 const salonsStore = useSalonsStore();
+const resourceStore = useResourcesStore();
 const servicesStore = useServicesStore();
 
 const { getterServiceList, getterServiceSettings, getterQuery } = storeToRefs(servicesStore);
+const { getterResourceList } = storeToRefs(resourceStore);
 
 const libQuerySort = ['name', 'duration', 'price']
 
@@ -169,6 +181,7 @@ const formattedServicesList = computed(() => {
             description: service.description,
             duration: formatters.formatDuration(service.duration),
             price: formatters.formatPrice(service.price),
+            resources: service.resources.map((resource) => resource.name).join(', '),
         }
     })
 })
@@ -197,6 +210,7 @@ onMounted(() => {
 
     Promise.all([
         salonsStore.getSalon({ id: Number(route.params.id) }),
+        resourceStore.searchResources({ salonId: Number(route.params.id) }),
         fetchServicesList(httpQuery),
     ])
 });

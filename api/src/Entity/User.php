@@ -57,6 +57,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $stripeCustomerId = null;
 
+    #[ORM\Column]
+    private ?bool $showTutorial = null;
+
     public function __construct()
     {
         $this->salons = new ArrayCollection();
@@ -255,6 +258,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setStripeCustomerId(?string $stripeCustomerId): static
     {
         $this->stripeCustomerId = $stripeCustomerId;
+
+        return $this;
+    }
+
+    public function isShowTutorial(): ?bool
+    {
+        return $this->showTutorial;
+    }
+
+    public function setShowTutorial(bool $showTutorial): static
+    {
+        $this->showTutorial = $showTutorial;
 
         return $this;
     }

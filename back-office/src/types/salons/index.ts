@@ -32,6 +32,7 @@ export interface Service {
   duration: number
   price: number
   salonId: number
+  resourcesIds: number[]
 }
 
 export interface Subscription {

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ServiceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -36,6 +38,17 @@ class Service
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, Resource>
+     */
+    #[ORM\ManyToMany(targetEntity: Resource::class, inversedBy: 'services')]
+    private Collection $resources;
+
+    public function __construct()
+    {
+        $this->resources = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -137,8 +150,33 @@ class Service
             'description' => $this->description,
             'duration' => $this->duration,
             'price' => $this->price,
+            'resources' => array_map(fn(Resource $resource) => $resource->toArray(), $this->resources->toArray()),
             'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
             'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
         ];
+    }
+
+    /**
+     * @return Collection<int, Resource>
+     */
+    public function getResources(): Collection
+    {
+        return $this->resources;
+    }
+
+    public function addResource(Resource $resource): static
+    {
+        if (!$this->resources->contains($resource)) {
+            $this->resources->add($resource);
+        }
+
+        return $this;
+    }
+
+    public function removeResource(Resource $resource): static
+    {
+        $this->resources->removeElement($resource);
+
+        return $this;
     }
 }

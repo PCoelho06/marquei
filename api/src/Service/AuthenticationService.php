@@ -131,6 +131,8 @@ class AuthenticationService
             throw new \InvalidArgumentException(json_encode($errorMessages));
         }
 
+        $user->setShowTutorial(true);
+
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 

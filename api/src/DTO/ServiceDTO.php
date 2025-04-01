@@ -24,12 +24,15 @@ final class ServiceDTO
     #[Assert\Positive]
     public int $salonId;
 
-    public function __construct(string $name, string $description, int $duration, int $price, int $salonId)
+    public array $resourcesIds = [];
+
+    public function __construct(string $name, string $description, int $duration, int $price, int $salonId, array $resourcesIds = [])
     {
         $this->name = $name;
         $this->description = $description;
         $this->duration = $duration;
         $this->price = $price;
         $this->salonId = $salonId;
+        $this->resourcesIds = $resourcesIds;
     }
 }

@@ -3,7 +3,7 @@
     <Transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0"
       enter-to-class="opacity-100" leave-active-class="transition duration-200 ease-in" leave-from-class="opacity-100"
       leave-to-class="opacity-0">
-      <div v-if="modelValue" class="fixed inset-0 z-50 flex bg-black/50 backdrop-blur-sm overflow-scroll"
+      <div v-if="modelValue" class="fixed inset-0 z-9999 flex bg-black/50 backdrop-blur-sm overflow-scroll"
         :class="modalClasses.position[position]">
         <div ref="modalRef" role="dialog" aria-modal="true"
           class="bg-white rounded-lg shadow-xl transform transition-all w-full" :class="[

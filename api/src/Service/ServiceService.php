@@ -3,8 +3,9 @@
 namespace App\Service;
 
 use App\DTO\ServiceDTO;
-use App\DTO\Filters\ServiceFilterDTO;
 use App\Entity\Service;
+use App\Service\ResourceService;
+use App\DTO\Filters\ServiceFilterDTO;
 use App\Repository\ServiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -15,6 +16,7 @@ final class ServiceService
         private EntityManagerInterface $entityManager,
         private EntityHydratorService $hydrator,
         private SalonService $salonService,
+        private ResourceService $resourceService,
         private UserSalonService $userSalonService,
     ) {}
 
@@ -42,6 +44,14 @@ final class ServiceService
         $salon = $this->salonService->getSalon($serviceDTO->salonId);
         $service->setSalon($salon);
 
+        foreach ($serviceDTO->resourcesIds as $resourceId) {
+            $resource = $this->resourceService->getResource($resourceId);
+            if ($resource === null) {
+                throw new \InvalidArgumentException('Recurso não encontrado');
+            }
+            $service->addResource($resource);
+        }
+
         $this->entityManager->persist($service);
         $this->entityManager->flush();
 
@@ -55,6 +65,17 @@ final class ServiceService
         $this->userSalonService->checkUserIsSalonOwner($service->getSalon());
 
         $service = $this->hydrator->hydrate($service, $serviceDTO);
+
+        foreach ($serviceDTO->resourcesIds as $resourceId) {
+            $resource = $this->resourceService->getResource($resourceId);
+            if ($resource === null) {
+                throw new \InvalidArgumentException('Recurso não encontrado');
+            }
+            if ($service->getResources()->contains($resource)) {
+                continue;
+            }
+            $service->addResource($resource);
+        }
 
         $this->entityManager->flush();
 
