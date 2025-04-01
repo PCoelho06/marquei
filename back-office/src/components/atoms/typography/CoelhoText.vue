@@ -1,5 +1,5 @@
 <template>
-  <span :class="{
+  <component :is="component" :class="{
     'text-xs': size === 'xs',
     'text-sm': size === 'sm',
     'text-base': size === 'base',
@@ -21,7 +21,7 @@
     'uppercase': uppercase,
   }">
     <slot />
-  </span>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -35,6 +35,7 @@ interface Props {
   underline?: boolean;
   lineThrough?: boolean;
   uppercase?: boolean;
+  isParagraph?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -45,5 +46,10 @@ const props = withDefaults(defineProps<Props>(), {
   underline: false,
   lineThrough: false,
   uppercase: false,
+  isParagraph: false,
+});
+
+const component = computed(() => {
+  return props.isParagraph ? 'p' : 'span';
 });
 </script>

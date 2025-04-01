@@ -33,6 +33,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   level: 1,
+  size: 'lg',
   color: 'dark',
   withMargin: true,
   logo: false,

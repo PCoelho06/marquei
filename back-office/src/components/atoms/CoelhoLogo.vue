@@ -39,7 +39,6 @@ withDefaults(defineProps<LogoProps>(), {
     contrast: 'dark',
     size: 'md',
     variant: 'both',
-    href: '#',
     titleLevel: 1,
 })
 </script>
