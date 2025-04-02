@@ -1,3 +1,4 @@
+import type { Availability } from '../'
 export interface SalonCreatePayload {
   name: string
   phone: string
@@ -9,20 +10,13 @@ export interface SalonCreatePayload {
 
 export interface Salon extends SalonCreatePayload {
   id: number
-  businessHours?: BusinessHours[]
+  businessHours?: Availability[]
   createdAt: string
   updatedAt: string
 }
 
 export interface SalonUpdatePayload extends SalonCreatePayload {
   id: number
-}
-
-export interface BusinessHours {
-  id: number
-  dayOfWeek: string
-  startTime: string
-  endTime: string
 }
 
 export interface Service {

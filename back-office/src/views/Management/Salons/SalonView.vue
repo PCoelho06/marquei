@@ -1,5 +1,10 @@
 <template>
     <ManagementLayout>
+        <!-- <CoelhoLink :to="router.resolve({ name: 'ListSalons' }).href" class="flex items-center gap-2"> -->
+        <CoelhoLink @click="router.back()" class="flex items-center gap-2">
+            <CoelhoIcon :icon="ArrowLeftIcon" />
+            Voltar
+        </CoelhoLink>
         <div class="mx-auto">
             <div class="grid grid-cols-3 gap-4 my-4">
                 <PanelInformations />
@@ -79,7 +84,7 @@ import { useServicesStore } from '@/stores/services';
 import { api } from '@/api';
 import { formatters } from '@/utils';
 import { engineQueries } from '@/composables/engineQueries';
-import { columnsServices } from '@/views/commons/composables/columnsResources';
+import { columnsServices } from '@/views/commons/composables/columns/columnsServices';
 import ServiceForm from './lib/ServiceForm.vue';
 
 import type { ComponentPublicInstance } from 'vue';
@@ -92,8 +97,8 @@ import PanelInformations from './views/panels/PanelInformations.vue';
 import PanelBusinessHours from './views/panels/PanelBusinessHours.vue';
 import PanelSubscription from './views/panels/PanelSubscription.vue';
 
-import { CoelhoModal, CoelhoButton, CoelhoDataTable, CoelhoCard, CoelhoText } from '@/components';
-import { PencilIcon, PlusCircleIcon, TrashIcon, XMarkIcon, RectangleGroupIcon } from '@heroicons/vue/24/solid';
+import { CoelhoModal, CoelhoButton, CoelhoDataTable, CoelhoCard, CoelhoText, CoelhoLink, CoelhoIcon } from '@/components';
+import { PencilIcon, PlusCircleIcon, TrashIcon, XMarkIcon, RectangleGroupIcon, ArrowLeftIcon } from '@heroicons/vue/24/solid';
 
 interface ManageServiceModalContent extends ModalContent {
     props?: Service;
@@ -200,7 +205,7 @@ const fetchServicesList = async (args = {}) => {
 
     servicesStore.setQuery(query.value)
 
-    router.push({ query: formatForRouter(query.value) });
+    router.replace({ query: formatForRouter(query.value) });
 }
 
 onMounted(() => {

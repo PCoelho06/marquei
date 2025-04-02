@@ -3,10 +3,16 @@ interface TimeRange {
   end: string
 }
 
-interface BusinessHoursRanges {
-  day: number
+export interface BusinessHoursRanges {
+  dayOfWeek: number
   isOpen: boolean
   timeRanges: TimeRange[]
+}
+
+export interface BusinessHour {
+  daysOfWeek: number[]
+  startTime: string
+  endTime: string
 }
 
 export interface BusinessHoursPayload {

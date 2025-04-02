@@ -60,11 +60,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $showTutorial = null;
 
+    /**
+     * @var Collection<int, Appointment>
+     */
+    #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'client')]
+    private Collection $appointments;
+
     public function __construct()
     {
         $this->salons = new ArrayCollection();
         $this->refreshTokens = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
+        $this->appointments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -270,6 +277,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setShowTutorial(bool $showTutorial): static
     {
         $this->showTutorial = $showTutorial;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): static
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): static
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getClient() === $this) {
+                $appointment->setClient(null);
+            }
+        }
 
         return $this;
     }

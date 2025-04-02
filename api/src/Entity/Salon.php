@@ -70,6 +70,12 @@ class Salon
     #[ORM\OneToMany(targetEntity: Subscription::class, mappedBy: 'salon')]
     private Collection $subscriptions;
 
+    /**
+     * @var Collection<int, Appointment>
+     */
+    #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'salon')]
+    private Collection $appointments;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -77,6 +83,7 @@ class Salon
         $this->services = new ArrayCollection();
         $this->resources = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
+        $this->appointments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -342,6 +349,36 @@ class Salon
             // set the owning side to null (unless already changed)
             if ($subscription->getSalon() === $this) {
                 $subscription->setSalon(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): static
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setSalon($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): static
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getSalon() === $this) {
+                $appointment->setSalon(null);
             }
         }
 

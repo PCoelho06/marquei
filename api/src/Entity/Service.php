@@ -45,9 +45,16 @@ class Service
     #[ORM\ManyToMany(targetEntity: Resource::class, inversedBy: 'services')]
     private Collection $resources;
 
+    /**
+     * @var Collection<int, Appointment>
+     */
+    #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'service')]
+    private Collection $appointments;
+
     public function __construct()
     {
         $this->resources = new ArrayCollection();
+        $this->appointments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -176,6 +183,36 @@ class Service
     public function removeResource(Resource $resource): static
     {
         $this->resources->removeElement($resource);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Appointment>
+     */
+    public function getAppointments(): Collection
+    {
+        return $this->appointments;
+    }
+
+    public function addAppointment(Appointment $appointment): static
+    {
+        if (!$this->appointments->contains($appointment)) {
+            $this->appointments->add($appointment);
+            $appointment->setService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAppointment(Appointment $appointment): static
+    {
+        if ($this->appointments->removeElement($appointment)) {
+            // set the owning side to null (unless already changed)
+            if ($appointment->getService() === $this) {
+                $appointment->setService(null);
+            }
+        }
 
         return $this;
     }

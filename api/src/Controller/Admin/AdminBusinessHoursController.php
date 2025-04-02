@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Salon;
 use App\Service\SalonService;
 use App\Service\UserSalonService;
 use App\Service\BusinessHoursService;
@@ -16,10 +17,10 @@ final class AdminBusinessHoursController extends AbstractController
     public function __construct(private BusinessHoursService $businessHoursService, private SalonService $salonService, private UserSalonService $userSalonService) {}
 
     #[Route('/{id}', name: 'handle', methods: ['POST'])]
-    public function handleBusinessHours(int $id, Request $request): JsonResponse
+    public function handleBusinessHours(Salon $salon, Request $request): JsonResponse
     {
         try {
-            $salon = $this->salonService->getSalon($id);
+            // $salon = $this->salonService->getSalon($id);
             $this->userSalonService->checkUserIsSalonOwner($salon);
             $data = json_decode($request->getContent(), true);
             $businessHoursRanges = $this->businessHoursService->saveBusinessHours($salon, $data);

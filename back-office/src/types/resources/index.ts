@@ -1,5 +1,5 @@
 import type { Salon } from '../salons'
-import type { BaseQuery } from '..'
+import type { Availability, BaseQuery } from '..'
 
 export type ResourceType = 'employee' | 'machine'
 
@@ -8,6 +8,7 @@ export interface Resource {
   name: string
   salon: Salon
   type: ResourceType
+  resourceAvailabilities: Availability[]
   createdAt: string
   updatedAt: string
 }

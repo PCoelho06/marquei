@@ -17,8 +17,8 @@
 
                 <template #rowActions="{ item }">
                     <div class="flex space-x-2">
-                        <CoelhoButton variant="primary" size="sm" :icon="PencilIcon"
-                            @click="openModal('edit:resource', item.id)" />
+                        <CoelhoButton variant="primary" size="sm" :icon="CogIcon"
+                            :to="router.resolve({ name: 'GetResource', params: { id: item.id } }).href" />
                         <CoelhoButton variant="danger" size="sm" :icon="TrashIcon"
                             @click="openModal('delete:resource', item.id)" />
                     </div>
@@ -65,12 +65,12 @@ import { engineQueries } from '@/composables/engineQueries'
 
 import { useResourcesStore } from '@/stores/resources'
 
-import { columnsResources } from '@/views/commons/composables/columnsResources'
+import { columnsResources } from '@/views/commons/composables/columns/columnsResources'
 
 import ManagementLayout from '@/layouts/ManagementLayout.vue'
 import ResourceForm from './lib/ResourceForm.vue'
 import { CoelhoDataTable, CoelhoButton, CoelhoModal, CoelhoText, CoelhoCard } from '@/components'
-import { PencilIcon, TrashIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/vue/24/solid'
+import { PencilIcon, TrashIcon, PlusCircleIcon, XMarkIcon, CogIcon } from '@heroicons/vue/24/solid'
 import ResourcesFilters from './$filters/ResourcesFilters.vue'
 import type { Resource, ResourceCreatePayload, ResourceQuery, ResourceUpdatePayload } from '@/types/resources'
 import type { ModalContent } from '@/types'
@@ -105,19 +105,13 @@ const validateModalAction = () => {
     }
 }
 
-const handleResourceSubmit = (resourceData: ResourceCreatePayload | ResourceUpdatePayload) => {
+const handleResourceSubmit = (resourceData: ResourceCreatePayload) => {
     showModal.value = false;
     resourceData.salon = Number(resourceData.salon);
 
-    if ('id' in resourceData && resourceData.id) {
-        resourcesStore.updateResource(resourceData).then(() => {
-            fetchResourcesList();
-        });
-    } else {
-        resourcesStore.createResource(resourceData).then(() => {
-            fetchResourcesList();
-        });
-    }
+    resourcesStore.createResource(resourceData).then(() => {
+        fetchResourcesList();
+    });
 };
 
 const formattedResourcesList = computed(() => {
@@ -149,17 +143,6 @@ const openModal = (type: string, data?: any) => {
                 validateVariant: 'primary',
             }
             break;
-        case 'edit:resource':
-            modal.value = {
-                title: 'Editar um recurso',
-                content: 'ResourceForm',
-                dismiss: 'Cancelar',
-                validate: 'Editar',
-                validateIcon: PencilIcon,
-                validateVariant: 'primary',
-            }
-            modal.value.props = getterResourceList.value?.find((resource) => resource.id === data);
-            break;
         case 'delete:resource':
             modal.value = {
                 title: 'Eliminar recurso',
@@ -182,7 +165,7 @@ const fetchResourcesList = async (args = {}) => {
 
     resourcesStore.setQuery(query.value)
 
-    router.push({ query: formatForRouter(query.value) });
+    router.replace({ query: formatForRouter(query.value) });
 }
 
 onMounted(async () => {

@@ -12,12 +12,12 @@
         <!-- Vue Liste -->
         <div class="bg-white rounded-lg shadow-lg p-4">
             <div class="grid md:grid-cols-3 gap-4">
-                <div v-for="(schedule, dayIndex) in schedules" :key="schedule.day"
+                <div v-for="(schedule, dayIndex) in schedules" :key="schedule.dayOfWeek"
                     class="p-4 border border-stroke rounded-lg">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-4">
                             <CoelhoCheckbox v-model="schedule.isOpen" variant="switch" :disabled=true size="sm" />
-                            <span class="font-medium text-dark">{{ days[(schedule.day + 6) % 7] }}</span>
+                            <span class="font-medium text-dark">{{ days[(schedule.dayOfWeek + 6) % 7] }}</span>
                         </div>
                     </div>
 
@@ -67,39 +67,21 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { api } from '@/api';
+import { days } from '@/views/commons/composables/constants/dates'
+
 import { useSalonsStore } from '@/stores/salons';
 
 import FullCalendar from '@fullcalendar/vue3'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import ptLocale from '@fullcalendar/core/locales/pt'
-import type { CalendarOptions } from '@fullcalendar/core/index.js'
 import { storeToRefs } from 'pinia';
 import { CoelhoButton, CoelhoCheckbox, CoelhoSpinner } from '@/components';
 import { TrashIcon, BookmarkSquareIcon } from '@heroicons/vue/24/solid'
 
-interface TimeRange {
-    start: string
-    end: string
-}
-
-interface DaySchedule {
-    day: number
-    isOpen: boolean
-    timeRanges: TimeRange[]
-}
-
-interface Event {
-    title: string
-    startTime?: string
-    endTime?: string
-    daysOfWeek?: number[]
-    backgroundColor?: string
-    display?: string
-    allDay?: boolean
-    textColor?: string
-    classNames?: string[]
-}
+import type { CalendarOptions } from '@fullcalendar/core/index.js'
+import type { Event } from '@/types'
+import type { BusinessHoursRanges } from '@/types/business-hours'
 
 const route = useRoute()
 const router = useRouter()
@@ -107,22 +89,12 @@ const router = useRouter()
 const salonsStore = useSalonsStore()
 const { getterSalon } = storeToRefs(salonsStore)
 
-const days = [
-    'Segunda-feira',
-    'Terça-feira',
-    'Quarta-feira',
-    'Quinta-feira',
-    'Sexta-feira',
-    'Sábado',
-    'Domingo'
-]
-
 const isReady = ref(false)
 const isEdit = ref(false)
 const selectionActive = ref(false);
 
-const schedules = ref<DaySchedule[]>(days.map((_, index) => ({
-    day: (index + 1) % 7,
+const schedules = ref<BusinessHoursRanges[]>(days.map((_, index) => ({
+    dayOfWeek: (index + 1) % 7,
     isOpen: false,
     timeRanges: []
 })))
@@ -137,7 +109,7 @@ const calendarEvents = computed(() => {
                     title: 'Aberto',
                     startTime: range.start,
                     endTime: range.end,
-                    daysOfWeek: [schedule.day],
+                    daysOfWeek: [schedule.dayOfWeek],
                     backgroundColor: '#3C50E0',
                     display: 'block'
                 })
@@ -161,14 +133,12 @@ const handleCalendarSelect = (selectInfo: any) => {
         })
 
         addTimeRange(day, startTime, endTime)
-        console.log('Nouvelle sélection :', selectInfo);
         selectionActive.value = true;
     }
 }
 
 // Configuration du calendrier
 const calendarOptions = computed<CalendarOptions>(() => ({
-    // const calendarOptions: CalendarOptions = {
     plugins: [timeGridPlugin, interactionPlugin],
     initialView: 'timeGridWeek',
     locale: ptLocale,
@@ -203,7 +173,7 @@ const calendarOptions = computed<CalendarOptions>(() => ({
 
 // Ajout d'une nouvelle plage horaire
 const addTimeRange = (day: number, start: string, end: string) => {
-    const schedule = schedules.value.find(s => s.day === day)
+    const schedule = schedules.value.find(s => s.dayOfWeek === day)
     if (schedule) {
         schedule.isOpen = true
         schedule.timeRanges.push({ start, end })
@@ -233,7 +203,7 @@ const editTimeRange = (event: any) => {
     })
 
     if (oldDay !== day) {
-        const oldSchedule = schedules.value.find(s => s.day === oldDay)
+        const oldSchedule = schedules.value.find(s => s.dayOfWeek === oldDay)
         if (oldSchedule) {
             const timeRangeIndex = oldSchedule.timeRanges.findIndex(tr => tr.start === oldStart && tr.end === oldEnd)
             if (timeRangeIndex !== -1) {
@@ -249,7 +219,7 @@ const editTimeRange = (event: any) => {
         return
     }
 
-    const schedule = schedules.value.find(s => s.day === day)
+    const schedule = schedules.value.find(s => s.dayOfWeek === day)
     if (schedule) {
         const timeRange = schedule.timeRanges.find(tr => tr.start === oldStart && tr.end === oldEnd)
         if (timeRange) {

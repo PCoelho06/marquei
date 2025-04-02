@@ -5,6 +5,7 @@ import businessHours from './business-hours'
 import services from './services'
 import resources from './resources'
 import subscriptions from './subscriptions'
+import resourceAvailabilities from './resource-availabilities'
 
 export default {
   auth,
@@ -14,4 +15,5 @@ export default {
   services,
   resources,
   subscriptions,
+  resourceAvailabilities,
 }

@@ -1,7 +1,9 @@
 import RouterResources from '@/views/management/resources/RouterResources.vue'
 import ResourcesView from '@/views/management/resources/ResourcesView.vue'
+import ResourceView from '@/views/management/resources/ResourceView.vue'
 
 import { RectangleGroupIcon } from '@heroicons/vue/24/solid'
+import ManageResourceAvailabilitiesView from './ManageResourceAvailabilitiesView.vue'
 
 export default [
   {
@@ -16,12 +18,18 @@ export default [
         component: ResourcesView,
         meta: { sidebar: { title: 'Recursos' } },
       },
-      //   {
-      //     path: ':id',
-      //     name: 'GetResource',
-      //     meta: { requiresOwnership: true },
-      //     component: ResourceView,
-      //   },
+      {
+        path: ':id',
+        name: 'GetResource',
+        meta: { requiresOwnership: true },
+        component: ResourceView,
+      },
+      {
+        path: ':id/horarios-de-disponibilidade',
+        name: 'ManageResourceAvailabilities',
+        meta: { requiresOwnership: true },
+        component: ManageResourceAvailabilitiesView,
+      },
     ],
   },
 ]

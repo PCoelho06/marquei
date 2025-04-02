@@ -53,7 +53,7 @@ import { useRouter } from 'vue-router';
 import { useSalonsStore } from '@/stores/salons';
 
 import { engineQueries } from '@/composables/engineQueries';
-import { columnsSalons } from '@/views/commons/composables/columnsResources';
+import { columnsSalons } from '@/views/commons/composables/columns/columnsSalons';
 import { formatters } from '@/utils';
 
 import ManagementLayout from '@/layouts/ManagementLayout.vue';
@@ -101,7 +101,7 @@ const fetchSalonList = async (args = {}) => {
 
     await salonsStore.searchSalons({ httpQuery: query.value })
 
-    router.push({ query: formatForRouter(query.value) });
+    router.replace({ query: formatForRouter(query.value) });
 }
 
 onMounted(async () => {

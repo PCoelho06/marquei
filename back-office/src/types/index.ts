@@ -127,3 +127,22 @@ export interface BaseDeletePayload {
 export interface Item {
   [key: string]: string | number
 }
+
+export interface Availability {
+  id: number
+  dayOfWeek: string
+  startTime: string
+  endTime: string
+}
+
+export interface Event {
+  title: string
+  startTime?: string
+  endTime?: string
+  daysOfWeek?: number[]
+  backgroundColor?: string
+  display?: string
+  allDay?: boolean
+  textColor?: string
+  classNames?: string[]
+}
