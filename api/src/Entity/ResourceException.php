@@ -113,4 +113,16 @@ class ResourceException
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'date' => $this->getDate()->format('Y-m-d'),
+            'startTime' => $this->getStartTime()->format('H:i:s'),
+            'endTime' => $this->getEndTime()->format('H:i:s'),
+            'createdAt' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updatedAt' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
+        ];
+    }
 }

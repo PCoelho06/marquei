@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
@@ -73,22 +73,14 @@ const formatScheduleTimeRanges = (day: number, start: string, end: string) => {
     }
 }
 
-watch(getterResource, (newValue) => {
-    if (newValue) {
-        console.log("🚀 ~ getterResource.value?.resourceAvailabilities:", getterResource.value)
-        getterResource.value?.resourceAvailabilities?.forEach((availability) => {
-            formatScheduleTimeRanges(Number(availability.dayOfWeek), availability.startTime, availability.endTime)
-        });
-        //     weekSchedule.value = weekScheduleConstructor()
-        //     newValue.resourceAvailabilities?.forEach((availability) => {
-        //         formatScheduleTimeRanges(Number(availability.dayOfWeek), availability.startTime, availability.endTime)
-        //     });
+watchEffect(() => {
+    if (getterResource.value && getterResource.value.resourceAvailabilities) {
+        weekSchedule.value = weekScheduleConstructor()
+        for (const availability of getterResource.value.resourceAvailabilities) {
+            const start = availability.startTime
+            const end = availability.endTime
+            formatScheduleTimeRanges(Number(availability.dayOfWeek), start, end)
+        }
     }
-}, { immediate: true });
-
-// onMounted(() => {
-//     getterResource.value?.resourceAvailabilities?.forEach((availability) => {
-//         formatScheduleTimeRanges(Number(availability.dayOfWeek), availability.startTime, availability.endTime)
-//     });
-// });
+})
 </script>
