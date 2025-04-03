@@ -6,15 +6,11 @@
         </CoelhoLink>
         <div class="mx-auto">
             <div class="grid grid-cols-2 gap-4 my-4">
-                <div class="flex flex-col gap-4">
-                    <InformationsPanel />
-                    <AvailabilitiesPanel />
-                    <AvailabilityExceptionsPanel />
-                </div>
-                <div class="h-full flex flex-col gap-4">
-                    <BookingsStatisticsPanel class="h-1/2" />
-                    <MoneyStatisticsPanel class="h-1/2" />
-                </div>
+                <InformationsPanel />
+                <AvailabilitiesPanel />
+                <AvailabilityExceptionsPanel class="col-span-2" />
+                <BookingsStatisticsPanel />
+                <MoneyStatisticsPanel />
             </div>
         </div>
     </ManagementLayout>
@@ -23,9 +19,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { storeToRefs } from 'pinia';
 
 import { useResourcesStore } from '@/stores/resources';
+import { useResourceExceptionsStore } from '@/stores/resources-exceptions';
 
 import ManagementLayout from '@/layouts/ManagementLayout.vue';
 
@@ -42,9 +38,16 @@ const route = useRoute();
 const router = useRouter();
 
 const resourcesStore = useResourcesStore();
-const { getterResource } = storeToRefs(resourcesStore);
+const resourceExceptionsStore = useResourceExceptionsStore();
 
 onMounted(async () => {
     await resourcesStore.getResource({ id: Number(route.params.id) });
+    await resourceExceptionsStore.listResourceExceptions({
+        resourceId: Number(route.params.id), httpQuery: {
+            page: route.query.page ? route.query.page : 1,
+            limit: route.query.limit ? route.query.limit : 3,
+            sort: route.query.sort ? [route.query.sort] : ['date,desc'],
+        }
+    });
 });
 </script>

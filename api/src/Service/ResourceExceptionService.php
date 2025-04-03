@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\DTO\Filters\BaseFilterDTO;
 use App\Entity\Resource;
 use App\Service\ResourceService;
 use App\DTO\ResourceExceptionDTO;
@@ -29,9 +30,9 @@ class ResourceExceptionService
         return $resourceException;
     }
 
-    public function listResourceExceptions(Resource $resource): array
+    public function listResourceExceptions(Resource $resource, BaseFilterDTO $filters): array
     {
-        return $this->resourceExceptionRepository->findBy(['resource' => $resource]);
+        return $this->resourceExceptionRepository->findByResourceFiltered($resource, $filters);
     }
 
     public function createResourceException(ResourceExceptionDTO $resourceExceptionDTO): Resource

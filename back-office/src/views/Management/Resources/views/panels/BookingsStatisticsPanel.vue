@@ -1,5 +1,5 @@
 <template>
-    <CoelhoCard v-if="getterResource" title="Estatísticas de reservas">
+    <CoelhoCard v-if="getterResource" size="full" title="Estatísticas de reservas">
         Test
     </CoelhoCard>
 </template>

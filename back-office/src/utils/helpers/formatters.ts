@@ -13,6 +13,18 @@ const formatDate = (date: string) => {
   return new Intl.DateTimeFormat('pt-PT').format(new Date(date))
 }
 
+const formatTime = (time: string) => {
+  const [hours, minutes] = time.split(':')
+  const date = new Date()
+  date.setHours(parseInt(hours, 10))
+  date.setMinutes(parseInt(minutes, 10))
+  return new Intl.DateTimeFormat('pt-PT', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(date)
+}
+
 const formatDuration = (duration: number) => {
   const hours = Math.floor(duration / 60)
   const minutes = duration % 60
@@ -45,6 +57,7 @@ const formatAddress = (address: string, postalCode: string, city: string) => {
 export default {
   formatPrice,
   formatDate,
+  formatTime,
   formatDuration,
   formatDateFromTimestamp,
   formatPhone,

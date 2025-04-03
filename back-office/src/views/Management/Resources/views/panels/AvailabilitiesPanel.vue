@@ -1,5 +1,5 @@
 <template>
-    <CoelhoCard v-if="getterResource" title="Disponibilidades">
+    <CoelhoCard v-if="getterResource" size="full" title="Horário de trabalho">
         <CoelhoData v-for="daySchedule in weekSchedule" :key="daySchedule.day"
             :label="mappers.mapNumberToDayOfWeekShort(Number(daySchedule.day))"
             :content="daySchedule.timeRanges || 'Indisponivel'" />

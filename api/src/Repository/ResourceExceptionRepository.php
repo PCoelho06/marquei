@@ -2,18 +2,32 @@
 
 namespace App\Repository;
 
+use App\Entity\Resource;
 use App\Entity\ResourceException;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\DTO\Filters\BaseFilterDTO;
+use App\Repository\AbstractRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<ResourceException>
  */
-class ResourceExceptionRepository extends ServiceEntityRepository
+class ResourceExceptionRepository extends AbstractRepository
 {
+    private const ALIAS = 're';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ResourceException::class);
+    }
+
+    public function findByResourceFiltered(Resource $resource, BaseFilterDTO $filters): array
+    {
+        $queryBuilder = $this->createQueryBuilder(self::ALIAS)
+            ->andWhere(self::ALIAS . '.resource = :resource')
+            ->setParameter('resource', $resource);
+
+        return $this->paginate($queryBuilder, self::ALIAS, $filters->page, $filters->limit, $filters->sort);
     }
 
     //    /**

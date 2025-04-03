@@ -1,5 +1,5 @@
 <template>
-    <CoelhoCard v-if="getterResource" title="Informações gerais">
+    <CoelhoCard v-if="getterResource" size="full" title="Informações gerais">
         <CoelhoData label="Tipo" :content="mappers.mapResourceTypeValueToLabel(getterResource.type)" />
         <CoelhoData label="Nome" :content="getterResource.name" />
         <CoelhoData label="Salão" :content="getterResource.salon.name" />

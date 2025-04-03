@@ -6,6 +6,7 @@ import services from './services'
 import resources from './resources'
 import subscriptions from './subscriptions'
 import resourceAvailabilities from './resource-availabilities'
+import resourceExceptions from './resource-exceptions'
 
 export default {
   auth,
@@ -16,4 +17,5 @@ export default {
   resources,
   subscriptions,
   resourceAvailabilities,
+  resourceExceptions,
 }
