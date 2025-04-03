@@ -1,9 +1,5 @@
 <template>
-    <ManagementLayout>
-        <CoelhoLink @click="router.back()" class="flex items-center gap-2">
-            <CoelhoIcon :icon="ArrowLeftIcon" />
-            Voltar
-        </CoelhoLink>
+    <ManagementLayout :goBackLink="true">
         <div class="mx-auto">
             <div class="grid grid-cols-2 gap-4 my-4">
                 <InformationsPanel />

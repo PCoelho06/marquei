@@ -1,5 +1,5 @@
 <template>
-    <ManagementLayout>
+    <ManagementLayout :goBackLink="true">
         <div class="mx-auto" v-if="isReady">
             <CoelhoHeading :level="1" size="sm">
                 {{ getterResource?.name }} : {{ isEdit ? 'Editar' : 'Registar' }} horários de disponibilidade
@@ -40,7 +40,7 @@ import ptLocale from '@fullcalendar/core/locales/pt'
 
 import ManagementLayout from '@/layouts/ManagementLayout.vue';
 
-import { CoelhoCard, CoelhoHeading, CoelhoSpinner, CoelhoButton } from '@/components'
+import { CoelhoCard, CoelhoHeading, CoelhoSpinner, CoelhoButton, CoelhoLink, CoelhoIcon } from '@/components'
 
 import { useSalonsStore } from '@/stores/salons'
 import { useResourcesStore } from '@/stores/resources'
@@ -49,7 +49,7 @@ import type { CalendarOptions } from '@fullcalendar/core'
 import type { Event } from '@/types'
 import type { AvailabilityRanges } from '@/types/resource-availabilities'
 import type { BusinessHour } from '@/types/business-hours'
-import { BookmarkSquareIcon } from '@heroicons/vue/24/solid';
+import { BookmarkSquareIcon, ArrowLeftIcon } from '@heroicons/vue/24/solid';
 
 const route = useRoute()
 const router = useRouter()

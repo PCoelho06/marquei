@@ -2,7 +2,7 @@
     <div class="flex h-screen overflow-hidden">
         <SidebarArea :menuGroups />
         <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-            <HeaderArea />
+            <HeaderArea :goBackLink />
             <main>
                 <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
                     <slot></slot>
@@ -21,6 +21,12 @@ import SidebarArea from '@/components/Sidebar/SidebarArea.vue'
 import { DocumentChartBarIcon, BanknotesIcon } from '@heroicons/vue/24/solid';
 
 import { managementSidebarMenuItems } from '@/composables/routing';
+
+withDefaults(defineProps<{
+    goBackLink?: boolean
+}>(), {
+    goBackLink: false
+})
 
 const menuGroups = ref([
     {

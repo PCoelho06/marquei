@@ -25,23 +25,11 @@ export const managementSidebarMenuItems = managementRoutes
     return route.meta?.sidebar
   })
   .map((route: SidebarRoute) => {
+    console.log('🚀 ~ .map ~ route:', route)
     const managementSidebarMenuItem: SidebarMenuCategory = {
       icon: route.meta.sidebar.icon,
       label: route.meta.sidebar.title,
       route: route.path,
-    }
-
-    if (route.children) {
-      managementSidebarMenuItem.children = route.children
-        .filter((child: Route) => {
-          return child.meta?.sidebar
-        })
-        .map((child: Route) => {
-          return {
-            label: child.meta?.sidebar?.title,
-            route: route.path + '/' + child.path,
-          } as SidebarMenuItem
-        })
     }
     return managementSidebarMenuItem
   })

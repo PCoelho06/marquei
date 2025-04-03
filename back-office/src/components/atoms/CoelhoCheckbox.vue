@@ -5,13 +5,17 @@
                 <input type="checkbox" class="peer hidden" :checked="modelValue" :disabled="disabled"
                     :indeterminate="indeterminate" @change="handleChange">
                 <div class="flex items-center gap-3">
-                    <span v-if="switchOffLabel" :class="[!modelValue ? 'text-gray-900' : 'text-gray-500']">
+                    <span v-if="switchOffLabel" :class="{
+                        'text-gray-900': modelValue && color === 'dark',
+                        'text-gray-500': !modelValue && color === 'dark' || modelValue && color === 'light',
+                        'text-white': !modelValue && color === 'light'
+                    }">
                         {{ switchOffLabel }}
                     </span>
                     <div class="relative rounded-full transition-colors duration-200 ease-in-out border-2 border-transparent"
                         :class="[
                             { 'w-8 h-4': size === 'sm', 'w-12 h-6': size === 'md', 'w-16 h-8': size === 'lg' },
-                            modelValue ? 'bg-primary' : 'bg-dark',
+                            modelValue ? 'bg-primary' : (color === 'light' ? 'bg-gray-500' : 'bg-dark'),
                             disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                         ]">
                         <div class="absolute transform rounded-full bg-white shadow-md transition-transform duration-200 ease-in-out"
@@ -21,7 +25,11 @@
                                 disabled ? 'cursor-not-allowed' : 'cursor-pointer'
                             ]" />
                     </div>
-                    <span v-if="switchOnLabel" :class="[modelValue ? 'text-gray-900' : 'text-gray-500']">
+                    <span v-if="switchOnLabel" :class="{
+                        'text-gray-900': !modelValue && color === 'dark',
+                        'text-gray-500': modelValue && color === 'dark' || !modelValue && color === 'light',
+                        'text-white': modelValue && color === 'light'
+                    }">
                         {{ switchOnLabel }}
                     </span>
                 </div>
@@ -64,6 +72,7 @@ interface Props {
     switchOnLabel?: string;
     switchOffLabel?: string;
     size?: 'sm' | 'md' | 'lg';
+    color?: 'dark' | 'light';
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -71,7 +80,8 @@ const props = withDefaults(defineProps<Props>(), {
     disabled: false,
     indeterminate: false,
     variant: 'standard',
-    size: 'md'
+    size: 'md',
+    color: 'dark',
 });
 
 const emit = defineEmits<{

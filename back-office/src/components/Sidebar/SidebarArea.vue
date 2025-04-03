@@ -30,6 +30,8 @@
         </template>
       </nav>
     </div>
+
+    <ModeSwitch class="mt-auto mb-8" />
   </aside>
 </template>
 
@@ -43,12 +45,13 @@ import { useSidebarStore } from '@/stores/sidebar'
 import SidebarItem from './SidebarItem.vue'
 import { CoelhoLogo, CoelhoButton, CoelhoIcon } from '@/components'
 import { ArrowLeftIcon } from '@heroicons/vue/24/solid'
+import ModeSwitch from '../ModeSwitch.vue'
 
 const router = useRouter()
 
 const sidebarStore = useSidebarStore()
 
-defineProps<{
+const props = defineProps<{
   menuGroups: {
     name: string
     menuItems: {
@@ -59,6 +62,7 @@ defineProps<{
     }[]
   }[]
 }>()
+console.log("🚀 ~ props:", props.menuGroups)
 
 const target = ref(null)
 

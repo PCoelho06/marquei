@@ -1,10 +1,5 @@
 <template>
-    <ManagementLayout>
-        <!-- <CoelhoLink :to="router.resolve({ name: 'ListSalons' }).href" class="flex items-center gap-2"> -->
-        <CoelhoLink @click="router.back()" class="flex items-center gap-2">
-            <CoelhoIcon :icon="ArrowLeftIcon" />
-            Voltar
-        </CoelhoLink>
+    <ManagementLayout :goBackLink="true">
         <div class="mx-auto">
             <div class="grid grid-cols-3 gap-4 my-4">
                 <PanelInformations />
