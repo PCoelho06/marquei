@@ -76,7 +76,7 @@ const handleSelectSalon = async (salonId: number) => {
     showModal.value = false
     await authStore.actionSelectMode({ mode: 'store', salonId }).then(() => {
         salonStore.getSalon({ id: salonId }).then(() => {
-            router.push({ name: 'StoreDashboard' });
+            router.push({ name: 'SalonAgenda', params: { salonId } });
         });
     });
 };

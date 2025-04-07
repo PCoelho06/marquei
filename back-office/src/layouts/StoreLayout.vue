@@ -1,58 +1,29 @@
 <template>
-    <div class="flex h-screen overflow-hidden">
-        <SidebarArea :menuGroups />
-        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-            <HeaderArea />
-            <main>
-                <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-                    <slot></slot>
-                </div>
-            </main>
-        </div>
+    <div class="flex h-dvh w-full overflow-hidden">
+        <slot></slot>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
-import HeaderArea from '@/components/Header/HeaderArea.vue'
-import SidebarArea from '@/components/Sidebar/SidebarArea.vue'
+import { useSalonsStore } from '@/stores/salons';
 
-import { Squares2X2Icon, CalendarDaysIcon } from '@heroicons/vue/24/solid'
+const router = useRouter()
+const route = useRoute()
 
-const menuGroups = ref([
-    {
-        name: 'MENU',
-        menuItems: [
-            {
-                icon: Squares2X2Icon,
-                label: 'Painel',
-                route: '/salao/painel'
-            },
-            {
-                icon: CalendarDaysIcon,
-                label: 'Agenda',
-                route: '/salao'
-            },
-            //     icon: 'CalendarIcon.vue',
-            //     label: 'Agendamentos',
-            //     route: '/calendar'
-            // },
-            // {
-            //     icon: 'ClientsIcon.vue',
-            //     label: 'Clientes',
-            //     route: '/clients'
-            // },
-            // {
-            //     icon: 'ServicesIcon.vue',
-            //     label: 'Serviços',
-            //     route: '/services',
-            //     children: [
-            //         { label: 'Categorias', route: '/services/categories' },
-            //         { label: 'Serviços', route: '/services/services' }
-            //     ]
-            // },
-        ]
+const salonStore = useSalonsStore()
+const { getterSalon } = storeToRefs(salonStore)
+
+onMounted(() => {
+    if (!getterSalon.value) {
+        salonStore.getSalon({ id: Number(route.params.salonId) }).then(() => {
+            if (!getterSalon.value) {
+                router.push({ name: 'StoreNotFound' })
+            }
+        })
     }
-])
+})
 </script>

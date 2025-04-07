@@ -62,7 +62,6 @@ const props = defineProps<{
     }[]
   }[]
 }>()
-console.log("🚀 ~ props:", props.menuGroups)
 
 const target = ref(null)
 

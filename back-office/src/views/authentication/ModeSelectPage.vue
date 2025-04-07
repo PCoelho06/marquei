@@ -78,13 +78,12 @@ const handleClick = (mode: 'management' | 'store') => {
 const handleSelectSalon = (salonId: number) => {
     authStore.actionSelectMode({ mode: 'store', salonId }).then(() => {
         salonStore.getSalon({ id: salonId }).then(() => {
-            router.push({ name: 'StoreDashboard' });
+            router.push({ name: 'SalonAgenda', params: { salonId } });
         });
     });
 };
 
 onMounted(async () => {
     await salonStore.searchSalons({ httpQuery: {} });
-    console.log("🚀 ~ getterSalons:", getterSalonList.value)
 });
 </script>

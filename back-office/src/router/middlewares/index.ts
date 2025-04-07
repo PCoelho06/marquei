@@ -28,7 +28,7 @@ export const middlewares = (router: Router) => {
     const requiresOwnership = await checkOwnership(to)
     if (requiresOwnership) return next(requiresOwnership)
 
-    const redirect = redirectOnAuthenticated(to, getterMode)
+    const redirect = redirectOnAuthenticated(to, from, getterMode)
     if (redirect && isAuthenticated) return next(redirect)
 
     next()
@@ -39,13 +39,13 @@ const checkAccess = (to: any, from: any) => {
   return to.meta.requiresAuth && !from.meta.requiresAuth ? { name: 'Login' } : null
 }
 
-const redirectOnAuthenticated = (to: any, mode: any) => {
+const redirectOnAuthenticated = (to: any, from: any, mode: any) => {
   if (to.name === 'Login' || to.name === 'Registration') {
     if (mode === 'management') {
       return { name: 'ManagementDashboard' }
     }
     if (mode === 'store') {
-      return { name: 'StoreDashboard' }
+      return { name: 'SalonAgenda', params: { salonId: from.params.salonId } }
     }
     return { name: 'ModeSelect' }
   }

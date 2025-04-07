@@ -13,6 +13,11 @@
                 :class="{ 'opacity-50 cursor-not-allowed': disabled, 'pl-13': leftIcon }" :placeholder="placeholder"
                 @focus="handleSearchFocus" @input="handleSearchInput" @blur="handleBlur" :disabled="disabled" />
 
+            <input v-else-if="editable" ref="editableInput" type="text" :value="modelValue"
+                class="w-full rounded-md border border-stroke bg-white px-3 py-2 pr-10 text-sm focus:border-primary focus:outline-none"
+                :class="{ 'opacity-50 cursor-not-allowed': disabled, 'pl-13': leftIcon }" :placeholder="placeholder"
+                @focus="handleFocus" @input="handleInput" />
+
             <div v-else ref="selectTrigger"
                 class="w-full rounded-md border border-stroke bg-white px-3 py-2 pr-10 text-sm cursor-pointer focus:border-primary"
                 :class="{ 'opacity-50 cursor-not-allowed': disabled, 'pl-13': leftIcon }"
@@ -34,10 +39,15 @@
                 </span>
             </div>
 
-            <div class="absolute right-3 top-1/2 -translate-y-1/3 pointer-events-none">
+            <CoelhoText v-if="suffix" size="sm" color="secondary"
+                class="absolute right-2 top-1/2 transform -translate-y-1/2">
+                {{ suffix }}
+            </CoelhoText>
+            <div v-else class="absolute right-3 top-1/2 -translate-y-1/3 pointer-events-none">
                 <CoelhoIcon v-if="isOpen" :icon="ChevronUpIcon" color="secondary" />
                 <CoelhoIcon v-else :icon="ChevronDownIcon" color="secondary" />
             </div>
+
 
             <div v-show="isOpen" ref="dropdown"
                 class="absolute z-50 w-full mt-1 bg-white border border-stroke rounded-md shadow-lg max-h-60 overflow-auto">
@@ -82,6 +92,8 @@ interface Props {
     searchable?: boolean;
     id?: string;
     leftIcon?: Component;
+    suffix?: string;
+    editable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -90,6 +102,7 @@ const props = withDefaults(defineProps<Props>(), {
     searchable: false,
     placeholder: 'Selecionar',
     id: computed(() => `select-${Math.random().toString(36).slice(2, 11)}`).value,
+    editable: false,
 });
 
 const emit = defineEmits<{
@@ -101,6 +114,7 @@ const searchQuery = ref('');
 const selectTrigger = ref<HTMLElement | null>(null);
 const searchInput = ref<HTMLElement | null>(null);
 const dropdown = ref<HTMLElement | null>(null);
+const editableInput = ref<HTMLInputElement | null>(null);
 const displayValue = ref('');
 
 const filteredOptions = computed(() => {
@@ -200,7 +214,8 @@ const handleClickOutside = (event: MouseEvent) => {
     if (
         !selectTrigger.value?.contains(event.target as Node) &&
         !dropdown.value?.contains(event.target as Node) &&
-        !searchInput.value?.contains(event.target as Node)
+        !searchInput.value?.contains(event.target as Node) &&
+        !editableInput.value?.contains(event.target as Node)
     ) {
         isOpen.value = false;
         searchQuery.value = '';
@@ -227,4 +242,9 @@ watch(() => props.modelValue, (newValue) => {
         displayValue.value = option ? option.label : '';
     }
 }, { immediate: true });
+
+const handleInput = (event: Event) => {
+    const input = event.target as HTMLInputElement;
+    emit('update:modelValue', input.value);
+};
 </script>

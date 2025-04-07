@@ -101,7 +101,7 @@ const formattedResourceExceptionsList = computed(() => {
     return getterResourceExceptionList.value?.map((resourceException) => {
         return {
             id: resourceException.id,
-            date: formatters.formatDate(resourceException.date),
+            date: formatters.formatDateFromString(resourceException.date),
             startTime: formatters.formatTime(resourceException.startTime),
             endTime: formatters.formatTime(resourceException.endTime),
         }

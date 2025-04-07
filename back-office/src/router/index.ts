@@ -28,7 +28,7 @@ middlewares(router)
 //     if (getterMode === 'management') {
 //       return next({ name: 'ManagementDashboard' })
 //     } else if (getterMode === 'store') {
-//       return next({ name: 'StoreDashboard' })
+//       return next({ name: 'SalonAgenda', params: { salonId: from.params.salonId } })
 //     } else {
 //       return next({ name: 'ModeSelect' })
 //     }

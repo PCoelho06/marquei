@@ -25,7 +25,6 @@ export const managementSidebarMenuItems = managementRoutes
     return route.meta?.sidebar
   })
   .map((route: SidebarRoute) => {
-    console.log('🚀 ~ .map ~ route:', route)
     const managementSidebarMenuItem: SidebarMenuCategory = {
       icon: route.meta.sidebar.icon,
       label: route.meta.sidebar.title,

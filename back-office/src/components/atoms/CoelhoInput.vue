@@ -59,7 +59,7 @@ interface Props {
     modelValue: string | number | string[] | number[];
     id?: string;
     size?: 'sm' | 'md' | 'lg';
-    type?: 'text' | 'number' | 'email' | 'tel' | 'password' | 'search' | 'date' | 'time';
+    type?: 'text' | 'number' | 'email' | 'tel' | 'password' | 'search' | 'date' | 'time' | 'datetime-local';
     label?: string;
     error?: string;
     helper?: string;

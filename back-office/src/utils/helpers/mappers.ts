@@ -1,4 +1,6 @@
 import type { Salon } from '@/types/salons'
+import type { Service } from '@/types/services'
+import type { Resource } from '@/types/resources'
 
 const mapNumberToDayOfWeek = (dayOfWeek: number) => {
   switch (dayOfWeek) {
@@ -81,10 +83,26 @@ const mapResourceTypeValueToLabel = (resourceType: string) => {
   }
 }
 
+const mapServicesToOptions = (services: Service[]) => {
+  return services.map((service) => ({
+    value: service.id.toString(),
+    label: service.name,
+  }))
+}
+
+const mapResourcesToOptions = (resources: Resource[]) => {
+  return resources.map((resource) => ({
+    value: resource.id.toString(),
+    label: resource.name,
+  }))
+}
+
 export default {
   mapNumberToDayOfWeek,
   mapNumberToDayOfWeekShort,
   mapDayOfWeekToNumber,
   mapSalonsToOptions,
   mapResourceTypeValueToLabel,
+  mapServicesToOptions,
+  mapResourcesToOptions,
 }
