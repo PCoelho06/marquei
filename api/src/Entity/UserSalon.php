@@ -140,13 +140,13 @@ class UserSalon
     public function toArray()
     {
         return [
-            'id' => $this->id,
-            'user' => $this->user->toArray(),
-            'salon' => $this->salon->toArray(),
-            'role' => $this->role,
-            'permissions' => $this->permissions->map(fn(UserSalonPermission $permission) => $permission->toArray())->toArray(),
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
+            'id' => $this->getId(),
+            'user' => $this->getUser()->toArray(),
+            'salon' => $this->getSalon()->toArray(),
+            'role' => $this->getRole(),
+            'permissions' => $this->getPermissions()->map(fn(UserSalonPermission $permission) => $permission->toArray())->toArray(),
+            'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
+            'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
         ];
     }
 }

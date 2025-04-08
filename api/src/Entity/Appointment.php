@@ -161,4 +161,20 @@ class Appointment
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'client' => $this->getClient()->toArray(),
+            'salon' => $this->getSalon()->toArray(),
+            'resource' => $this->getResource()->toArray(),
+            'service' => $this->getService()->toArray(),
+            'startsAt' => $this->getStartsAt()->format('d/m/Y H:i'),
+            'endsAt' => $this->getEndsAt()->format('d/m/Y H:i'),
+            'status' => $this->getStatus()->value,
+            'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
+            'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
+        ];
+    }
 }

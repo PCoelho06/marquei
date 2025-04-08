@@ -152,14 +152,14 @@ class Service
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'duration' => $this->duration,
-            'price' => $this->price,
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'description' => $this->getDescription(),
+            'duration' => $this->getDuration(),
+            'price' => $this->getPrice(),
             'resources' => array_map(fn(Resource $resource) => $resource->toArray(), $this->resources->toArray()),
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
+            'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
+            'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
         ];
     }
 

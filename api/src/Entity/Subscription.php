@@ -166,16 +166,16 @@ class Subscription
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'user' => $this->user->getId(),
-            'stripe_subscription_id' => $this->stripeSubscriptionId,
-            'stripe_price_id' => $this->stripePriceId,
-            'start_date' => $this->startDate->format('Y-m-d H:i:s'),
-            'end_date' => $this->endDate ? $this->endDate->format('Y-m-d H:i:s') : null,
-            'status' => $this->status,
-            'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
-            'salon' => $this->salon->toArray(),
+            'id' => $this->getId(),
+            'user' => $this->getUser()->getId(),
+            'stripe_subscription_id' => $this->getStripeSubscriptionId(),
+            'stripe_price_id' => $this->getStripePriceId(),
+            'start_date' => $this->getStartDate()->format('d/m/Y H:i'),
+            'end_date' => $this->getEndDate() ? $this->getEndDate()->format('d/m/Y H:i') : null,
+            'status' => $this->getStatus(),
+            'created_at' => $this->getCreatedAt()->format('d/m/Y H:i'),
+            'updated_at' => $this->getUpdatedAt()->format('d/m/Y H:i'),
+            'salon' => $this->getSalon()->toArray(),
         ];
     }
 

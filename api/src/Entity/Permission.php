@@ -70,10 +70,10 @@ class Permission
     public function toArray()
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'createdAt' => $this->createdAt,
-            'updatedAt' => $this->updatedAt,
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
+            'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
         ];
     }
 }

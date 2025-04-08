@@ -222,16 +222,16 @@ class Salon
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'address' => $this->address,
-            'postalCode' => $this->postalCode,
-            'city' => $this->city,
-            'country' => $this->country,
-            'phone' => $this->phone,
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'address' => $this->getAddress(),
+            'postalCode' => $this->getPostalCode(),
+            'city' => $this->getCity(),
+            'country' => $this->getCountry(),
+            'phone' => $this->getPhone(),
             'businessHours' => array_map(fn(BusinessHoursRanges $businessHoursRanges) => $businessHoursRanges->toArray(), $this->businessHoursRanges->toArray()),
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
+            'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
+            'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
         ];
     }
 

@@ -142,8 +142,8 @@ class Resource
             'salon' => $this->salon->toArray(),
             'resourceAvailabilities' => $this->resourceAvailabilities->map(fn(ResourceAvailability $availability) => $availability->toArray())->toArray(),
             'resourceExceptions' => $this->resourceExceptions->map(fn(ResourceException $exception) => $exception->toArray())->toArray(),
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updatedAt' => $this->updatedAt->format('Y-m-d H:i:s'),
+            'createdAt' => $this->createdAt->format('d/m/Y H:i'),
+            'updatedAt' => $this->updatedAt->format('d/m/Y H:i'),
         ];
     }
 

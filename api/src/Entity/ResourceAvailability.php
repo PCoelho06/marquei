@@ -121,8 +121,8 @@ class ResourceAvailability
             'dayOfWeek' => $this->getDayOfWeek(),
             'startTime' => $this->getStartTime()->format('H:i'),
             'endTime' => $this->getEndTime()->format('H:i'),
-            'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
+            'created_at' => $this->getCreatedAt()->format('d/m/Y H:i'),
+            'updated_at' => $this->getUpdatedAt()->format('d/m/Y H:i'),
         ];
     }
 }

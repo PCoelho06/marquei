@@ -117,10 +117,10 @@ class BusinessHoursRanges
     public function toArray(): array
     {
         return [
-            'id' => $this->id,
-            'dayOfWeek' => $this->dayOfWeek,
-            'startTime' => $this->startTime->format('H:i'),
-            'endTime' => $this->endTime->format('H:i'),
+            'id' => $this->getId(),
+            'dayOfWeek' => $this->getDayOfWeek(),
+            'startTime' => $this->getStartTime()->format('H:i'),
+            'endTime' => $this->getEndTime()->format('H:i'),
         ];
     }
 }

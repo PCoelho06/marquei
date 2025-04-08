@@ -121,8 +121,8 @@ class ResourceException
             'date' => $this->getDate()->format('Y-m-d'),
             'startTime' => $this->getStartTime()->format('H:i:s'),
             'endTime' => $this->getEndTime()->format('H:i:s'),
-            'createdAt' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
-            'updatedAt' => $this->getUpdatedAt()->format('Y-m-d H:i:s'),
+            'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
+            'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
         ];
     }
 }
