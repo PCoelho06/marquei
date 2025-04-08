@@ -79,8 +79,8 @@ class AppointmentService
             function (Appointment $temporaryAppointment) use ($appointment) {
 
                 $startsBeforeBooked = $appointment->getStartsAt() < $temporaryAppointment->getStartsAt();
-                $startsAfterBooked = $appointment->getStartsAt() > $temporaryAppointment->getEndsAt();
-                $endsBeforeBooked = $appointment->getEndsAt() < $temporaryAppointment->getStartsAt();
+                $startsAfterBooked = $appointment->getStartsAt() >= $temporaryAppointment->getEndsAt();
+                $endsBeforeBooked = $appointment->getEndsAt() <= $temporaryAppointment->getStartsAt();
                 $endsAfterBooked = $appointment->getEndsAt() > $temporaryAppointment->getEndsAt();
 
                 if ($startsBeforeBooked && $endsBeforeBooked) {
