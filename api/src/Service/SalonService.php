@@ -3,22 +3,19 @@
 namespace App\Service;
 
 use App\DTO\Filters\SalonFilterDTO;
-use App\Entity\User;
 use App\DTO\SalonDTO;
 use App\Entity\Salon;
 use App\Entity\Service;
 use App\Entity\Resource;
 use App\Model\RolesEnum;
-use App\Entity\UserSalon;
-use App\Repository\UserRepository;
 use App\Entity\BusinessHoursRanges;
 use App\Entity\Subscription;
 use App\Repository\SalonRepository;
 use App\Repository\ServiceRepository;
 use App\Repository\ResourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SalonService
 {
@@ -28,9 +25,9 @@ class SalonService
         private readonly ServiceRepository $serviceRepository,
         private readonly ResourceRepository $resourceRepository,
         private UserSalonService $userSalonService,
-        private UserRepository $userRepository,
         private EntityHydratorService $hydrator,
         private Security $security,
+        private LoggerInterface $logger,
     ) {}
 
     public function createSalon(SalonDTO $salonDTO): Salon
@@ -136,6 +133,28 @@ class SalonService
 
         $this->entityManager->remove($salon);
         $this->entityManager->flush();
+    }
+
+    public function isOpen(Salon $salon, \DateTimeImmutable $dateTime): bool
+    {
+        $businessHours = $salon->getBusinessHoursRanges();
+        $dayOfWeek = $dateTime->format('w');
+
+        $businessHoursOfTheDay = $businessHours->filter(fn(BusinessHoursRanges $businessHour) => $businessHour->getDayOfWeek() == $dayOfWeek);
+        if ($businessHoursOfTheDay->isEmpty()) {
+            return false;
+        }
+
+        foreach ($businessHoursOfTheDay as $businessHour) {
+            $startTime = $businessHour->getStartTime()->format('H:i');
+            $endTime = $businessHour->getEndTime()->format('H:i');
+
+            if ($dateTime->format('H:i') >= $startTime && $dateTime->format('H:i') <= $endTime) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getData(): array

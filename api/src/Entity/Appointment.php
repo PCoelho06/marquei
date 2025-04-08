@@ -166,7 +166,7 @@ class Appointment
     {
         return [
             'id' => $this->getId(),
-            'client' => $this->getClient()->toArray(),
+            'client' => $this->getClient()->toArrayClient(),
             'salon' => $this->getSalon()->toArray(),
             'resource' => $this->getResource()->toArray(),
             'service' => $this->getService()->toArray(),
@@ -175,6 +175,20 @@ class Appointment
             'status' => $this->getStatus()->value,
             'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
             'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
+        ];
+    }
+
+    public function toArraySimple(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'client' => $this->getClient()->toArrayClient(),
+            'salon' => $this->getSalon()->toArraySimple(),
+            'resource' => $this->getResource()->toArraySimple(),
+            'service' => $this->getService()->toArraySimple(),
+            'startsAt' => $this->getStartsAt()->format('d/m/Y H:i'),
+            'endsAt' => $this->getEndsAt()->format('d/m/Y H:i'),
+            'status' => $this->getStatus()->value,
         ];
     }
 }

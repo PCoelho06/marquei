@@ -79,7 +79,7 @@ class AdminResourceExceptionController extends AbstractController
     {
         try {
             $this->userSalonService->checkUserIsSalonOwner($resource->getSalon());
-            $resource = $this->resourceExceptionService->createResourceException($resourceExceptionDTO);
+            $resource = $this->resourceExceptionService->createResourceException($resource, $resourceExceptionDTO);
         } catch (\InvalidArgumentException $e) {
             return $this->json([
                 'status' => 'error',

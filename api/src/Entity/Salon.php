@@ -219,22 +219,6 @@ class Salon
         return $this;
     }
 
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'address' => $this->getAddress(),
-            'postalCode' => $this->getPostalCode(),
-            'city' => $this->getCity(),
-            'country' => $this->getCountry(),
-            'phone' => $this->getPhone(),
-            'businessHours' => array_map(fn(BusinessHoursRanges $businessHoursRanges) => $businessHoursRanges->toArray(), $this->businessHoursRanges->toArray()),
-            'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
-            'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
-        ];
-    }
-
     /**
      * @return Collection<int, BusinessHoursRanges>
      */
@@ -383,5 +367,30 @@ class Salon
         }
 
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'address' => $this->getAddress(),
+            'postalCode' => $this->getPostalCode(),
+            'city' => $this->getCity(),
+            'country' => $this->getCountry(),
+            'phone' => $this->getPhone(),
+            'businessHours' => array_map(fn(BusinessHoursRanges $businessHoursRanges) => $businessHoursRanges->toArray(), $this->businessHoursRanges->toArray()),
+            'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
+            'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
+        ];
+    }
+
+    public function toArraySimple(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'phone' => $this->getPhone(),
+        ];
     }
 }

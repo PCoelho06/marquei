@@ -6,11 +6,7 @@ use App\Entity\User;
 use App\Entity\Salon;
 use App\DTO\Filters\SalonFilterDTO;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-/**
- * @extends ServiceEntityRepository<Salon>
- */
 class SalonRepository extends AbstractRepository
 {
     private const ALIAS = 's';
@@ -33,18 +29,18 @@ class SalonRepository extends AbstractRepository
 
     public function findByFilters(User $user, SalonFilterDTO $filters)
     {
-        $qb = $this->createQueryBuilder(self::ALIAS)
+        $queryBuilder = $this->createQueryBuilder(self::ALIAS)
             ->select(self::ALIAS)
             ->leftJoin(self::ALIAS . '.users', 'u')
             ->where('u.user = :user')
             ->setParameter('user', $user);
 
         if ($filters->name !== null) {
-            $qb->andWhere($qb->expr()->like(self::ALIAS . '.name', ':name'))
+            $queryBuilder->andWhere($queryBuilder->expr()->like(self::ALIAS . '.name', ':name'))
                 ->setParameter('name', '%' . $filters->name . '%');
         }
 
-        return $this->paginate($qb, self::ALIAS, $filters->page, $filters->limit, $filters->sort);
+        return $this->paginate($queryBuilder, self::ALIAS, $filters->page, $filters->limit, $filters->sort);
     }
 
     public function countSalons()

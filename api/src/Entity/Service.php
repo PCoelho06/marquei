@@ -149,20 +149,6 @@ class Service
         return $this;
     }
 
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'description' => $this->getDescription(),
-            'duration' => $this->getDuration(),
-            'price' => $this->getPrice(),
-            'resources' => array_map(fn(Resource $resource) => $resource->toArray(), $this->resources->toArray()),
-            'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
-            'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
-        ];
-    }
-
     /**
      * @return Collection<int, Resource>
      */
@@ -215,5 +201,30 @@ class Service
         }
 
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'description' => $this->getDescription(),
+            'duration' => $this->getDuration(),
+            'price' => $this->getPrice(),
+            'resources' => array_map(fn(Resource $resource) => $resource->toArray(), $this->resources->toArray()),
+            'createdAt' => $this->getCreatedAt()->format('d/m/Y H:i'),
+            'updatedAt' => $this->getUpdatedAt()->format('d/m/Y H:i'),
+        ];
+    }
+
+    public function toArraySimple(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'description' => $this->getDescription(),
+            'duration' => $this->getDuration(),
+            'price' => $this->getPrice(),
+        ];
     }
 }

@@ -133,20 +133,6 @@ class Resource
         return $this;
     }
 
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'type' => $this->type,
-            'name' => $this->name,
-            'salon' => $this->salon->toArray(),
-            'resourceAvailabilities' => $this->resourceAvailabilities->map(fn(ResourceAvailability $availability) => $availability->toArray())->toArray(),
-            'resourceExceptions' => $this->resourceExceptions->map(fn(ResourceException $exception) => $exception->toArray())->toArray(),
-            'createdAt' => $this->createdAt->format('d/m/Y H:i'),
-            'updatedAt' => $this->updatedAt->format('d/m/Y H:i'),
-        ];
-    }
-
     /**
      * @return Collection<int, Service>
      */
@@ -262,5 +248,28 @@ class Resource
         }
 
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'type' => $this->type,
+            'name' => $this->name,
+            'salon' => $this->salon->toArray(),
+            'resourceAvailabilities' => $this->resourceAvailabilities->map(fn(ResourceAvailability $availability) => $availability->toArray())->toArray(),
+            'resourceExceptions' => $this->resourceExceptions->map(fn(ResourceException $exception) => $exception->toArray())->toArray(),
+            'createdAt' => $this->createdAt->format('d/m/Y H:i'),
+            'updatedAt' => $this->updatedAt->format('d/m/Y H:i'),
+        ];
+    }
+
+    public function toArraySimple(): array
+    {
+        return [
+            'id' => $this->id,
+            'type' => $this->type,
+            'name' => $this->name,
+        ];
     }
 }

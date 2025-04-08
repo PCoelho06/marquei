@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class ResourceExceptionService
 {
     public function __construct(
-        private ResourceService $resourceService,
         private EntityManagerInterface $entityManager,
         private EntityHydratorService $hydrator,
         private ResourceExceptionRepository $resourceExceptionRepository
@@ -35,11 +34,10 @@ class ResourceExceptionService
         return $this->resourceExceptionRepository->findByResourceFiltered($resource, $filters);
     }
 
-    public function createResourceException(ResourceExceptionDTO $resourceExceptionDTO): Resource
+    public function createResourceException(Resource $resource, ResourceExceptionDTO $resourceExceptionDTO): Resource
     {
         $resourceException = $this->hydrator->hydrate(new ResourceException(), $resourceExceptionDTO);
 
-        $resource = $this->resourceService->getResource($resourceExceptionDTO->resourceId);
         $resource->addResourceException($resourceException);
 
         $this->entityManager->persist($resourceException);
@@ -61,5 +59,16 @@ class ResourceExceptionService
     {
         $this->entityManager->remove($resourceException);
         $this->entityManager->flush();
+    }
+
+    public function isUnavailable(Resource $resource, \DateTimeImmutable $dateTime): bool
+    {
+        foreach ($resource->getResourceExceptions() as $exception) {
+            if ($exception->getDate()->format('d/m/Y') === $dateTime->format('d/m/Y')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

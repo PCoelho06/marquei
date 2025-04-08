@@ -9,7 +9,7 @@ use App\Entity\ResourceAvailability;
 
 class ResourceAvailabilityService
 {
-    public function __construct(private ResourceService $resourceService, private EntityManagerInterface $entityManager) {}
+    public function __construct(private EntityManagerInterface $entityManager) {}
 
     public function setResourceAvailabilities(Resource $resource, array $data): void
     {
@@ -39,5 +39,19 @@ class ResourceAvailabilityService
             }
         }
         $this->entityManager->flush();
+    }
+
+    public function isAvailable(Resource $resource, \DateTimeImmutable $dateTime): bool
+    {
+        $dayOfWeek = (int) $dateTime->format('w');
+        $time = $dateTime->format('H:i');
+
+        foreach ($resource->getResourceAvailabilities() as $availability) {
+            if ($availability->getDayOfWeek() === $dayOfWeek && $availability->getStartTime()->format('H:i') <= $time && $availability->getEndTime()->format('H:i') >= $time) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

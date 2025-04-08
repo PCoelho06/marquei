@@ -7,11 +7,14 @@ use App\Entity\Salon;
 use App\DTO\ResourceDTO;
 use App\Entity\Resource;
 use App\Entity\UserSalon;
+use App\Entity\Appointment;
 use Psr\Log\LoggerInterface;
 use App\Model\ResourceTypeEnum;
+use App\Entity\ResourceAvailability;
 use App\DTO\Filters\ResourceFilterDTO;
 use App\Repository\ResourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\DTO\Filters\AppointmentFilterDTO;
 use Symfony\Bundle\SecurityBundle\Security;
 
 final class ResourceService
@@ -23,7 +26,10 @@ final class ResourceService
         private UserSalonService $userSalonService,
         private EntityHydratorService $hydrator,
         private Security $security,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private ResourceAvailabilityService $resourceAvailabilityService,
+        private ResourceExceptionService $resourceExceptionService,
+        // private AppointmentService $appointmentService,
     ) {}
 
     public function searchResources(User $user, ResourceFilterDTO $filters): array
@@ -91,5 +97,18 @@ final class ResourceService
         }
 
         return array_map(fn(Resource $resource) => $resource->toArray(), $resources);
+    }
+
+    public function isAvailable(Resource $resource, \DateTimeImmutable $startsAt): bool
+    {
+        if (!$this->resourceAvailabilityService->isAvailable($resource, $startsAt)) {
+            return false;
+        }
+
+        if ($this->resourceExceptionService->isUnavailable($resource, $startsAt)) {
+            return false;
+        }
+
+        return true;
     }
 }

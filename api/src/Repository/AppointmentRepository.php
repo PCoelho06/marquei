@@ -2,42 +2,58 @@
 
 namespace App\Repository;
 
+use App\DTO\Filters\AppointmentFilterDTO;
 use App\Entity\Appointment;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Appointment>
- */
-class AppointmentRepository extends ServiceEntityRepository
+class AppointmentRepository extends AbstractRepository
 {
+    private const ALIAS = 'a';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Appointment::class);
     }
 
-    //    /**
-    //     * @return Appointment[] Returns an array of Appointment objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findByFilters(AppointmentFilterDTO $filters)
+    {
+        $queryBuilder = $this->createQueryBuilder(self::ALIAS)
+            ->select(self::ALIAS)
+            ->leftJoin(self::ALIAS . '.salon', 'sa')
+            ->leftJoin(self::ALIAS . '.client', 'c')
+            ->leftJoin(self::ALIAS . '.service', 'se')
+            ->leftJoin(self::ALIAS . '.resource', 'r');
 
-    //    public function findOneBySomeField($value): ?Appointment
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($filters->salonId) {
+            $queryBuilder->andWhere('sa.id = :salonId')
+                ->setParameter('salonId', $filters->salonId);
+        }
+
+        if ($filters->clientId) {
+            $queryBuilder->andWhere('c.id = :clientId')
+                ->setParameter('clientId', $filters->clientId);
+        }
+        if ($filters->serviceId) {
+            $queryBuilder->andWhere('se.id = :serviceId')
+                ->setParameter('serviceId', $filters->serviceId);
+        }
+        if ($filters->resourceId) {
+            $queryBuilder->andWhere('r.id = :resourceId')
+                ->setParameter('resourceId', $filters->resourceId);
+        }
+        if ($filters->startsAt) {
+            $queryBuilder->andWhere('a.startsAt >= :startsAt')
+                ->setParameter('startsAt', \DateTimeImmutable::createFromFormat('d/m/Y, H:i', $filters->startsAt));
+        }
+        if ($filters->endsAt) {
+            $queryBuilder->andWhere('a.endsAt <= :endsAt')
+                ->setParameter('endsAt', \DateTimeImmutable::createFromFormat('d/m/Y, H:i', $filters->endsAt));
+        }
+        if ($filters->status) {
+            $queryBuilder->andWhere('a.status = :status')
+                ->setParameter('status', $filters->status);
+        }
+
+        return $this->paginate($queryBuilder, self::ALIAS, $filters->page, $filters->limit, $filters->sort);
+    }
 }
