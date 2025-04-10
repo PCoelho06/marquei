@@ -1,21 +1,25 @@
+import appointments from './appointments'
 import auth from './auth'
-import user from './user'
-import salons from './salons'
 import businessHours from './business-hours'
-import services from './services'
+import clients from './clients'
 import resources from './resources'
-import subscriptions from './subscriptions'
 import resourceAvailabilities from './resource-availabilities'
 import resourceExceptions from './resource-exceptions'
+import salons from './salons'
+import services from './services'
+import subscriptions from './subscriptions'
+import user from './user'
 
 export default {
+  appointments,
   auth,
-  user,
-  salons,
   businessHours,
-  services,
+  clients,
   resources,
-  subscriptions,
   resourceAvailabilities,
   resourceExceptions,
+  salons,
+  services,
+  subscriptions,
+  user,
 }

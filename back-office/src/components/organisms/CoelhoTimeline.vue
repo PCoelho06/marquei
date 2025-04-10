@@ -36,13 +36,13 @@
                 </div>
             </div>
 
-            <div class="flex-grow grid" :style="{ gridTemplateColumns: `repeat(${props.resources.length}, 1fr)` }">
-                <div v-for="resource in props.resources" :key="resource.id"
+            <div class="flex-grow grid" :style="{ gridTemplateColumns: `repeat(${getterResourceList?.length}, 1fr)` }">
+                <div v-for="resource in getterResourceList" :key="resource.id"
                     class="h-16 flex items-center justify-center border border-l-0 border-gray-200 bg-gray-50 font-medium">
                     {{ resource.name }}
                 </div>
 
-                <template v-for="resource in props.resources" :key="resource.id">
+                <template v-for="resource in getterResourceList" :key="resource.id">
                     <div class="relative border-r border-gray-200"
                         :style="{ height: `${(timeSlots.length - 1) * 32}px` }">
                         <div v-for="(slot, index) in timeSlots.slice(0, -1)" :key="slot.label"
@@ -75,6 +75,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+import { useAppointmentsStore } from '@/stores/appointments';
+import { useResourcesStore } from '@/stores/resources';
 
 import { getTimeSlots, getAppointmentTopAndHeight } from './composables/datetime';
 
@@ -85,14 +89,20 @@ import type { TimeSlot } from '../types/timeline';
 import { formatters } from '@/utils';
 import type { Appointment, AppointmentCreatePayload } from '@/types/appointments';
 import type { Resource } from '@/types/resources';
+import { storeToRefs } from 'pinia';
 
 interface Props {
-    resources: Resource[];
-    appointments: Appointment[];
     date?: Date;
     startTime?: string;
     endTime?: string;
 }
+
+const route = useRoute();
+
+const appointmentsStore = useAppointmentsStore();
+const resourcesStore = useResourcesStore();
+const { getterAppointmentList } = storeToRefs(appointmentsStore);
+const { getterResourceList } = storeToRefs(resourcesStore);
 
 const props = withDefaults(defineProps<Props>(), {
     startTime: '08:00',
@@ -113,14 +123,13 @@ const timeStep = ref<number>(30);
 const timeSlots = computed<TimeSlot[]>(() => getTimeSlots(props.date, props.startTime, props.endTime, timeStep.value));
 
 const appointmentsOnResource = computed(() => {
-    const appointmentsByResource: Record<string, Appointment[]> = {};
+    const appointmentsByResource: Record<string, Appointment[] | undefined> = {};
 
-    props.resources.forEach(resource => {
-        appointmentsByResource[resource.id] = props.appointments.filter(appointment =>
-            appointment.resource === resource
+    getterResourceList.value?.forEach((resource: Resource) => {
+        appointmentsByResource[resource.id] = getterAppointmentList.value?.filter(appointment =>
+            appointment.resource.id === resource.id
         );
     });
-
     return appointmentsByResource;
 });
 
@@ -137,6 +146,7 @@ const getAppointmentStyle = (appointment: Appointment) => {
 const createBooking = (resourceId?: number, date?: string) => {
     const appointment: AppointmentCreatePayload = {
         resourceId: resourceId || 0,
+        salonId: Number(route.params.salonId),
         clientId: 0,
         serviceId: 0,
         startsAt: date || getNextTimeSlot(),

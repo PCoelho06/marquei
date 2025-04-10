@@ -1,17 +1,18 @@
 <template>
     <div class="p-4 pb-8 w-full">
         <CoelhoHeading size="sm" class="w-full text-center">{{ getterSalon?.name }}</CoelhoHeading>
-        <CoelhoTimeline v-if="isReady" :resources="resources" :appointments :startTime :endTime :timeStep
-            :date="timelineDate" @timeline:day:previous="changeDay(-1)" @timeline:day:next="changeDay(1)"
+        <CoelhoTimeline v-if="isReady" :startTime :endTime :timeStep :date="timelineDate"
+            @timeline:day:previous="changeDay(-1)" @timeline:day:next="changeDay(1)"
             @appointment:show="openModal('show:appointment', $event)"
             @appointment:create="openModal('create:appointment', $event)" />
-        <CoelhoModal v-model="showModal" size="xl"
+        <CoelhoModal v-model="showModal" :size="showCreationModal ? 'full' : 'xl'"
             :title="showCreationModal ? createAppointmentModal.title : showDetailsAppointmentModal.title">
             <div v-if="showDetailsModal" class="flex items-center">
                 <AppointmentDetails :appointment="showDetailsAppointmentModal.appointment" />
             </div>
             <div v-if="showCreationModal" class="flex items-center">
-                <AppointmentForm :appointment="createAppointmentModal.appointment" ref="appointmentFormRef" />
+                <AppointmentForm :appointment="createAppointmentModal.appointment" ref="appointmentFormRef"
+                    @submit="addAppointment" />
             </div>
             <template #footer>
                 <CoelhoButton :icon="XMarkIcon" @click="showModal = false" variant="secondary">
@@ -19,7 +20,7 @@
                 </CoelhoButton>
                 <CoelhoButton
                     :icon="showCreationModal ? createAppointmentModal.validateIcon : showDetailsAppointmentModal.validateIcon"
-                    @click="showCreationModal ? createAppointmentModal.action : showDetailsAppointmentModal.action"
+                    @click="validateModalAction"
                     :variant="showCreationModal ? createAppointmentModal.validateVariant : showDetailsAppointmentModal.validateVariant">
                     {{ showCreationModal ? createAppointmentModal.validate : showDetailsAppointmentModal.validate }}
                 </CoelhoButton>
@@ -40,10 +41,12 @@ import AppointmentForm from './lib/AppointmentForm.vue';
 
 import { useSalonsStore } from '@/stores/salons';
 import { useResourcesStore } from '@/stores/resources';
+import { useAppointmentsStore } from '@/stores/appointments';
+import { useClientsStore } from '@/stores/clients';
 
 import type { ModalContent } from '@/types';
 import type { Appointment, AppointmentCreatePayload } from '@/types/appointments';
-import type { Resource } from '@/types/resources';
+import type { ClientCreatePayload } from '@/types/clients';
 
 interface ShowDetailsAppointmentModalContent extends ModalContent {
     appointment: Appointment;
@@ -56,10 +59,15 @@ const route = useRoute();
 
 const salonStore = useSalonsStore();
 const resourcesStore = useResourcesStore();
+const appointmentsStore = useAppointmentsStore();
+const clientsStore = useClientsStore();
 const { getterSalon } = storeToRefs(salonStore);
 const { getterResourceList } = storeToRefs(resourcesStore);
+const { getterClient } = storeToRefs(clientsStore);
 
-const timelineDate = ref<Date>(new Date());
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+const timelineDate = ref<Date>(today);
 
 const appointmentFormRef = useTemplateRef('appointmentFormRef');
 const timeStep = ref<number>(30);
@@ -75,9 +83,6 @@ const showDetailsAppointmentModal = ref<ShowDetailsAppointmentModalContent>({
     dismiss: 'Fechar',
     validate: 'Eliminar',
     validateVariant: 'danger',
-    action: () => {
-        console.log('delete appointment');
-    },
     validateIcon: TrashIcon,
     appointment: {} as Appointment,
 });
@@ -87,43 +92,16 @@ const createAppointmentModal = ref<CreateAppointmentModalContent>({
     dismiss: 'Fechar',
     validate: 'Adicionar',
     validateVariant: 'primary',
-    action: () => { appointmentFormRef.value?.submitAppointmentForm() },
     validateIcon: PlusCircleIcon,
 });
 
-const resources = computed<Resource[]>(() => {
-    if (getterResourceList.value === undefined) {
-        return [];
+const validateModalAction = () => {
+    if (showCreationModal) {
+        appointmentFormRef.value?.submitAppointmentForm()
+    } else {
+        console.log('delete appointment');
     }
-    return getterResourceList.value;
-});
-
-const clients = [
-    {
-        id: 1,
-        name: 'Lucas',
-        phone: '+351252862158',
-        email: 'test@test.fr',
-        totalVisits: 0,
-    },
-    {
-        id: 2,
-        name: 'João',
-        phone: '+351252862158',
-        email: 'test@test.fr',
-        totalVisits: 2,
-    },
-    {
-        id: 3,
-        name: 'Maria',
-        phone: '+351252862158',
-        email: 'test@test.fr',
-        totalVisits: 1,
-    }
-]
-
-// Définition des événements
-const appointments = ref<Appointment[]>([]);
+}
 
 const openModal = (type: string, data: any) => {
     switch (type) {
@@ -140,40 +118,20 @@ const openModal = (type: string, data: any) => {
     }
 };
 
-const initiateAppointments = () => {
+const initiateAppointments = async () => {
     if (!getterResourceList.value?.length) return;
 
-    appointments.value = [];
-
-    if (Math.random() < 0.5) {
-        appointments.value.push({
-            id: 1,
-            resource: getterResourceList.value[0],
-            client: clients[0],
-            service: {
-                id: 1,
-                name: 'Cabelo + barba',
-                price: 30,
-            },
-            startsAt: '04-04-2025 10:00',
-            endsAt: '04-04-2025 11:00',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        });
-    }
-    appointments.value.push({
-        id: 1,
-        resource: getterResourceList.value[0],
-        client: clients[1],
-        service: {
-            id: 1,
-            name: 'Corte de cabelo',
-            price: 30,
-        },
-        startsAt: '04-04-2025 08:00',
-        endsAt: '04-04-2025 09:00',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+    await appointmentsStore.searchAppointments({
+        httpQuery: {
+            salonId: Number(route.params.salonId),
+            startsAt: timelineDate.value.toLocaleDateString('pt-PT', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+            }),
+        }
     });
 }
 
@@ -216,4 +174,20 @@ watch(showModal, (newValue) => {
 watch([showDetailsModal, showCreationModal], () => {
     showModal.value = showDetailsModal.value || showCreationModal.value;
 });
+
+const addAppointment = async (data: { appointment: AppointmentCreatePayload; client: ClientCreatePayload } | AppointmentCreatePayload) => {
+    console.log("🚀 ~ addAppointment ~ data:", data)
+    if ('client' in data) {
+        // creation du client
+        await clientsStore.createClient(data.client);
+    }
+    // creation de l'appointment
+    const newAppointment = 'client' in data ? data.appointment : data;
+    const clientId = 'client' in data ? getterClient.value?.id : data.clientId;
+    if (clientId !== undefined) {
+        await appointmentsStore.createAppointment({ ...newAppointment, clientId });
+    } else {
+        console.error('Client ID is undefined. Cannot create appointment.');
+    }
+};
 </script>

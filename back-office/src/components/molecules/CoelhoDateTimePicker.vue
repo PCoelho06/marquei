@@ -1,5 +1,5 @@
 <template>
-    <CoelhoInput type="text" v-model="modelValue" :leftIcon="CalendarDaysIcon" @click="togglePicker" />
+    <CoelhoInput type="text" v-model="modelValue" :label :leftIcon="CalendarDaysIcon" @click="togglePicker" :error />
 
     <div v-if="isOpen" class="absolute z-9999 mt-10 w-1/2 bg-white border border-gray-300 rounded shadow-lg p-4"
         ref="target">
@@ -57,6 +57,8 @@ import { CalendarDaysIcon, ChevronLeftIcon, ChevronRightIcon, ClockIcon, XMarkIc
 
 const props = withDefaults(defineProps<{
     initialValue?: string
+    label?: string
+    error?: string
 }>(), {
     initialValue: '',
 })

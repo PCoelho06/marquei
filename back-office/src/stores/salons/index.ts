@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 import { api } from '@/api'
 
-import type { Salon, SalonCreatePayload, SalonUpdatePayload, BusinessHours } from '@/types/salons'
+import type { Salon, SalonCreatePayload, SalonUpdatePayload } from '@/types/salons'
 import type { BaseDeletePayload, BaseGetPayload, ListSettings } from '@/types'
 
 export const useSalonsStore = defineStore('salons', () => {

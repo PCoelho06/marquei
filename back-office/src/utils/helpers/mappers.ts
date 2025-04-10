@@ -85,14 +85,14 @@ const mapResourceTypeValueToLabel = (resourceType: string) => {
 
 const mapServicesToOptions = (services: Service[]) => {
   return services.map((service) => ({
-    value: service.id.toString(),
+    value: service.id,
     label: service.name,
   }))
 }
 
 const mapResourcesToOptions = (resources: Resource[]) => {
   return resources.map((resource) => ({
-    value: resource.id.toString(),
+    value: resource.id,
     label: resource.name,
   }))
 }

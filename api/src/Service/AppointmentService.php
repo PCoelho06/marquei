@@ -6,6 +6,7 @@ use App\DTO\AppointmentDTO;
 use App\Entity\Appointment;
 use Doctrine\ORM\EntityManagerInterface;
 use App\DTO\Filters\AppointmentFilterDTO;
+use App\Model\AppointmentStatusEnum;
 use App\Repository\AppointmentRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,6 +22,7 @@ class AppointmentService
         private UserService $userService,
         private EntityHydratorService $hydrator,
         private Security $security,
+        private LoggerInterface $logger,
     ) {}
 
     public function searchAppointments(AppointmentFilterDTO $filters): array
@@ -54,6 +56,15 @@ class AppointmentService
 
         $client = $this->userService->getUser($appointmentDTO->clientId);
         $appointment->setClient($client);
+
+        $endsAt = $appointment->getStartsAt()->add(new \DateInterval('PT' . $service->getDuration() . 'M'));
+        $appointment->setEndsAt($endsAt);
+
+        $appointment->setStatus(AppointmentStatusEnum::SCHEDULED);
+
+        $this->logger->info('Creating appointment', [
+            $appointment
+        ]);
 
         // Check if the salon is opened
         if (!$this->salonService->isOpen($salon, $appointment->getStartsAt())) {
@@ -97,6 +108,7 @@ class AppointmentService
         if (count($appointments) > 0) {
             throw new \InvalidArgumentException('O recurso já está agendado nesse horário');
         }
+        // $appointment->setEndsAt(\DateInterval::createFromDateString($service->getDuration().' minutes'));
 
         $this->entityManager->persist($appointment);
         $this->entityManager->flush();

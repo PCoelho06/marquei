@@ -18,8 +18,8 @@ export interface AppointmentCreatePayload {
   resourceId: number
   clientId: number
   serviceId: number
+  salonId: number
   startsAt: string
-  endsAt: string
 }
 
 export interface AppointmentUpdatePayload extends AppointmentCreatePayload {
