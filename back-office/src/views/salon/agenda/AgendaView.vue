@@ -176,7 +176,6 @@ watch([showDetailsModal, showCreationModal], () => {
 });
 
 const addAppointment = async (data: { appointment: AppointmentCreatePayload; client: ClientCreatePayload } | AppointmentCreatePayload) => {
-    console.log("🚀 ~ addAppointment ~ data:", data)
     if ('client' in data) {
         // creation du client
         await clientsStore.createClient(data.client);
@@ -189,5 +188,8 @@ const addAppointment = async (data: { appointment: AppointmentCreatePayload; cli
     } else {
         console.error('Client ID is undefined. Cannot create appointment.');
     }
+
+    showModal.value = false;
+    initiateAppointments();
 };
 </script>
