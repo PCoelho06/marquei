@@ -1,5 +1,6 @@
 <template>
-    <div class="flex h-dvh w-full overflow-hidden">
+    <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <HeaderArea :goBackLink />
         <slot></slot>
     </div>
 </template>
@@ -11,11 +12,19 @@ import { storeToRefs } from 'pinia';
 
 import { useSalonsStore } from '@/stores/salons';
 
+import HeaderArea from '@/components/Header/HeaderArea.vue'
+
 const router = useRouter()
 const route = useRoute()
 
 const salonStore = useSalonsStore()
 const { getterSalon } = storeToRefs(salonStore)
+
+withDefaults(defineProps<{
+    goBackLink?: boolean
+}>(), {
+    goBackLink: false
+})
 
 onMounted(() => {
     if (!getterSalon.value) {

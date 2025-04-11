@@ -11,7 +11,7 @@
     --color-dark: #1C2434;
     --color-boxdark: #24303f;
 
-    --animate-fadein: fadeIn 1s ease-in-out;
+    --animate-fadein: 1s ease-in-out fadeIn;
 
     @keyframes fadeIn {
         0% {

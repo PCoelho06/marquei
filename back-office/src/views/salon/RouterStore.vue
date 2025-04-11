@@ -1,11 +1,11 @@
 <template>
-    <StoreLayout>
+    <SalonLayout>
         <RouterView :key="$route.fullPath" />
-    </StoreLayout>
+    </SalonLayout>
 </template>
 
 <script setup lang="ts">
-import StoreLayout from '@/layouts/StoreLayout.vue';
+import SalonLayout from '@/layouts/SalonLayout.vue';
 
 
 </script>

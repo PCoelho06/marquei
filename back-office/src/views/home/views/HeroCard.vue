@@ -1,47 +1,19 @@
 <template>
-    <div class="bg-white rounded-xl perspective-distant" :class="{
-        'size-50': size === 'xl',
-        'size-40': size === 'lg',
-        'size-30': size === 'md',
-        'size-20': size === 'sm',
-    }" ref="target">
-        <div class="absolute top-0 left-0 w-full h-full rounded-xl mix-blend-hard-light perspective-distant" ref="glow">
-        </div>
+    <div class="bg-cover rounded-xl hidden opacity-0" :class="{
+        'size-50 animate-[fadeIn_1s_ease-in-out_1200ms_forwards] md:block': size === 'xl',
+        'size-40 animate-[fadeIn_1s_ease-in-out_900ms_forwards] lg:block': size === 'lg',
+        'size-30 animate-[fadeIn_1s_ease-in-out_600ms_forwards] xl:block': size === 'md',
+        'size-20 animate-[fadeIn_1s_ease-in-out_300ms_forwards] xl:block': size === 'sm'
+    }" :style="{ 'background-image': `url(${imageUrl})` }">
         <slot />
     </div>
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef, watchEffect } from 'vue'
-import { useMouseInElement } from '@vueuse/core'
-
-defineProps<{
+const props = defineProps<{
     size?: 'sm' | 'md' | 'lg' | 'xl';
+    image?: string;
 }>();
 
-const target = useTemplateRef('target');
-const glowElement = useTemplateRef('glow');
-const { x, y, elementX, elementY, elementHeight, elementWidth, isOutside } = useMouseInElement(target);
-
-watchEffect(() => {
-    if (!target.value || !glowElement.value) return;
-    if (!isOutside.value) {
-        const angleY = -(60 / elementWidth.value) * (elementX.value - elementWidth.value / 2);
-        const angleX = (60 / elementHeight.value) * (elementY.value - elementHeight.value / 2);
-
-        const glowX = elementX.value / elementWidth.value * 100
-        const glowY = elementY.value / elementHeight.value * 100
-
-        target.value.style.transform = `rotateY(${angleY}deg) rotateX(${angleX}deg) scale(1.05)`;
-        target.value.style.transition = 'transform 0.1s ease-out';
-
-        glowElement.value.style.transform = `rotateY(${angleY}deg) rotateX(${angleX}deg) scale(1.05)`;
-        glowElement.value.style.background = `radial-gradient(at ${glowX}% ${glowY}%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 70%)`;
-        glowElement.value.style.transition = 'transform 0.1s ease-out';
-    } else {
-        target.value.style.transform = 'rotateY(0deg) rotateX(0deg)';
-        glowElement.value.style.transform = 'rotateY(0deg) rotateX(0deg)';
-        glowElement.value.style.background = `transparent`;
-    }
-});
+const imageUrl = `'${props.image}'`;
 </script>
