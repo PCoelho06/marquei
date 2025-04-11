@@ -12,6 +12,9 @@
     --color-boxdark: #24303f;
 
     --animate-fadein: 1s ease-in-out fadeIn;
+    --animate-slidein-right: 1s ease-in-out slideInRight;
+    --animate-slidein-left: 1s ease-in-out slideInLeft;
+    --animate-roll-left-to-right: 1s ease-in-out rollLeftToRight both infinite;
 
     @keyframes fadeIn {
         0% {
@@ -22,6 +25,40 @@
         100% {
             opacity: 1;
             transform: translateY(0%);
+        }
+    }
+
+    @keyframes slideInRight {
+        0% {
+            opacity: 0;
+            transform: translateX(50%);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateX(0%);
+        }
+    }
+
+    @keyframes slideInLeft {
+        0% {
+            opacity: 0;
+            transform: translateX(-50%);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateX(0%);
+        }
+    }
+
+    @keyframes rollLeftToRight {
+        0% {
+            transform: rotateY(0deg);
+        }
+
+        100% {
+            transform: rotateY(360deg);
         }
     }
 }

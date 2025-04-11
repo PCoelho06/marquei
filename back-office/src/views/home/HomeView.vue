@@ -3,7 +3,124 @@
         <HomeHeader :isBackgroundDark :isTop />
         <main>
             <HeroSection />
-            <HomeSection />
+            <HomeSection>
+                <template #content>
+                    <CoelhoHeading :level="2" size="md" color="primary" class="text-center">Gestão de Agendamentos
+                    </CoelhoHeading>
+                    <CoelhoText :is-paragraph="true" class="m-4">
+                        Està farto de perder tempo com agendamentos? A Marquei é a solução que você precisa.
+                    </CoelhoText>
+                    <!-- <CoelhoText :is-paragraph="true" class="m-4">
+                Com Marquei, você pode agendar, reagendar e cancelar compromissos com apenas alguns cliques. Não perca
+                mais tempo com papelada ou telefonemas.
+            </CoelhoText> -->
+                    <CoelhoText :is-paragraph="true" class="m-4">
+                        <ul class="list-disc pl-4">
+                            <li>Agendamentos fáceis e rápidos</li>
+                            <li>Notificações automáticas para você e seus clientes</li>
+                            <li>Calendário incluido para poder seguir as marcações do dia</li>
+                        </ul>
+                    </CoelhoText>
+                    <CoelhoText :is-paragraph="true" class="m-4">
+                        Com a Marquei, você pode se concentrar no que realmente importa: seus clientes.
+                    </CoelhoText>
+                    <div class="flex justify-center">
+                        <CoelhoButton size="lg" @click="router.push({ name: 'Registration' })">
+                            Começar agora
+                        </CoelhoButton>
+                    </div>
+                </template>
+                <template #illustration>
+                    <RemindersIllustration />
+                </template>
+            </HomeSection>
+            <HomeSection :isEven="false">
+                <template #content>
+                    <CoelhoHeading :level="2" size="md" color="primary" class="text-center">Gestão de Recursos
+                    </CoelhoHeading>
+                    <CoelhoText :is-paragraph="true" class="m-4">
+                        A Marquei é a solução ideal para gerenciar os recursos do seu salão de beleza.
+                    </CoelhoText>
+                    <CoelhoText :is-paragraph="true" class="m-4">
+                        <ul class="list-disc pl-4">
+                            <li>Controle total sobre seus salões e serviços</li>
+                            <li>Otimização da agenda dos seus funcionários e maquinas</li>
+                            <li>Relatórios detalhados para otimizar seu estoque</li>
+                        </ul>
+                    </CoelhoText>
+                    <div class="flex justify-center">
+                        <CoelhoButton size="lg" @click="router.push({ name: 'Registration' })">
+                            Começar agora
+                        </CoelhoButton>
+                    </div>
+                </template>
+                <template #illustration>
+                    <ManageIllustration />
+                </template>
+            </HomeSection>
+            <HomeSection>
+                <template #content>
+                    <CoelhoHeading :level="2" size="md" color="primary" class="text-center">Gestão de Funcionários
+                    </CoelhoHeading>
+                    <CoelhoText :is-paragraph="true" class="m-4">
+                        A Marquei é a solução ideal para otimizar o trabalho da sua equipe.
+                    </CoelhoText>
+                    <CoelhoText :is-paragraph="true" class="m-4">
+                        <ul class="list-disc pl-4">
+                            <li>Gestão automatica dos agendamentos conforme os horarios de presença e as férias</li>
+                            <li>Otimização da agenda dos seus funcionários e maquinas</li>
+                            <li>Relatórios detalhados para otimizar o desempenho</li>
+                        </ul>
+                    </CoelhoText>
+                    <div class="flex justify-center">
+                        <CoelhoButton size="lg" @click="router.push({ name: 'Registration' })">
+                            Começar agora
+                        </CoelhoButton>
+                    </div>
+                </template>
+                <template #illustration>
+                    <EmployeesIllustration />
+                </template>
+            </HomeSection>
+            <HomeSection :isEven="false">
+                <template #content>
+                    <CoelhoHeading :level="2" size="md" color="primary" class="text-center">Análise e Estatísticas
+                    </CoelhoHeading>
+                    <CoelhoText :is-paragraph="true" class="m-4">
+                        A Marquei é a solução ideal para otimizar o trabalho da sua equipe.
+                    </CoelhoText>
+                    <CoelhoText :is-paragraph="true" class="m-4">
+                        <ul class="list-disc pl-4">
+                            <li>Relatórios detalhados para otimizar o desempenho</li>
+                            <li>Painéis detalhados para acompanhar o crescimento do seu negócio e tomar as melhores
+                                decisões.</li>
+                        </ul>
+                    </CoelhoText>
+                    <div class="flex justify-center">
+                        <CoelhoButton size="lg" @click="router.push({ name: 'Registration' })">
+                            Começar agora
+                        </CoelhoButton>
+                    </div>
+                </template>
+                <template #illustration>
+                    <DashboardIllustration />
+                </template>
+            </HomeSection>
+            <section class="bg-primary py-20">
+                <div class="container mx-auto flex flex-col items-center gap-8 px-4 text-center">
+                    <CoelhoHeading :level="2" size="lg" color="light">
+                        Pronto para transformar seu salão?
+                    </CoelhoHeading>
+                    <CoelhoText :is-paragraph="true" color="light">
+                        Junte-se às centenas de profissionais que confiam no Marquei
+                        para a gestão diária do seu estabelecimento.
+                    </CoelhoText>
+                    <CoelhoButton size="lg" variant="secondary" @click="router.push({ name: 'Registration' })">
+                        Começar
+                        agora
+                    </CoelhoButton>
+                </div>
+            </section>
         </main>
         <!-- <section class="grid grid-cols-2 h-dvh" ref="heroSection">
             <div class="flex flex-col justify-center items-center bg-linear-to-br px-4 py-20 to-primary from-blue-500"
@@ -67,82 +184,7 @@
 </CoelhoCarousel>
 </section> -->
 
-        <!-- <AnimatedSection class="bg-primary/40 h-[600px] flex justify-center items-center" animationType="scale">
-            <div class="p-4 flex items-center justify-center">
-                <div>
-                    <h2 class="text-3xl font-bold text-white mb-6">Gestão de Agendamentos</h2>
-                    <p class="text-whitten">
-                        Agende e gerencie facilmente todas as suas marcações. Sistema de lembretes automáticos e
-                        confirmação online
-                    </p>
-                </div>
-                <div class="size-full">
-                    <img src="@/assets/images/illustrations/reminders.svg" alt="Gestão de Agendamentos" />
-                </div>
-            </div>
-        </AnimatedSection> -->
-
-        <AnimatedSection class="bg-primary/40 h-[600px] flex justify-center items-center" animationType="scale">
-            <div class="p-4 flex items-center justify-center">
-                <div class="size-full">
-                    <img src="@/assets/images/illustrations/manage.svg" alt="Gestão de Recursos" />
-                </div>
-                <div>
-                    <h2 class="text-3xl font-bold text-white mb-6">Gestão de Recursos</h2>
-                    <p class="text-whitten">
-                        Otimize a utilização dos seus equipamentos e produtos. Controle o seu stock em tempo real.
-                    </p>
-                </div>
-            </div>
-        </AnimatedSection>
-
-        <AnimatedSection class="bg-primary/40 h-[600px] flex justify-center items-center" animationType="scale">
-            <div class="p-4 flex items-center justify-center">
-                <div>
-                    <h2 class="text-3xl font-bold text-white mb-6">Gestão de Funcionários</h2>
-                    <p class="text-whitten">
-                        Horários, desempenho e gestão de férias. Tudo para otimizar o trabalho da sua equipe.
-                    </p>
-                </div>
-                <div class="size-full">
-                    <img src="@/assets/images/illustrations/employees.svg" alt="Gestão de Funcionários" />
-                </div>
-            </div>
-        </AnimatedSection>
-
-        <AnimatedSection class="bg-primary/40 h-[600px] flex justify-center items-center" animationType="scale">
-            <div class="p-4 flex items-center justify-center">
-                <div class="size-full">
-                    <img src="@/assets/images/illustrations/dashboard.svg" alt="Análise e Estatísticas" />
-                </div>
-                <div>
-                    <h2 class="text-3xl font-bold text-white mb-6">Análise e Estatísticas</h2>
-                    <p class="text-whitten">
-                        Painéis detalhados para acompanhar o crescimento do seu negócio e tomar as melhores decisões.
-                    </p>
-                </div>
-            </div>
-        </AnimatedSection>
-
-        <AnimatedSection class="bg-primary h-[600px] flex justify-center items-center" animationType="scale"
-            ref="callToActionSection">
-            <div class="flex flex-col">
-                <h2 class="text-3xl font-bold text-white mb-6">Não perca tempo e comece jà a geranciar o seu salão com
-                    Marquei
-                </h2>
-                <div class="p-4 flex items-center justify-center space-x-8">
-                    <CoelhoButton size="lg" variant="secondary" @click="router.push({ name: 'Registration' })">Começar
-                        agora
-                    </CoelhoButton>
-                    <CoelhoButton size="lg" :outlined="true" variant="secondary" @click="requestDemo">Agendar uma
-                        demonstração
-                        grátis
-                    </CoelhoButton>
-                </div>
-            </div>
-        </AnimatedSection>
-
-        <section id="testimonials" class="container mx-auto px-4 py-20">
+        <!-- <section id="testimonials" class="container mx-auto px-4 py-20">
             <h2 class="text-4xl font-bold text-center text-dark mb-12">
                 O que dizem nossos clientes
             </h2>
@@ -161,25 +203,7 @@
                     </div>
                 </template>
             </CoelhoCarousel>
-        </section>
-
-        <!-- CTA Section -->
-        <section class="bg-primary py-20">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="text-4xl font-bold text-white mb-6">
-                    Pronto para transformar seu salão?
-                </h2>
-                <p class="text-whitten mb-8 max-w-2xl mx-auto">
-                    Junte-se às centenas de profissionais que confiam no Marquei
-                    para a gestão diária do seu estabelecimento.
-                </p>
-                <div class="max-w-md mx-auto">
-                    <CoelhoButton size="lg" variant="secondary" @click="router.push({ name: 'Registration' })">Começar
-                        agora
-                    </CoelhoButton>
-                </div>
-            </div>
-        </section>
+        </section> -->
 
         <!-- Modal de demonstração -->
         <div v-if="showDemoModal" class="fixed inset-0 bg-boxdark bg-opacity-50 flex items-center justify-center">
@@ -206,11 +230,14 @@ import { ref, useTemplateRef, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { useElementBounding, useWindowScroll } from '@vueuse/core'
 
-import { CoelhoButton, CoelhoCarousel, CoelhoLogo } from '@/components'
-import AnimatedSection from '@/components/Sections/AnimatedSection.vue'
+import { CoelhoButton, CoelhoCarousel, CoelhoText, CoelhoHeading } from '@/components'
+import RemindersIllustration from './views/RemindersIllustration.vue';
 import HomeHeader from './views/HomeHeader.vue'
 import HeroSection from './views/HeroSection.vue'
 import HomeSection from './views/HomeSection.vue'
+import ManageIllustration from './views/ManageIllustration.vue';
+import EmployeesIllustration from './views/EmployeesIllustration.vue';
+import DashboardIllustration from './views/DashboardIllustration.vue';
 
 interface Testimonial {
     name: string
@@ -221,20 +248,18 @@ interface Testimonial {
 
 const router = useRouter()
 const isBackgroundDark = ref(true)
-const heroSection = useTemplateRef('heroSection')
-const callToActionSection = useTemplateRef('callToActionSection')
-const { top: topHeroSection, bottom: bottomHeroSection } = useElementBounding(heroSection)
-const { top: topCallToActionSection, bottom: bottomCallToActionSection } = useElementBounding(callToActionSection)
+// const heroSection = useTemplateRef('heroSection')
+// const { top: topHeroSection, bottom: bottomHeroSection } = useElementBounding(heroSection)
 const { y } = useWindowScroll()
 const isTop = ref(y.value <= 0)
 
 
 watchEffect(() => {
-    if (topHeroSection.value <= 60 && bottomHeroSection.value >= 60 || topCallToActionSection.value <= 60 && bottomCallToActionSection.value >= 60) {
-        isBackgroundDark.value = true
-    } else {
-        isBackgroundDark.value = false
-    }
+    // if (topHeroSection.value <= 60 && bottomHeroSection.value >= 60) {
+    //     isBackgroundDark.value = true
+    // } else {
+    //     isBackgroundDark.value = false
+    // }
 
     if (y.value > 0) {
         isTop.value = false
